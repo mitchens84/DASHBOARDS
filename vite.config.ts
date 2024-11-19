@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import * as path from "path";
 
 export default defineConfig({
-  base: "/OUTPUT_04-CLAUDE_TSX/",
+  base: "/DASHBOARDS/", // Use your repository name
   plugins: [react()],
   resolve: {
     alias: [{ find: "@", replacement: path.resolve(__dirname, "./src") }],
