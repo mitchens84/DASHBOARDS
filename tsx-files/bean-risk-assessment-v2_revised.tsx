@@ -1,21 +1,34 @@
 import React from 'react';
-import { AlertTriangle, Shield, Activity, Heart } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
-const RiskCategory = ({ title, risks }) => (
-  <div className="bg-white p-4 rounded-lg shadow mb-4">
-    <h2 className="text-xl font-bold mb-3">{title}</h2>
-    <div className="space-y-3">
+interface Risk {
+  name: string;
+  impact: string;
+  likelihood: string;
+  description: string;
+  mitigation: string[];
+}
+
+interface RiskCategoryProps {
+  title: string;
+  risks: Risk[];
+}
+
+const RiskCategory: React.FC<RiskCategoryProps> = ({ title, risks }) => (
+  <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
+    <h2 className="text-2xl font-bold mb-4 text-blue-600">{title}</h2>
+    <div className="space-y-4">
       {risks.map((risk, index) => (
-        <div key={index} className="border-l-4 border-blue-500 pl-3">
-          <h3 className="font-semibold text-lg">{risk.name}</h3>
-          <div className="grid grid-cols-2 gap-2 mb-2 text-sm">
-            <span>Impact: <span className="font-medium">{risk.impact}</span></span>
-            <span>Likelihood: <span className="font-medium">{risk.likelihood}</span></span>
+        <div key={index} className="border-l-4 border-blue-500 pl-4">
+          <h3 className="font-semibold text-xl text-gray-800">{risk.name}</h3>
+          <div className="grid grid-cols-2 gap-4 mb-3 text-sm text-gray-700">
+            <span>Impact: <span className="font-medium text-red-600">{risk.impact}</span></span>
+            <span>Likelihood: <span className="font-medium text-orange-600">{risk.likelihood}</span></span>
           </div>
-          <p className="text-sm text-gray-600 mb-2">{risk.description}</p>
-          <div className="bg-gray-50 p-2 rounded">
-            <h4 className="font-medium text-sm mb-1">Mitigation:</h4>
-            <ul className="list-disc list-inside text-sm text-gray-700">
+          <p className="text-sm text-gray-600 mb-3">{risk.description}</p>
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="font-medium text-sm mb-2">Mitigation Strategies:</h4>
+            <ul className="list-disc list-inside text-sm text-gray-800">
               {risk.mitigation.map((strategy, idx) => (
                 <li key={idx}>{strategy}</li>
               ))}
@@ -27,7 +40,7 @@ const RiskCategory = ({ title, risks }) => (
   </div>
 );
 
-const BeanRiskAssessment = () => {
+const BeanRiskAssessment: React.FC = () => {
   const musculoskeletalRisks = {
     title: "Musculoskeletal System Risks",
     risks: [
@@ -144,19 +157,6 @@ const BeanRiskAssessment = () => {
         impact: "SEVERE",
         likelihood: "HIGH",
         description: "Local hazards including snakes, toxic plants, and contaminated water",
-        mitigation: [
-          "Area safety assessment",
-          "Snake avoidance training",
-          "First aid kit maintenance",
-          "Emergency vet contacts"
-        ]
-      }
-    ]
-  };
-
-  const environmentalRisks = {
-    title: "Environmental Risks",
-    risks: [
       {
         name: "Heat Management",
         impact: "SEVERE",
@@ -215,9 +215,9 @@ const BeanRiskAssessment = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <div className="bg-blue-600 text-white p-4 rounded-lg shadow mb-4">
-        <h1 className="text-xl font-bold">Bean's Risk Assessment</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-blue-600 text-white p-6 rounded-lg shadow-lg mb-6">
+        <h1 className="text-3xl font-bold">Bean's Risk Assessment</h1>
         <p className="text-sm">Updated: {new Date().toLocaleDateString()}</p>
       </div>
       
@@ -227,12 +227,12 @@ const BeanRiskAssessment = () => {
       <RiskCategory {...functionalRisks} />
       <RiskCategory {...safetyRisks} />
       
-      <div className="bg-yellow-50 p-4 rounded-lg shadow mt-4">
-        <h2 className="font-bold flex items-center">
+      <div className="bg-yellow-50 p-6 rounded-lg shadow-lg mt-6">
+        <h2 className="font-bold flex items-center text-lg">
           <AlertTriangle className="mr-2" />
           Monitoring Schedule
         </h2>
-        <div className="mt-2 grid grid-cols-2 gap-4 text-sm">
+        <div className="mt-4 grid grid-cols-2 gap-6 text-sm">
           <div>
             <h3 className="font-medium">Daily Checks</h3>
             <ul className="list-disc list-inside">
