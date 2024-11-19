@@ -22,15 +22,15 @@ const RiskCategory: React.FC<RiskCategoryProps> = ({ title, risks }) => (
         <div key={index} className="border-l-4 border-blue-500 pl-4">
           <h3 className="font-semibold text-xl text-gray-800">{risk.name}</h3>
           <div className="grid grid-cols-2 gap-4 mb-3 text-sm text-gray-700">
-            <span>Impact: <span className={`font-medium ${risk.impact === 'SEVERE' ? 'text-red-600' : risk.impact === 'MEDIUM' ? 'text-orange-600' : 'text-darkred'}`}>{risk.impact}</span></span>
-            <span>Likelihood: <span className={`font-medium ${risk.likelihood === 'HIGH' ? 'text-orange-800' : 'text-yellow-600'}`}>{risk.likelihood}</span></span>
+            <span>Impact: <span className="font-medium text-red-600">{risk.impact}</span></span>
+            <span>Likelihood: <span className="font-medium text-orange-600">{risk.likelihood}</span></span>
           </div>
           <p className="text-sm text-gray-600 mb-3">{risk.description}</p>
           <div className="bg-gray-50 p-4 rounded-lg">
             <h4 className="font-medium text-sm mb-2">Mitigation Strategies:</h4>
             <ul className="list-disc list-inside text-sm text-gray-800">
               {risk.mitigation.map((strategy, idx) => (
-                <li key={idx} className="text-gray-800">{strategy}</li>
+                <li key={idx}>{strategy}</li>
               ))}
             </ul>
           </div>
