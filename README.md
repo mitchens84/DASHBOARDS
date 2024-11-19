@@ -25,25 +25,13 @@ Examples:
 - Plants analysis: http://localhost:5173?file=plants-co2-analysis
 - Environment dashboard: http://localhost:5173?file=env-dashboard
 
-## Development
-
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Deploy to GitHub Pages
-npm run deploy
+## Currently Available Files:
+- plants-co2-analysis.tsx
+- env-dashboard.tsx
 
 ## Notes
 - Files must export a default React component
 - Tailwind CSS styling is available
 - Place all TSX files in the tsx-files/ directory
 - Don't include the .tsx extension in the URL
-# DASHBOARDS
 # DASHBOARDS
