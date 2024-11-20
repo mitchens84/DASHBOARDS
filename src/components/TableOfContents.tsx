@@ -14,6 +14,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ setFile }) => {
     { name: 'Environmental Dashboard', file: 'env-dashboard' },
     { name: 'Music Dashboard', file: 'music-dashboard' },
     { name: 'Plants CO2 Analysis', file: 'plants-co2-analysis' },
+    { name: 'Nutrition Processing Dashboard', file: 'nutrition-processing-dashboard' }, // New entry added
   ];
 
   return (
