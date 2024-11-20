@@ -14,7 +14,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const loadDashboard = async (file: string) => {
       try {
-        const module = await import(`./content/${file}.tsx`);
+        const module = await import(`./tsx-files/${file}.tsx`);
         setComponent(() => module.default);
       } catch (error) {
         console.error(`Failed to load dashboard: ${file}`, error);
