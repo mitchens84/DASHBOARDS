@@ -22,7 +22,18 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ setFile }) => {
       <ul>
         {dashboards.map((dashboard) => (
           <li key={dashboard.file}>
-            <Link to={`?file=${dashboard.file}`} onClick={() => setFile(dashboard.file)}>
+            <Link 
+              to={`?file=${dashboard.file}`} 
+              onClick={() => {
+                setFile(dashboard.file);
+                // Update URL without page reload
+                window.history.pushState(
+                  null, 
+                  '', 
+                  `?file=${dashboard.file}`
+                );
+              }}
+            >
               {dashboard.name}
             </Link>
           </li>

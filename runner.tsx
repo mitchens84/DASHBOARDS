@@ -13,8 +13,15 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const loadDashboard = async (file: string) => {
-      const module = await import(`./content/${file}.tsx`);
-      setComponent(() => module.default);
+      try {
+        const module = await import(`./content/${file}.tsx`);
+        setComponent(() => module.default);
+      } catch (error) {
+        console.error(`Failed to load dashboard: ${file}`, error);
+        // Fallback to default dashboard if loading fails
+        const defaultModule = await import(`./content/plants-co2-analysis.tsx`);
+        setComponent(() => defaultModule.default);
+      }
     };
 
     loadDashboard(file);
@@ -42,5 +49,5 @@ const App: React.FC = () => {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  </React.StrictMode>
 );
