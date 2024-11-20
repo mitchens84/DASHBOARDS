@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import TableOfContents from "./src/components/TableOfContents";
+import "./style.css"; // Explicitly import global styles
 
 // Get the filename from URL hash or use default
 const getInitialFile = () => {
