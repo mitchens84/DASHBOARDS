@@ -13,7 +13,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const loadDashboard = async (file: string) => {
-      const module = await import(`./tsx-files/${file}.tsx`);
+      const module = await import(`./DASHBOARDS/${file}.tsx`);
       setComponent(() => module.default);
     };
 
