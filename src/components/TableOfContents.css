@@ -1,13 +1,13 @@
 .toc-container {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 200px; /* Adjust width as needed */
+  right: 0; /* Changed from left: 0; */
+  width: 200px;
   height: 100%;
-  background-color: #f8f9fa; /* Light background for visibility */
+  background-color: #f8f9fa;
   padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; /* Allow scrolling if content overflows */
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Adjusted box-shadow to appear from the right */
+  overflow-y: auto;
 }
 
 .toc-container h1 {
