@@ -13,8 +13,10 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ setFile }) => {
     { name: 'Bean Risk Assessment V2', file: 'bean-risk-assessment-v2' },
     { name: 'Environmental Dashboard', file: 'env-dashboard' },
     { name: 'Music Dashboard', file: 'music-dashboard' },
-    { name: 'Plants CO2 Analysis', file: 'plants-co2-analysis' },
     { name: 'Nutrition Processing Dashboard', file: 'nutrition-processing-dashboard' }, // New entry added
+    { name: 'Reading Dashboard', file: 'reading-dashboard' }, // Added Reading Dashboard
+    { name: 'Music Dashboard R1', file: 'music-dashboard-r1' }, // New entry added
+    { name: 'Scatter3D', file: 'scatter3d' } // New entry added
   ];
 
   return (
