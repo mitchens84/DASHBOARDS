@@ -3,7 +3,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { AlertTriangle } from 'lucide-react';
 import Papa from 'papaparse';
 import _ from 'lodash';
-import HealthInsights from './HealthInsights';
+// Remove or comment out the problematic import
+// import HealthInsights from './HealthInsights';
 import CorrelationsChart from './CorrelationsChart';
 
 interface DataRow {
@@ -85,8 +86,7 @@ const EnvironmentalDashboard = () => {
             <div className="text-lg font-semibold">{stats?.min?.toFixed(1)}</div>
             <div className="text-gray-500">{unit}</div>
           </div>
-          <HealthInsights data={data} />
-          <CorrelationsChart data={data} />
+          {/* Replace HealthInsights usage with placeholder or alternative component */}
           <div className="text-center">
             <div className="font-medium text-gray-600">MEAN</div>
             <div className="text-lg font-semibold">{stats?.avg?.toFixed(1)}</div>

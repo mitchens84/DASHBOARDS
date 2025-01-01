@@ -11,12 +11,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ setFile }) => {
     { name: 'APOB Reference', file: 'apob-reference' },
     { name: 'Bean Risk Assessment V2', file: 'bean-risk-assessment-v2' },
     { name: 'Bean Risk Assessment V2 Revised', file: 'bean-risk-assessment-v2_revised' },
-    { name: 'Blood Sugar Analysis', file: 'blood-sugar-analysis' },
-    { name: 'Body Composition Analysis', file: 'body-composition-analysis' },
     { name: 'Environmental Dashboard', file: 'environmental-dashboard' },
-    { name: 'Exercise Analysis', file: 'exercise-analysis' },
-    { name: 'Food Cost Analysis', file: 'food-cost-analysis' },
-    { name: 'Heart Rate Analysis', file: 'heart-rate-analysis' },
     { name: 'Hiking Playlist', file: 'hiking-playlist' },
     { name: 'Life Smoothie Visual', file: 'life-smoothie-visual' },
     { name: 'Legume Cooking Guide', file: '243012-legumes cooking guide' },
@@ -27,12 +22,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ setFile }) => {
     { name: 'Plants CO2 Analysis', file: 'plants-co2-analysis' },
     { name: 'Reading Dashboard', file: 'reading-dashboard' },
     { name: 'Scatter3D Visualization', file: 'scatter3d' },
-    { name: 'Sleep Analysis', file: 'sleep-analysis' },
-    { name: 'Sports Nutrition Dashboard', file: '241118-sports-nutrition-dashboard' },
-    { name: 'Sound Therapy Guide', file: 'sound-therapy-guide' },
-    { name: 'Temperature Analysis', file: 'temperature-analysis' },
-    { name: 'Water Intake Analysis', file: 'water-intake-analysis' },
-    { name: 'Weight Analysis', file: 'weight-analysis' }
+    { name: 'Sound Therapy Guide', file: 'sound-therapy-guide' }
   ];
 
   return (
