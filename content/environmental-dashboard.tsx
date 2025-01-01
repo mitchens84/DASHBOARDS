@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AlertTriangle } from 'lucide-react';
 import Papa from 'papaparse';
 import _ from 'lodash';
 import HealthInsights from './HealthInsights';
 import CorrelationsChart from './CorrelationsChart';
 
+interface DataRow {
+  time: Date;
+  temperature: number;
+  humidity: number;
+  co2: number;
+  pm25: number;
+  pm10: number;
+}
+
 const EnvironmentalDashboard = () => {
-  const [data, setData] = useState([]);
-  const [hourlyAverages, setHourlyAverages] = useState([]);
+  const [data, setData] = useState<DataRow[]>([]);
+  const [hourlyAverages, setHourlyAverages] = useState<{ hour: number; temperature: number; humidity: number; co2: number; pm25: number; }[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const response = await window.fs.readFile('The_historical_data_of_Air Monitor Lite_20241024151138.csv', { encoding: 'utf8' });
-        const result = Papa.parse(response, {
+        const result = Papa.parse<DataRow>(response, {
           header: true,
           dynamicTyping: true,
           skipEmptyLines: true
@@ -75,10 +84,8 @@ const EnvironmentalDashboard = () => {
             <div className="font-medium text-gray-600">MIN</div>
             <div className="text-lg font-semibold">{stats?.min?.toFixed(1)}</div>
             <div className="text-gray-500">{unit}</div>
-            {/* Health Insights Component */}
+          </div>
           <HealthInsights data={data} />
-
-          {/* Correlations Chart */}
           <CorrelationsChart data={data} />
           <div className="text-center">
             <div className="font-medium text-gray-600">MEAN</div>
@@ -99,23 +106,23 @@ const EnvironmentalDashboard = () => {
     if (data.length === 0) return {};
     return {
       temperature: {
-        min: _.minBy(data, d => d.temperature).temperature,
-        max: _.maxBy(data, d => d.temperature).temperature,
+        min: _.minBy(data, d => d.temperature)?.temperature,
+        max: _.maxBy(data, d => d.temperature)?.temperature,
         avg: _.meanBy(data, d => d.temperature),
       },
       humidity: {
-        min: _.minBy(data, d => d.humidity).humidity,
-        max: _.maxBy(data, d => d.humidity).humidity,
+        min: _.minBy(data, d => d.humidity)?.humidity,
+        max: _.maxBy(data, d => d.humidity)?.humidity,
         avg: _.meanBy(data, d => d.humidity),
       },
       co2: {
-        min: _.minBy(data, d => d.co2).co2,
-        max: _.maxBy(data, d => d.co2).co2,
+        min: _.minBy(data, d => d.co2)?.co2,
+        max: _.maxBy(data, d => d.co2)?.co2,
         avg: _.meanBy(data, d => d.co2),
       },
       pm25: {
-        min: _.minBy(data, d => d.pm25).pm25,
-        max: _.maxBy(data, d => d.pm25).pm25,
+        min: _.minBy(data, d => d.pm25)?.pm25,
+        max: _.maxBy(data, d => d.pm25)?.pm25,
         avg: _.meanBy(data, d => d.pm25),
       }
     };
