@@ -14,7 +14,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ setFile }) => {
     { name: 'Environmental Dashboard', file: 'environmental-dashboard' },
     { name: 'Hiking Playlist', file: 'hiking-playlist' },
     { name: 'Life Smoothie Visual', file: 'life-smoothie-visual' },
-    { name: 'Legume Cooking Guide', file: '243012-legumes cooking guide' },
+    { name: 'Legume Cooking Guide', file: '241230-legumes cooking guide' },
     { name: 'Music Dashboard', file: 'music-dashboard' },
     { name: 'Music Dashboard R1', file: 'music-dashboard-r1' },
     { name: 'Neutering Effects', file: 'neutering-effects' },
