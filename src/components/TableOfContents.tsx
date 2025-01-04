@@ -22,7 +22,9 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ setFile }) => {
     { name: 'Plants CO2 Analysis', file: 'plants-co2-analysis' },
     { name: 'Reading Dashboard', file: 'reading-dashboard' },
     { name: 'Scatter3D Visualization', file: 'scatter3d' },
-    { name: 'Sound Therapy Guide', file: 'sound-therapy-guide' }
+    { name: 'Sound Therapy Guide', file: 'sound-therapy-guide' },
+    { name: 'Dental Care Strategy', file: 'dental-care-strategy' }
+    
   ];
 
   return (
