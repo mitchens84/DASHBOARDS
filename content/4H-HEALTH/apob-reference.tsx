@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../src/components/ui/card';
-import Table, { TableBody, TableCell, TableHeader, TableRow } from '../src/components/ui/table';
+import { Card, CardHeader, CardTitle, CardContent } from '@ui/card';
+import Table, { TableBody, TableCell, TableHeader, TableRow } from '@ui/table';
 import { ArrowUpDown, Info } from 'lucide-react';
 
 const ApoBReference = () => {

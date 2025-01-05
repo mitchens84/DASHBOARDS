@@ -34,4 +34,16 @@ Examples:
 - Tailwind CSS styling is available
 - Place all TSX files in the tsx-files/ directory
 - Don't include the .tsx extension in the URL
+
+## File Organization
+Content files are organized in the following categories:
+- 4H-HEALTH: Health-related dashboards and visualizations
+- 4H-NUTRITION: Nutrition and diet related content
+- 4H-ENVIRONMENT: Environmental monitoring and analysis
+- 6I-INTELLECTUAL: Intellectual and learning content
+- 9E-MEDIA: Media and entertainment dashboards
+
+When linking to files, use just the filename without the category path:
+http://localhost:5173?file=env-dashboard
+
 # DASHBOARDS
