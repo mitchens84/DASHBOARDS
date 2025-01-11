@@ -6,12 +6,14 @@ import TableOfContents from './components/TableOfContents'
 import EnvDashboard from '../content/4H-ENVIRONMENT/env-dashboard.tsx'
 import EnvironmentalDashboard from '../content/4H-ENVIRONMENT/environmental-dashboard.tsx'
 import PlantsCO2Analysis from '../content/4H-ENVIRONMENT/plants-co2-analysis.tsx'
+import MicroplasticsMonitoring from '../content/4H-ENVIRONMENT/microplastics-monitoring-dashboard'
 
 // 4H-HEALTH imports
 import ApoBReference from '../content/4H-HEALTH/apob-reference.tsx'
 import DentalCareStrategy from '../content/4H-HEALTH/dental-care-strategy.tsx'
 import GeneticDashboard from '../content/4H-HEALTH/genetic-dashboard-complete.tsx'
 import NeuteringEffects from '../content/4H-HEALTH/neutering-effects.tsx'
+import VaccinationTimeline from '../content/4H-HEALTH/vaccination-timeline-analysis.tsx'
 
 // 4H-NUTRITION imports
 import SportsNutrition from '../content/4H-NUTRITION/241118-sports-nutrition-dashboard.tsx'
@@ -44,12 +46,14 @@ function App() {
     { id: 'env-dashboard', title: 'Environment Dashboard', level: 1 },
     { id: 'environmental-dashboard', title: 'Environmental Analysis', level: 1 },
     { id: 'plants-co2', title: 'Plants CO2 Analysis', level: 1 },
+    { id: 'microplastics-monitoring', title: 'Microplastics Monitoring', level: 1 },
     // Health Section
     { id: 'health-reference', title: '4H-HEALTH', level: 0 },
     { id: 'apob-reference', title: 'ApoB Reference', level: 1 },
     { id: 'dental-care', title: 'Dental Care Strategy', level: 1 },
     { id: 'genetic-dashboard', title: 'Genetic Dashboard', level: 1 },
     { id: 'neutering-effects', title: 'Neutering Effects', level: 1 },
+    { id: 'vaccination-timeline', title: 'Vaccination Timeline', level: 1 },
     // Nutrition Section
     { id: 'nutrition', title: '4H-NUTRITION', level: 0 },
     { id: 'sports-nutrition', title: 'Sports Nutrition', level: 1 },
@@ -84,6 +88,8 @@ function App() {
         return <EnvironmentalDashboard />
       case 'plants-co2':
         return <PlantsCO2Analysis />
+      case 'microplastics-monitoring':
+        return <MicroplasticsMonitoring />
       
       // Health
       case 'apob-reference':
@@ -94,6 +100,8 @@ function App() {
         return <GeneticDashboard />
       case 'neutering-effects':
         return <NeuteringEffects />
+      case 'vaccination-timeline':
+        return <VaccinationTimeline />
       
       // Nutrition
       case 'sports-nutrition':
