@@ -23,6 +23,7 @@ import EnhancedSodiumCalculator from '../content/4H-NUTRITION/enhanced-sodium-ca
 import FunctionalFoodsNetwork from '../content/4H-NUTRITION/functional-foods-network.tsx'
 import LifeSmoothie from '../content/4H-NUTRITION/life-smoothie-visual.tsx'
 import NutritionProcessing from '../content/4H-NUTRITION/nutrition-processing-dashboard.tsx'
+import TherapeuticSpiceBlend from '../content/4H-NUTRITION/therapeutic-spice-blend.tsx'
 
 // 5R-BEAN imports
 import BeanRiskAssessment from '../content/5R-BEAN/bean-risk-assessment-v2_revised.tsx'
@@ -68,6 +69,7 @@ function App() {
     { id: 'functional-foods', title: 'Functional Foods', level: 1 },
     { id: 'life-smoothie', title: 'Life Smoothie', level: 1 },
     { id: 'nutrition-processing', title: 'Nutrition Processing', level: 1 },
+    { id: 'therapeutic-spice', title: 'Therapeutic Spice Blend', level: 1 },
     // Bean Section
     { id: 'bean', title: '5R-BEAN', level: 0 },
     { id: 'bean-assessment', title: 'Bean Risk Assessment', level: 1 },
@@ -137,6 +139,8 @@ function App() {
         return <EnhancedSodiumCalculator />
       case 'functional-foods':
         return <FunctionalFoodsNetwork />
+      case 'therapeutic-spice':
+        return <TherapeuticSpiceBlend />
       
       // Bean
       case 'bean-assessment':

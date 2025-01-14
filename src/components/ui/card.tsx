@@ -1,54 +1,25 @@
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import React from 'react'
 
-const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
-      className
-    )}
-    {...props}
-  />
-))
-Card.displayName = "Card"
+export function Card({ children, className = '' }: { children: React.ReactNode, className?: string }) {
+  return (
+    <div className={`rounded-lg border bg-white shadow-sm ${className}`}>
+      {children}
+    </div>
+  )
+}
 
-const CardHeader = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex flex-col space-y-1.5 p-6", className)}
-    {...props}
-  />
-))
-CardHeader.displayName = "CardHeader"
+export function CardHeader({ children }: { children: React.ReactNode }) {
+  return <div className="p-6">{children}</div>
+}
 
-const CardTitle = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
-      className
-    )}
-    {...props}
-  />
-))
-CardTitle.displayName = "CardTitle"
+export function CardTitle({ children, className = '' }: { children: React.ReactNode, className?: string }) {
+  return <h3 className={`text-lg font-semibold ${className}`}>{children}</h3>
+}
 
-const CardContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
-))
-CardContent.displayName = "CardContent"
+export function CardDescription({ children }: { children: React.ReactNode }) {
+  return <p className="text-sm text-gray-500">{children}</p>
+}
 
-export { Card, CardHeader, CardTitle, CardContent }
+export function CardContent({ children, className = '' }: { children: React.ReactNode, className?: string }) {
+  return <div className={`p-6 pt-0 ${className}`}>{children}</div>
+}
