@@ -6,11 +6,12 @@ import TableOfContents from './components/TableOfContents'
 import EnvDashboard from '../content/4H-ENVIRONMENT/env-dashboard.tsx'
 import EnvironmentalDashboard from '../content/4H-ENVIRONMENT/environmental-dashboard.tsx'
 import PlantsCO2Analysis from '../content/4H-ENVIRONMENT/plants-co2-analysis.tsx'
-import MicroplasticsMonitoring from '../content/4H-ENVIRONMENT/microplastics-monitoring-dashboard'
+import MicroplasticsMonitoring from '../content/4H-ENVIRONMENT/microplastics-monitoring-dashboard.tsx'
 
 // 4H-HEALTH imports
 import ApoBReference from '../content/4H-HEALTH/apob-reference.tsx'
 import DentalCareStrategy from '../content/4H-HEALTH/dental-care-strategy.tsx'
+import EmfSafetyDashboard from '../content/4H-HEALTH/emf-safety-dashboard.tsx'
 import GeneticDashboard from '../content/4H-HEALTH/genetic-dashboard-complete.tsx'
 import NeuteringEffects from '../content/4H-HEALTH/neutering-effects.tsx'
 import VaccinationTimeline from '../content/4H-HEALTH/vaccination-timeline-analysis.tsx'
@@ -18,11 +19,15 @@ import VaccinationTimeline from '../content/4H-HEALTH/vaccination-timeline-analy
 // 4H-NUTRITION imports
 import SportsNutrition from '../content/4H-NUTRITION/241118-sports-nutrition-dashboard.tsx'
 import LegumeGuide from '../content/4H-NUTRITION/241230-legumes cooking guide.tsx'
+import EnhancedSodiumCalculator from '../content/4H-NUTRITION/enhanced-sodium-calculator.tsx'
+import FunctionalFoodsNetwork from '../content/4H-NUTRITION/functional-foods-network.tsx'
 import LifeSmoothie from '../content/4H-NUTRITION/life-smoothie-visual.tsx'
 import NutritionProcessing from '../content/4H-NUTRITION/nutrition-processing-dashboard.tsx'
 
 // 5R-BEAN imports
 import BeanRiskAssessment from '../content/5R-BEAN/bean-risk-assessment-v2_revised.tsx'
+import AntibioticDashboard from '../content/5R-BEAN/antibiotic-dashboard.tsx'
+import BeanSodiumIntakeDashboard from '../content/5R-BEAN/bean-sodium-intake-dashboard.tsx'
 
 // 6I-INTELLECTUAL imports
 import ReadingDashboard from '../content/6I-INTELLECTUAL/reading-dashboard.tsx'
@@ -54,12 +59,20 @@ function App() {
     { id: 'genetic-dashboard', title: 'Genetic Dashboard', level: 1 },
     { id: 'neutering-effects', title: 'Neutering Effects', level: 1 },
     { id: 'vaccination-timeline', title: 'Vaccination Timeline', level: 1 },
+    { id: 'emf-safety', title: 'EMF Safety', level: 1 },
     // Nutrition Section
     { id: 'nutrition', title: '4H-NUTRITION', level: 0 },
     { id: 'sports-nutrition', title: 'Sports Nutrition', level: 1 },
     { id: 'legume-guide', title: 'Legume Guide', level: 1 },
+    { id: 'enhanced-sodium', title: 'Enhanced Sodium', level: 1 },
+    { id: 'functional-foods', title: 'Functional Foods', level: 1 },
     { id: 'life-smoothie', title: 'Life Smoothie', level: 1 },
     { id: 'nutrition-processing', title: 'Nutrition Processing', level: 1 },
+    // Bean Section
+    { id: 'bean', title: '5R-BEAN', level: 0 },
+    { id: 'bean-assessment', title: 'Bean Risk Assessment', level: 1 },
+    { id: 'antibiotic-dashboard', title: 'Antibiotic Dashboard', level: 1 },
+    { id: 'bean-sodium-intake', title: 'Bean Sodium Intake', level: 1 },
     // Intellectual Section
     { id: 'intellectual', title: '6I-INTELLECTUAL', level: 0 },
     { id: 'reading-dashboard', title: 'Reading Dashboard', level: 1 },
@@ -102,6 +115,10 @@ function App() {
         return <NeuteringEffects />
       case 'vaccination-timeline':
         return <VaccinationTimeline />
+      case 'emf-safety-dashboard':
+        return <EmfSafetyDashboard />
+      case 'emf-safety':
+        return <EmfSafetyDashboard />
       
       // Nutrition
       case 'sports-nutrition':
@@ -112,10 +129,24 @@ function App() {
         return <LifeSmoothie />
       case 'nutrition-processing':
         return <NutritionProcessing />
+      case 'enhanced-sodium-calculator':
+        return <EnhancedSodiumCalculator />
+      case 'functional-foods-network':
+        return <FunctionalFoodsNetwork />
+      case 'enhanced-sodium':
+        return <EnhancedSodiumCalculator />
+      case 'functional-foods':
+        return <FunctionalFoodsNetwork />
       
       // Bean
       case 'bean-assessment':
         return <BeanRiskAssessment />
+      case 'antibiotic-dashboard':
+        return <AntibioticDashboard />
+      case 'bean-sodium-intake-dashboard':
+        return <BeanSodiumIntakeDashboard />
+      case 'bean-sodium-intake':
+        return <BeanSodiumIntakeDashboard />
       
       // Intellectual
       case 'reading-dashboard':
