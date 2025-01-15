@@ -1,480 +1,448 @@
 import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../src/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../src/components/ui/card';
-import { Badge } from '../../src/components/ui/badge';
-import { ScrollArea } from '../../src/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
-  Brain, Heart, Shield, Leaf, Sun, Moon, 
-  Droplets, Flame, Activity, Scale, Sprout,
-  Star, Info, AlertCircle, Clock, Plus 
+  Star, Shield, Beaker, Leaf, Clock, 
+  AlertTriangle, Heart, Dog, Scale, 
+  Plus, ArrowRight, Info 
 } from 'lucide-react';
 
-// Define comprehensive data structures
-const healthCategories = {
-  antiInflammatory: {
-    icon: <Flame className="w-5 h-5" />,
-    title: "Anti-Inflammatory Support",
-    description: "Evidence-based blends for inflammation and pain management",
-    recipes: [
-      {
-        name: "Core Anti-Inflammatory Blend",
-        type: "Universal Base",
-        ingredients: [
-          { name: "Turmeric", amount: "2 tsp", rating: 9, icon: "🌿" },
-          { name: "Black Pepper", amount: "1/4 tsp", rating: 8, icon: "🌶️" },
-          { name: "Ginger", amount: "1 tsp", rating: 7, icon: "🌿" }
-        ],
-        preparation: {
-          dry: "Combine ingredients in airtight dark glass container. Use within 3 months.",
-          wet: "Create paste with small amount of water or oil. Refrigerate, use within 1 week."
-        },
-        usage: {
-          food: "Add 1/2-1 tsp to cooked dishes",
-          beverage: "Mix into warm (not hot) liquid with healthy fat"
-        },
-        evidence: "Multiple clinical trials show reduced inflammation markers",
-        timing: "Best taken with meals containing healthy fats"
-      }
-    ]
-  },
-  digestive: {
-    icon: <Droplets className="w-5 h-5" />,
-    title: "Digestive Health",
-    description: "Optimize digestion and gut health",
-    recipes: [
-      {
-        name: "Digestive Harmony Blend",
-        type: "Meal Support",
-        ingredients: [
-          { name: "Ginger", amount: "1 tsp", rating: 7, icon: "🌿" },
-          { name: "Fennel", amount: "1 tsp", rating: 7, icon: "🌱" },
-          { name: "Cardamom", amount: "1/2 tsp", rating: 9, icon: "🌶️" }
-        ],
-        preparation: {
-          dry: "Combine ground spices in airtight container",
-          wet: "Create tea infusion with hot water"
-        },
-        usage: {
-          food: "Add to dishes during or after cooking",
-          beverage: "Steep 1 tsp in hot water for 5-10 minutes"
-        },
-        evidence: "Traditional use supported by modern studies",
-        timing: "Take 15-30 minutes before meals"
-      }
-    ]
-  },
-  cognitive: {
-    icon: <Brain className="w-5 h-5" />,
-    title: "Cognitive Enhancement",
-    description: "Support mental clarity and focus",
-    recipes: [
-      {
-        name: "Mental Clarity Blend",
-        type: "Daily Support",
-        ingredients: [
-          { name: "Rosemary", amount: "1 tsp", rating: 9, icon: "🌿" },
-          { name: "Sage", amount: "1 tsp", rating: 8, icon: "🌿" },
-          { name: "Ceylon Cinnamon", amount: "1/2 tsp", rating: 7, icon: "🌶️" }
-        ],
-        preparation: {
-          dry: "Mix herbs and store in airtight container",
-          wet: "Create tea infusion"
-        },
-        usage: {
-          food: "Add to savory dishes",
-          beverage: "Steep as tea"
-        },
-        evidence: "Research supports cognitive benefits",
-        timing: "Best used in morning or early afternoon"
-      }
-    ]
-  },
-  immune: {
-    icon: <Shield className="w-5 h-5" />,
-    title: "Immune Support",
-    description: "Enhance immune system function",
-    recipes: [
-      {
-        name: "Immune Defense Blend",
-        type: "Preventive",
-        ingredients: [
-          { name: "Garlic", amount: "1 tsp", rating: 8, icon: "🌿" },
-          { name: "Oregano", amount: "1 tsp", rating: 9, icon: "🌿" },
-          { name: "Thyme", amount: "1 tsp", rating: 8, icon: "🌿" }
-        ],
-        preparation: {
-          dry: "Mix dried herbs together",
-          wet: "Infuse in apple cider vinegar"
-        },
-        usage: {
-          food: "Add to savory dishes",
-          beverage: "Make tea infusion"
-        },
-        evidence: "Strong antimicrobial properties documented",
-        timing: "Regular daily use for prevention"
-      }
-    ]
-  }
-};
-
-// Comprehensive ingredient database with evidence ratings
-const ingredientLibrary = {
-  turmeric: {
-    name: "Turmeric",
-    rating: 9,
-    icon: "🌿",
-    keyBenefits: ["Anti-inflammatory", "Antioxidant"],
-    safetyNotes: "Well-tolerated; use with black pepper",
-    synergies: ["Black Pepper", "Ginger"],
-    evidence: "Strong clinical trial support",
-    usage: {
-      food: "Add to curries, soups, rice dishes",
-      beverage: "Golden milk, teas",
-      optimal: "Combined with black pepper and fat"
-    }
-  },
-  cardamom: {
-    name: "Cardamom",
-    rating: 9,
-    icon: "🌶️",
-    keyBenefits: ["Digestive support", "Antioxidant"],
-    safetyNotes: "Generally well-tolerated",
-    synergies: ["Cinnamon", "Ginger"],
-    evidence: "Traditional use supported by studies",
-    usage: {
-      food: "Curries, baked goods, rice dishes",
-      beverage: "Teas, coffee",
-      optimal: "Freshly ground pods"
-    }
-  },
-  oregano: {
-    name: "Oregano",
-    rating: 9,
-    icon: "🌿",
-    keyBenefits: ["Antimicrobial", "Antioxidant"],
-    safetyNotes: "Strong herb - use as directed",
-    synergies: ["Thyme", "Rosemary"],
-    evidence: "Potent antimicrobial properties proven",
-    usage: {
-      food: "Mediterranean dishes, marinades",
-      beverage: "Herbal tea infusions",
-      optimal: "Added near end of cooking"
-    }
-  },
-  ginger: {
-    name: "Ginger",
-    rating: 7,
-    icon: "🌿",
-    keyBenefits: ["Anti-inflammatory", "Digestive aid"],
-    safetyNotes: "Monitor with medications",
-    synergies: ["Turmeric", "Black Pepper"],
-    evidence: "Multiple clinical trials support benefits",
-    usage: {
-      food: "Stir-fries, soups, marinades",
-      beverage: "Teas, smoothies",
-      optimal: "Fresh root preferred"
-    }
-  }
-};
-
-// Synergy relationships with evidence ratings
-const synergyMap = [
-  {
-    primary: "Turmeric",
-    secondary: "Black Pepper",
-    effect: "2000% increase in bioavailability",
-    strength: "Strong",
-    evidence: "Multiple clinical trials",
-    details: "Piperine in black pepper enhances curcumin absorption"
-  },
-  {
-    primary: "Rosemary",
-    secondary: "Sage",
-    effect: "Enhanced cognitive benefits",
-    strength: "Moderate",
-    evidence: "Traditional use + modern studies",
-    details: "Complementary compounds support memory"
-  },
-  {
-    primary: "Ginger",
-    secondary: "Turmeric",
-    effect: "Enhanced anti-inflammatory action",
-    strength: "Moderate",
-    evidence: "Research supported",
-    details: "Synergistic effect on inflammation pathways"
-  }
-];
-
-const TherapeuticBlendSystem = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-
+// Enhanced rating system with visual indicators
+const RatingIndicator = ({ value, maxValue = 10, type = "evidence" }) => {
+  const colors = {
+    evidence: "bg-blue-500",
+    safety: "bg-green-500",
+    palatability: "bg-purple-500",
+    synergy: "bg-amber-500"
+  };
+  
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 space-y-6">
-      {/* Main Header */}
-      <div className="text-center py-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
-        <h1 className="text-4xl font-bold mb-2">
-          Therapeutic Herb & Spice System
-        </h1>
-        <p className="text-xl text-gray-600">
-          Evidence-Based Blends for Health & Wellness
-        </p>
+    <div className="flex items-center gap-2">
+      <div className="flex gap-1">
+        {[...Array(maxValue)].map((_, i) => (
+          <div
+            key={i}
+            className={`w-2 h-4 rounded ${
+              i < value ? colors[type] : 'bg-gray-200'
+            }`}
+          />
+        ))}
       </div>
-
-      {/* Main Navigation */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-4">
-          <TabsTrigger value="overview">System Overview</TabsTrigger>
-          <TabsTrigger value="recipes">Health Recipes</TabsTrigger>
-          <TabsTrigger value="ingredients">Ingredient Library</TabsTrigger>
-          <TabsTrigger value="synergies">Synergy Map</TabsTrigger>
-        </TabsList>
-
-        {/* Overview Tab */}
-        <TabsContent value="overview">
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Reference Guide</CardTitle>
-              <CardDescription>
-                Navigate to specific health outcomes and their evidence-based blends
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(healthCategories).map(([key, category]) => (
-                  <Card key={key} className="border-l-4 border-l-blue-500">
-                    <CardHeader className="flex flex-row items-center space-x-2">
-                      {category.icon}
-                      <div>
-                        <CardTitle className="text-lg">{category.title}</CardTitle>
-                        <CardDescription className="text-sm">
-                          {category.description}
-                        </CardDescription>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Recipes Tab */}
-        <TabsContent value="recipes">
-          <Tabs defaultValue="antiInflammatory" className="w-full">
-            <TabsList className="flex flex-wrap gap-2 mb-4">
-              {Object.entries(healthCategories).map(([key, category]) => (
-                <TabsTrigger key={key} value={key} className="flex items-center gap-2">
-                  {category.icon}
-                  {category.title}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-
-            {Object.entries(healthCategories).map(([key, category]) => (
-              <TabsContent key={key} value={key}>
-                <ScrollArea className="h-[600px] w-full rounded-md border p-4">
-                  {category.recipes.map((recipe, idx) => (
-                    <Card key={idx} className="mb-4">
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="flex items-center gap-2">
-                            {category.icon}
-                            {recipe.name}
-                          </CardTitle>
-                          <Badge variant="outline">{recipe.type}</Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {/* Recipe content... */}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </ScrollArea>
-              </TabsContent>
-            ))}
-          </Tabs>
-        </TabsContent>
-
-        {/* Ingredients Tab */}
-        <TabsContent value="ingredients">
-          <Card>
-            <CardHeader>
-              <CardTitle>Evidence-Based Ingredient Library</CardTitle>
-              <CardDescription>
-                Comprehensive guide to therapeutic herbs and spices
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(ingredientLibrary).map(([key, ingredient]) => (
-                  <Card key={key} className="border-l-4 border-l-green-500">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                          <span>{ingredient.icon}</span>
-                          {ingredient.name}
-                        </CardTitle>
-                        <Badge variant="outline">Rating: {ingredient.rating}/10</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div>
-                        <h4 className="font-medium">Key Benefits:</h4>
-                        <div className="flex gap-2 mt-1 flex-wrap">
-                          {ingredient.keyBenefits.map((benefit, idx) => (
-                            <Badge key={idx} variant="secondary">{benefit}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Usage:</h4>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          <li>Food: {ingredient.usage.food}</li>
-                          <li>Beverage: {ingredient.usage.beverage}</li>
-                          <li>Optimal: {ingredient.usage.optimal}</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Evidence:</h4>
-                        <p className="text-sm text-gray-600">{ingredient.evidence}</p>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Synergies:</h4>
-                        <div className="flex gap-2 mt-1 flex-wrap">
-                          {ingredient.synergies.map((syn, idx) => (
-                            <Badge key={idx} variant="outline">{syn}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Synergies Tab */}
-        <TabsContent value="synergies">
-          <Card>
-            <CardHeader>
-              <CardTitle>Synergy Map</CardTitle>
-              <CardDescription>
-                Evidence-based interactions between herbs and spices
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-              {synergyMap.map((synergy, idx) => (
-                  <Card key={idx} className="border-l-4 border-l-purple-500">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                          {synergy.primary} + {synergy.secondary}
-                        </CardTitle>
-                        <Badge 
-                          variant={synergy.strength === 'Strong' ? 'default' : 'secondary'}
-                        >
-                          {synergy.strength}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div>
-                        <h4 className="font-medium">Effect:</h4>
-                        <p className="text-sm text-gray-600">{synergy.effect}</p>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Evidence:</h4>
-                        <p className="text-sm text-gray-600">{synergy.evidence}</p>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Details:</h4>
-                        <p className="text-sm text-gray-600">{synergy.details}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Synergy Guidelines */}
-          <Card className="mt-4">
-            <CardHeader>
-              <CardTitle>Synergy Guidelines</CardTitle>
-              <CardDescription>
-                Best practices for combining herbs and spices
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-2">General Principles:</h3>
-                  <ul className="list-disc pl-4 space-y-2">
-                    <li>Start with proven combinations</li>
-                    <li>Consider timing of consumption</li>
-                    <li>Monitor individual responses</li>
-                    <li>Adjust ratios based on needs</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">Safety Considerations:</h3>
-                  <ul className="list-disc pl-4 space-y-2">
-                    <li>Start with small amounts when combining</li>
-                    <li>Monitor for any sensitivities</li>
-                    <li>Consider medication interactions</li>
-                    <li>Adjust based on individual tolerance</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      {/* Universal Footer Guidelines */}
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>Usage Guidelines</CardTitle>
-          <CardDescription>
-            Universal principles for optimal benefits
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <h3 className="font-semibold mb-2">Storage</h3>
-              <ul className="list-disc pl-4 space-y-1">
-                <li>Use airtight containers</li>
-                <li>Store in cool, dark place</li>
-                <li>Monitor freshness regularly</li>
-                <li>Replace after recommended period</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">Preparation</h3>
-              <ul className="list-disc pl-4 space-y-1">
-                <li>Use recommended measurements</li>
-                <li>Consider fresh vs dried ratios</li>
-                <li>Follow optimal timing guidelines</li>
-                <li>Monitor heat exposure</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">Integration</h3>
-              <ul className="list-disc pl-4 space-y-1">
-                <li>Start with small amounts</li>
-                <li>Build up gradually</li>
-                <li>Monitor individual response</li>
-                <li>Adjust based on needs</li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <span className="text-sm text-gray-600">{value}/{maxValue}</span>
     </div>
   );
 };
 
-export default TherapeuticBlendSystem;
+// Comprehensive ingredient database
+const ingredients = {
+  turmeric: {
+    name: "Turmeric",
+    icon: "🌿",
+    ratings: {
+      evidence: 9,
+      safetyHuman: 9,
+      safetyCanine: 8,
+      palatability: 3
+    },
+    properties: {
+      keyCompounds: ["Curcumin", "Turmerones"],
+      benefits: [
+        "Anti-inflammatory",
+        "Antioxidant",
+        "Joint support"
+      ],
+      preparation: {
+        methods: [
+          {
+            name: "Basic Powder",
+            instructions: "Use as is or combine with black pepper",
+            storage: "6 months in airtight container",
+            notes: "Best stored in dark glass"
+          },
+          {
+            name: "Enhanced Paste",
+            instructions: "Combine with black pepper and healthy fat",
+            storage: "2 weeks refrigerated",
+            notes: "Monitor for fermentation"
+          }
+        ],
+        optimal: "Combined with black pepper (1:16 ratio) and fat"
+      },
+      safety: {
+        human: {
+          cautions: ["Monitor if on blood thinners", "May affect iron absorption"],
+          dosage: "1/4-1 tsp daily",
+          timing: "Best with meals containing fat"
+        },
+        canine: {
+          cautions: ["Start with small amounts", "Monitor digestion"],
+          dosage: "1/8-1/4 tsp per 10kg body weight",
+          timing: "Mix with food"
+        }
+      },
+      synergies: [
+        {
+          partner: "Black Pepper",
+          effect: "2000% increase in bioavailability",
+          evidence: "Strong clinical support",
+          ratio: "1 part pepper to 16 parts turmeric"
+        },
+        {
+          partner: "Ginger",
+          effect: "Enhanced anti-inflammatory action",
+          evidence: "Moderate research support",
+          ratio: "Equal parts recommended"
+        }
+      ]
+    }
+  },
+  ginger: {
+    name: "Ginger",
+    icon: "🌿",
+    ratings: {
+      evidence: 7,
+      safetyHuman: 9,
+      safetyCanine: 7,
+      palatability: 4
+    },
+    properties: {
+      keyCompounds: ["Gingerols", "Shogaols"],
+      benefits: [
+        "Digestive support",
+        "Anti-inflammatory",
+        "Nausea relief"
+      ],
+      preparation: {
+        methods: [
+          {
+            name: "Fresh Root",
+            instructions: "Grate or slice thinly",
+            storage: "3 weeks refrigerated",
+            notes: "Best when firm and fragrant"
+          },
+          {
+            name: "Dried Powder",
+            instructions: "Use as is or rehydrate",
+            storage: "6 months in airtight container",
+            notes: "Store away from heat and light"
+          }
+        ],
+        optimal: "Fresh root preferred for maximum benefits"
+      },
+      safety: {
+        human: {
+          cautions: ["May interact with blood thinners", "Monitor blood sugar"],
+          dosage: "1/4-1 tsp powder or 1-2 tsp fresh grated",
+          timing: "Can be taken with or between meals"
+        },
+        canine: {
+          cautions: ["Start with very small amounts", "Monitor for GI sensitivity"],
+          dosage: "1/16-1/8 tsp powder per 10kg body weight",
+          timing: "Best given with food"
+        }
+      },
+      synergies: [
+        {
+          partner: "Turmeric",
+          effect: "Enhanced anti-inflammatory action",
+          evidence: "Moderate research support",
+          ratio: "Equal parts recommended"
+        }
+      ]
+    }
+  }
+  // Additional ingredients would follow same structure
+};
+
+// Main dashboard component
+const IngredientDashboard = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [selectedIngredient, setSelectedIngredient] = useState('turmeric');
+
+  return (
+    <div className="w-full max-w-6xl mx-auto p-4 space-y-6">
+      {/* Header Section */}
+      <div className="text-center py-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
+        <h1 className="text-4xl font-bold mb-2">
+          Ingredient Intelligence System
+        </h1>
+        <p className="text-xl text-gray-600">
+          Evidence-Based Profiles & Synergistic Relationships
+        </p>
+      </div>
+
+      {/* Ingredient Selection */}
+      <div className="flex gap-2 mb-4">
+        {Object.entries(ingredients).map(([key, ingredient]) => (
+          <button
+            key={key}
+            onClick={() => setSelectedIngredient(key)}
+            className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+              selectedIngredient === key 
+                ? 'bg-blue-100 border-blue-500' 
+                : 'bg-gray-50 hover:bg-gray-100'
+            }`}
+          >
+            <span>{ingredient.icon}</span>
+            {ingredient.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Main Content */}
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <span className="text-2xl">
+                  {ingredients[selectedIngredient].icon}
+                </span>
+                {ingredients[selectedIngredient].name}
+              </CardTitle>
+              <CardDescription>
+                Comprehensive evidence-based profile
+              </CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Badge variant="outline" className="flex items-center gap-1">
+                <Star className="w-4 h-4" />
+                Evidence Rating: {ingredients[selectedIngredient].ratings.evidence}/10
+              </Badge>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="profile" className="w-full">
+            <TabsList>
+              <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsTrigger value="safety">Safety</TabsTrigger>
+              <TabsTrigger value="synergies">Synergies</TabsTrigger>
+              <TabsTrigger value="preparation">Preparation</TabsTrigger>
+            </TabsList>
+
+            {/* Profile Tab */}
+            <TabsContent value="profile" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Ratings</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h3 className="font-medium mb-2">Evidence Strength</h3>
+                      <RatingIndicator 
+                        value={ingredients[selectedIngredient].ratings.evidence} 
+                        type="evidence"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-2">Safety Profile</h3>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Heart className="w-4 h-4" />
+                          <span>Human:</span>
+                          <RatingIndicator 
+                            value={ingredients[selectedIngredient].ratings.safetyHuman}
+                            type="safety"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Dog className="w-4 h-4" />
+                          <span>Canine:</span>
+                          <RatingIndicator 
+                            value={ingredients[selectedIngredient].ratings.safetyCanine}
+                            type="safety"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-2">Palatability (Canine)</h3>
+                      <RatingIndicator 
+                        value={ingredients[selectedIngredient].ratings.palatability}
+                        maxValue={4}
+                        type="palatability"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Key Benefits</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex flex-wrap gap-2">
+                        {ingredients[selectedIngredient].properties.benefits.map((benefit, idx) => (
+                          <Badge key={idx} variant="secondary">
+                            {benefit}
+                          </Badge>
+                        ))}
+                      </div>
+                      <div>
+                        <h3 className="font-medium mb-2">Active Compounds</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {ingredients[selectedIngredient].properties.keyCompounds.map((compound, idx) => (
+                            <Badge key={idx} variant="outline">
+                              {compound}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Safety Tab */}
+            <TabsContent value="safety">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Heart className="w-5 h-5" />
+                      Human Safety Guidelines
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h3 className="font-medium mb-2">Dosage</h3>
+                      <p className="text-gray-600">
+                        {ingredients[selectedIngredient].properties.safety.human.dosage}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-2">Timing</h3>
+                      <p className="text-gray-600">
+                        {ingredients[selectedIngredient].properties.safety.human.timing}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-2">Cautions</h3>
+                      <ul className="list-disc pl-4 space-y-1">
+                        {ingredients[selectedIngredient].properties.safety.human.cautions.map((caution, idx) => (
+                          <li key={idx} className="text-gray-600">{caution}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Dog className="w-5 h-5" />
+                      Canine Safety Guidelines
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h3 className="font-medium mb-2">Dosage</h3>
+                      <p className="text-gray-600">
+                        {ingredients[selectedIngredient].properties.safety.canine.dosage}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-2">Timing</h3>
+                      <p className="text-gray-600">
+                        {ingredients[selectedIngredient].properties.safety.canine.timing}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-2">Cautions</h3>
+                      <ul className="list-disc pl-4 space-y-1">
+                        {ingredients[selectedIngredient].properties.safety.canine.cautions.map((caution, idx) => (
+                          <li key={idx} className="text-gray-600">{caution}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Synergies Tab */}
+            <TabsContent value="synergies">
+              <div className="space-y-4">
+                {ingredients[selectedIngredient].properties.synergies.map((synergy, idx) => (
+                  <Card key={idx}>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Plus className="w-5 h-5" />
+                        {ingredients[selectedIngredient].name} + {synergy.partner}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <h3 className="font-medium mb-2">Effect</h3>
+                        <p className="text-gray-600">{synergy.effect}</p>
+                      </div>
+                      <div>
+                        <h3 className="font-medium mb-2">Evidence</h3>
+                        <p className="text-gray-600">{synergy.evidence}</p>
+                      </div>
+                      <div>
+                        <h3 className="font-medium mb-2">Recommended Ratio</h3>
+                        <p className="text-gray-600">{synergy.ratio}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* Preparation Tab */}
+            <TabsContent value="preparation">
+            <div className="space-y-4">
+              {ingredients[selectedIngredient].properties.preparation.methods.map((method, idx) => (
+                <Card key={idx}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Beaker className="w-5 h-5" />
+                      {method.name}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h3 className="font-medium mb-2">Instructions</h3>
+                      <p className="text-gray-600">{method.instructions}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-2">Storage</h3>
+                      <p className="text-gray-600">{method.storage}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-2">Notes</h3>
+                      <p className="text-gray-600">{method.notes}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="w-5 h-5" />
+                    Optimal Preparation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">
+                    {ingredients[selectedIngredient].properties.preparation.optimal}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  </div>
+);
+};
+
+export default IngredientDashboard;
