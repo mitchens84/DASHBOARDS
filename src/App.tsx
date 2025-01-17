@@ -8,6 +8,10 @@ import EnvironmentalDashboard from '../content/4H-ENVIRONMENT/environmental-dash
 import PlantsCO2Analysis from '../content/4H-ENVIRONMENT/plants-co2-analysis.tsx'
 import MicroplasticsMonitoring from '../content/4H-ENVIRONMENT/microplastics-monitoring-dashboard.tsx'
 
+import RetinolProtocolGuide from '../content/4H-HEALTH/retinol-protocol-guide.tsx'
+import VollagenDashboard from '../content/4H-HEALTH/vollagen-dashboard.tsx'
+import PentadecanoidAcidKnowledgeGraph from '../content/4H-HEALTH/pantadecanoid_acid-c15-knowledge-graph.tsx'
+
 // 4H-HEALTH imports
 import ApoBReference from '../content/4H-HEALTH/apob-reference.tsx'
 import DentalCareStrategy from '../content/4H-HEALTH/dental-care-strategy.tsx'
@@ -54,6 +58,9 @@ function App() {
     { id: 'plants-co2', title: 'Plants CO2 Analysis', level: 1 },
     { id: 'microplastics-monitoring', title: 'Microplastics Monitoring', level: 1 },
     // Health Section
+    { id: 'retinol', title: 'Retinol Protocol Guide', level: 1 },
+    { id: 'vollagen', title: 'Vollagen Dashboard', level: 1 },
+    { id: 'pentadecanoid-acid', title: 'Pentadecanoid Acid Knowledge Graph', level: 1 },
     { id: 'health-reference', title: '4H-HEALTH', level: 0 },
     { id: 'apob-reference', title: 'ApoB Reference', level: 1 },
     { id: 'dental-care', title: 'Dental Care Strategy', level: 1 },
@@ -65,7 +72,7 @@ function App() {
     { id: 'nutrition', title: '4H-NUTRITION', level: 0 },
     { id: 'sports-nutrition', title: 'Sports Nutrition', level: 1 },
     { id: 'legume-guide', title: 'Legume Guide', level: 1 },
-    { id: 'enhanced-sodium', title: 'Enhanced Sodium', level: 1 },
+    { id: 'enhanced-sodium', title: 'Sodium Balance Calculator', level: 1 },
     { id: 'functional-foods', title: 'Functional Foods', level: 1 },
     { id: 'life-smoothie', title: 'Life Smoothie', level: 1 },
     { id: 'nutrition-processing', title: 'Nutrition Processing', level: 1 },
@@ -107,6 +114,12 @@ function App() {
         return <MicroplasticsMonitoring />
       
       // Health
+      case 'retinol':
+        return <RetinolProtocolGuide />;
+      case 'vollagen':
+        return <VollagenDashboard />;
+      case 'pentadecanoid-acid':
+        return <PentadecanoidAcidKnowledgeGraph />;
       case 'apob-reference':
         return <ApoBReference />
       case 'dental-care':
