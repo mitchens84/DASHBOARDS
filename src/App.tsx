@@ -10,7 +10,6 @@ import MicroplasticsMonitoring from '../content/4H-ENVIRONMENT/microplastics-mon
 
 import RetinolProtocolGuide from '../content/4H-HEALTH/retinol-protocol-guide.tsx'
 import VollagenDashboard from '../content/4H-HEALTH/vollagen-dashboard.tsx'
-import PentadecanoidAcidKnowledgeGraph from '../content/4H-HEALTH/pantadecanoid_acid-c15-knowledge-graph.tsx'
 
 // 4H-HEALTH imports
 import ApoBReference from '../content/4H-HEALTH/apob-reference.tsx'
@@ -60,7 +59,6 @@ function App() {
     // Health Section
     { id: 'retinol', title: 'Retinol Protocol Guide', level: 1 },
     { id: 'vollagen', title: 'Vollagen Dashboard', level: 1 },
-    { id: 'pentadecanoid-acid', title: 'Pentadecanoid Acid Knowledge Graph', level: 1 },
     { id: 'health-reference', title: '4H-HEALTH', level: 0 },
     { id: 'apob-reference', title: 'ApoB Reference', level: 1 },
     { id: 'dental-care', title: 'Dental Care Strategy', level: 1 },
@@ -118,8 +116,6 @@ function App() {
         return <RetinolProtocolGuide />;
       case 'vollagen':
         return <VollagenDashboard />;
-      case 'pentadecanoid-acid':
-        return <PentadecanoidAcidKnowledgeGraph />;
       case 'apob-reference':
         return <ApoBReference />
       case 'dental-care':
