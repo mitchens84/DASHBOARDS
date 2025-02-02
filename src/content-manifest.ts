@@ -21,6 +21,14 @@ export const contentManifest = {
   '9E-MEDIA': [
     'music-dashboard-r1',
     'hiking-playlist'
+  ],
+  '5R-BEAN': [
+    'bean-complete-nutrition-dashboard'  // Added new content
+  ],
+  '4H-BIOHACKING-SKIN': [
+    'holistic-protection-dashboard',
+    'sunscreen-protection-calculator',
+    '4H-BIOHACKING-SKIN-SUNSCREEN-BOJ'
   ]
 };
 

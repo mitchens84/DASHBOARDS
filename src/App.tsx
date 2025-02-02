@@ -42,6 +42,11 @@ import MusicDashboardR1 from '../content/9E-MEDIA/music-dashboard-r1.tsx'
 import MusicDashboard from '../content/9E-MEDIA/music-dashboard.tsx'
 import SoundTherapy from '../content/9E-MEDIA/sound-therapy-guide.tsx'
 
+// 4H-BIOHACKING-SKIN imports
+import HolisticProtection from '../content/4H-BIOHACKING-SKIN/holistic-protection-dashboard.tsx'
+import SunscreenCalculator from '../content/4H-BIOHACKING-SKIN/sunscreen-protection-calculator.tsx'
+import SunscreenBOJ from '../content/4H-BIOHACKING-SKIN/4H-BIOHACKING-SKIN-SUNSCREEN-BOJ.tsx'
+
 function App() {
   const [selectedSection, setSelectedSection] = useState('dashboard-overview')
   
@@ -88,7 +93,12 @@ function App() {
     { id: 'hiking-playlist', title: 'Hiking Playlist', level: 1 },
     { id: 'music-dashboard-r1', title: 'Music Dashboard R1', level: 1 },
     { id: 'music-dashboard', title: 'Music Dashboard', level: 1 },
-    { id: 'sound-therapy', title: 'Sound Therapy Guide', level: 1 }
+    { id: 'sound-therapy', title: 'Sound Therapy Guide', level: 1 },
+    // Skin Biohacking Section
+    { id: 'skin-biohacking', title: '4H-BIOHACKING-SKIN', level: 0 },
+    { id: 'holistic-protection', title: 'Holistic Protection', level: 1 },
+    { id: 'sunscreen-calculator', title: 'Sunscreen Calculator', level: 1 },
+    { id: 'sunscreen-boj', title: 'BOJ Sunscreen Analysis', level: 1 },
   ]
 
   const renderContent = (id: string) => {
@@ -174,6 +184,14 @@ function App() {
         return <MusicDashboard />
       case 'sound-therapy':
         return <SoundTherapy />
+      
+      // Skin Biohacking
+      case 'holistic-protection':
+        return <HolisticProtection />
+      case 'sunscreen-calculator':
+        return <SunscreenCalculator />
+      case 'sunscreen-boj':
+        return <SunscreenBOJ />
       
       default:
         return null
