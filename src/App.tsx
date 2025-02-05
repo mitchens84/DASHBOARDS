@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
 
