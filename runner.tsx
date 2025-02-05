@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { HashRouter as Router, Route, Routes, useSearchParams } from "react-router-dom";
 import TableOfContents from "./src/components/TableOfContents";
@@ -22,7 +21,7 @@ const App: React.FC = () => {
         setComponent(() => module.default);
       } catch (error) {
         console.error(`Failed to load dashboard: ${file}`, error);
-        
+
         // Fallback to default dashboard
         try {
           const defaultModule = await import(`./content/plants-co2-analysis.tsx`);
@@ -40,11 +39,11 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="app-container">
-        <TableOfContents 
+        <TableOfContents
           setFile={(newFile) => {
             setFile(newFile);
             window.location.hash = `file=${newFile}`;
-          }} 
+          }}
         />
         <div className="dashboard-content">
           <Routes>
@@ -66,8 +65,8 @@ const App: React.FC = () => {
 };
 
 const importComponent = async (file: string) => {
-  const categories = ['4H-HEALTH', '4H-NUTRITION', '4H-ENVIRONMENT', '6I-INTELLECTUAL', '9E-MEDIA'];
-  
+  const categories = ['4H-HEALTH', '4H-NUTRITION', '4H-ENVIRONMENT', '6I-INTELLECTUAL', '9E-MEDIA', '3P-POSSESSIONS'];
+
   for (const category of categories) {
     try {
       // Use dynamic import with explicit path for build
@@ -77,7 +76,7 @@ const importComponent = async (file: string) => {
       // Continue to next category
     }
   }
-  
+
   // Try root content directory
   try {
     return await import(`@content/${file}.tsx`);
@@ -91,4 +90,3 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-);
