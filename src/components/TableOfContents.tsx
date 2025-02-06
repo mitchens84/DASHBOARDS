@@ -22,24 +22,27 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ items, activeItem }) 
     <nav className="toc-container" style={{ backgroundColor: '#f8f9fa', padding: '20px' }}>
       <h2 className="toc-heading">Contents</h2>
       <ul className="toc-list">
-        {items.map((item) => (
-          <li
-            key={item.id}
-            className="toc-item"
-            style={{ 
-              paddingLeft: `${item.level * 1.25}rem`,
-              marginBottom: '8px'
-            }}
-          >
-            <Link
-              to={`/${item.id}`}
-              className={`toc-link ${activeItem === item.id ? 'active' : ''}`}
-              style={{ cursor: 'pointer', display: 'block' }}
+        {items.map((item) => {
+          const isActive = location.pathname === `/${item.id}`;
+          return (
+            <li
+              key={item.id}
+              className="toc-item"
+              style={{
+                paddingLeft: `${item.level * 1.25}rem`,
+                marginBottom: '8px'
+              }}
             >
-              {item.title}
-            </Link>
-          </li>
-        ))}
+              <Link
+                to={`/${item.id}`}
+                className={`toc-link ${isActive ? 'active' : ''}`}
+                style={{ cursor: 'pointer', display: 'block' }}
+              >
+                {item.title}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );
