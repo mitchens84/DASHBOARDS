@@ -22,9 +22,11 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: 'docs',
     rollupOptions: {
       input: {
-        main: 'index.html'
+        main: './index.html',
+        404: './404.html'
       },
       output: {
         manualChunks(id) {

@@ -231,7 +231,25 @@ function App() {
         />
       }
     >
-      <div className="p-6">{renderContent(selectedSection)}</div>
+      <Routes>
+        {tocItems.map((item) => (
+          item.level === 1 && (
+            <Route
+              key={item.id}
+              path={`/${item.id}`}
+              element={<div className="p-6">{renderContent(item.id)}</div>}
+            />
+          )
+        ))}
+        <Route path="/dashboard-overview" element={
+          <div className="p-6">
+            <section className="bg-white rounded-lg shadow">
+              <h1 className="text-3xl font-bold mb-4">DASHBOARDS OVERVIEW</h1>
+              <p>Welcome to the collection of interactive visual content</p>
+            </section>
+          </div>
+        } />
+      </Routes>
     </Layout>
   );
 }
