@@ -14,19 +14,10 @@ interface TocItem {
 
 interface TableOfContentsProps {
   items: TocItem[];
-  onSelect: (id: string) => void;
   activeItem: string;
 }
 
-const TableOfContents: React.FC<TableOfContentsProps> = ({ items, onSelect, activeItem }) => {
-  const handleClick = (id: string) => {
-    onSelect(id);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
+const TableOfContents: React.FC<TableOfContentsProps> = ({ items, activeItem }) => {
   return (
     <nav className="toc-container" style={{ backgroundColor: '#f8f9fa', padding: '20px' }}>
       <h2 className="toc-heading">Contents</h2>
@@ -40,13 +31,13 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ items, onSelect, acti
               marginBottom: '8px'
             }}
           >
-            <button
-              onClick={() => handleClick(item.id)}
+            <Link
+              to={`/${item.id}`}
               className={`toc-link ${activeItem === item.id ? 'active' : ''}`}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', display: 'block' }}
             >
               {item.title}
-            </button>
+            </Link>
           </li>
         ))}
       </ul>
