@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
@@ -53,8 +53,6 @@ import MusicDashboard from "../content/9E-MEDIA/music-dashboard.tsx";
 import SoundTherapy from "../content/9E-MEDIA/sound-therapy-guide.tsx";
 
 function App() {
-  const [selectedSection, setSelectedSection] = useState("dashboard-overview");
-
   const tocItems = [
     { id: "dashboard-overview", title: "DASHBOARDS", level: 0 },
     // 0A-PREPAREDNESS Section
@@ -226,8 +224,7 @@ function App() {
       tableOfContents={
         <TableOfContents
           items={tocItems}
-          onSelect={setSelectedSection}
-          activeItem={selectedSection}
+          activeItem={location.pathname.replace('/', '')}
         />
       }
     >
