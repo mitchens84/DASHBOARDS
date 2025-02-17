@@ -1,5 +1,4 @@
-import React from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
 
@@ -42,6 +41,7 @@ import TherapeuticSpiceBlend from "../content/4H-NUTRITION/therapeutic-spice-ble
 import BeanRiskAssessment from "../content/5R-BEAN/bean-risk-assessment-v2_revised.tsx";
 import AntibioticDashboard from "../content/5R-BEAN/antibiotic-dashboard.tsx";
 import BeanSodiumIntakeDashboard from "../content/5R-BEAN/bean-sodium-intake-dashboard.tsx";
+import BeanTreatmentTimeline from "../content/5R-BEAN/bean-treatment-timeline-revised.tsx";
 
 // 6I-INTELLECTUAL imports
 import ReadingDashboard from "../content/6I-INTELLECTUAL/reading-dashboard.tsx";
@@ -53,6 +53,7 @@ import MusicDashboard from "../content/9E-MEDIA/music-dashboard.tsx";
 import SoundTherapy from "../content/9E-MEDIA/sound-therapy-guide.tsx";
 
 function App() {
+  const location = useLocation();
   const tocItems = [
     { id: "dashboard-overview", title: "DASHBOARDS", level: 0 },
     // 0A-PREPAREDNESS Section
@@ -104,6 +105,7 @@ function App() {
     { id: "antibiotic-dashboard", title: "Antibiotic Dashboard", level: 1 },
     { id: "bean-assessment", title: "Bean Risk Assessment", level: 1 },
     { id: "bean-sodium-intake", title: "Bean Sodium Intake", level: 1 },
+    { id: "bean-treatment", title: "UTI Treatment Protocol", level: 1 },
     // Intellectual Section
     { id: "intellectual", title: "6I-INTELLECTUAL", level: 0 },
     { id: "reading-dashboard", title: "Reading Dashboard", level: 1 },
@@ -187,6 +189,8 @@ function App() {
         return <BeanSodiumIntakeDashboard />;
       case "bean-sodium-intake":
         return <BeanSodiumIntakeDashboard />;
+      case "bean-treatment":
+        return <BeanTreatmentTimeline />;
 
       // Intellectual
       case "reading-dashboard":
@@ -224,11 +228,19 @@ function App() {
       tableOfContents={
         <TableOfContents
           items={tocItems}
-          activeItem={location.pathname.replace('/', '')}
+          activeItem={location.pathname.slice(1) || 'dashboard-overview'}
         />
       }
     >
       <Routes>
+        <Route path="/" element={
+          <div className="p-6">
+            <section className="bg-white rounded-lg shadow">
+              <h1 className="text-3xl font-bold mb-4">DASHBOARDS OVERVIEW</h1>
+              <p>Welcome to the collection of interactive visual content</p>
+            </section>
+          </div>
+        } />
         {tocItems.map((item) => (
           item.level === 1 && (
             <Route

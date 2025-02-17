@@ -18,6 +18,7 @@ export const contentManifest = {
   "9E-MEDIA": ["music-dashboard-r1", "hiking-playlist"],
   "5R-BEAN": [
     "bean-complete-nutrition-dashboard", // Added new content
+    "bean-treatment-timeline-revised", // Added new dashboard
   ],
   "4H-BIOHACKING-SKIN": [
     "holistic-protection-dashboard",

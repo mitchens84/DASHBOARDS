@@ -7,7 +7,7 @@ import './components/TableOfContents.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter basename="/DASHBOARDS">
+    <BrowserRouter>
       <App />
     </BrowserRouter>
   </React.StrictMode>
