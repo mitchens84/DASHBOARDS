@@ -4,9 +4,31 @@
     <meta charset="utf-8">
     <title>Redirecting...</title>
     <script>
-      const pathSegments = window.location.pathname.split('/').filter(p => p);
-      sessionStorage.redirect = pathSegments.join('/');
-      window.location.replace('/DASHBOARDS/');
+      (function() {
+        // Get the full pathname (e.g., /DASHBOARDS/4H-HEALTH/apob-reference)
+        const pathname = window.location.pathname;
+        
+        // Get everything after /DASHBOARDS/
+        const segments = pathname.split('/DASHBOARDS/');
+        const path = segments.length > 1 ? segments[1] : '';
+        
+        if (path) {
+          // Save the path and any query string
+          const fullPath = path + window.location.search + window.location.hash;
+          sessionStorage.setItem('redirect', fullPath);
+          
+          // Log for debugging
+          console.log('Saving path:', fullPath);
+        }
+
+        // Always redirect to the app root
+        window.location.replace('/DASHBOARDS/');
+      })();
     </script>
   </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+  </body>
 </html>
