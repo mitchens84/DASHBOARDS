@@ -1,5 +1,4 @@
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
 
@@ -52,35 +51,6 @@ import HikingPlaylist from "../content/9E-MEDIA/hiking-playlist.tsx";
 import MusicDashboardR1 from "../content/9E-MEDIA/music-dashboard-r1.tsx";
 import MusicDashboard from "../content/9E-MEDIA/music-dashboard.tsx";
 import SoundTherapy from "../content/9E-MEDIA/sound-therapy-guide.tsx";
-
-// Component to handle redirects from 404.html
-function RedirectHandler() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    const handleRedirect = () => {
-      // Check if we're already at the redirect location to prevent loops
-      const redirectPath = sessionStorage.getItem('redirect');
-      console.log('Current redirect path:', redirectPath);
-      
-      if (redirectPath && location.pathname === '/') {
-        // Clean up immediately to prevent future redirects
-        sessionStorage.removeItem('redirect');
-        console.log('Navigating to:', redirectPath);
-        
-        // Add a small delay to ensure proper navigation
-        setTimeout(() => {
-          navigate('/' + redirectPath.replace(/^\//, ''));
-        }, 100);
-      }
-    };
-
-    handleRedirect();
-  }, [navigate, location]);
-
-  return null;
-}
 
 function App() {
   const location = useLocation();
@@ -253,46 +223,46 @@ function App() {
     }
   };
 
+  // With HashRouter, we need to handle the hash portion of the URL
+  const currentPath = location.pathname.replace(/^\//, '') || 'dashboard-overview';
+
   return (
-    <>
-      <RedirectHandler />
-      <Layout
-        tableOfContents={
-          <TableOfContents
-            items={tocItems}
-            activeItem={location.pathname.slice(1) || 'dashboard-overview'}
-          />
-        }
-      >
-        <Routes>
-          <Route path="/" element={
-            <div className="p-6">
-              <section className="bg-white rounded-lg shadow">
-                <h1 className="text-3xl font-bold mb-4">DASHBOARDS OVERVIEW</h1>
-                <p>Welcome to the collection of interactive visual content</p>
-              </section>
-            </div>
-          } />
-          {tocItems.map((item) => (
-            item.level === 1 && (
-              <Route
-                key={item.id}
-                path={`/${item.id}`}
-                element={<div className="p-6">{renderContent(item.id)}</div>}
-              />
-            )
-          ))}
-          <Route path="/dashboard-overview" element={
-            <div className="p-6">
-              <section className="bg-white rounded-lg shadow">
-                <h1 className="text-3xl font-bold mb-4">DASHBOARDS OVERVIEW</h1>
-                <p>Welcome to the collection of interactive visual content</p>
-              </section>
-            </div>
-          } />
-        </Routes>
-      </Layout>
-    </>
+    <Layout
+      tableOfContents={
+        <TableOfContents
+          items={tocItems}
+          activeItem={currentPath}
+        />
+      }
+    >
+      <Routes>
+        <Route path="/" element={
+          <div className="p-6">
+            <section className="bg-white rounded-lg shadow">
+              <h1 className="text-3xl font-bold mb-4">DASHBOARDS OVERVIEW</h1>
+              <p>Welcome to the collection of interactive visual content</p>
+            </section>
+          </div>
+        } />
+        {tocItems.map((item) => (
+          item.level === 1 && (
+            <Route
+              key={item.id}
+              path={`/${item.id}`}
+              element={<div className="p-6">{renderContent(item.id)}</div>}
+            />
+          )
+        ))}
+        <Route path="/dashboard-overview" element={
+          <div className="p-6">
+            <section className="bg-white rounded-lg shadow">
+              <h1 className="text-3xl font-bold mb-4">DASHBOARDS OVERVIEW</h1>
+              <p>Welcome to the collection of interactive visual content</p>
+            </section>
+          </div>
+        } />
+      </Routes>
+    </Layout>
   );
 }
 
