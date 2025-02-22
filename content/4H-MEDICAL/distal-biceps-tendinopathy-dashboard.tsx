@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Check, AlertTriangle, Clock, ChefHat, Activity, Calendar, Printer, Target, BookOpen } from 'lucide-react';
+import { AlertTriangle, Clock, Printer, Target } from 'lucide-react';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("diagnosis");
@@ -15,11 +15,13 @@ const Dashboard = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value)} className="w-full">
-        <TabsList className="grid grid-cols-6 w-full">
+        <TabsList className="grid grid-cols-8 w-full">
           <TabsTrigger value="diagnosis">Diagnosis</TabsTrigger>
           <TabsTrigger value="protocol">Protocol</TabsTrigger>
+          <TabsTrigger value="immediate">Actions</TabsTrigger>
+          <TabsTrigger value="exercise">Exercise</TabsTrigger>
+          <TabsTrigger value="progression">Progress</TabsTrigger>
           <TabsTrigger value="remedies">Remedies</TabsTrigger>
-          <TabsTrigger value="exercises">Exercises</TabsTrigger>
           <TabsTrigger value="tracking">Tracking</TabsTrigger>
           <TabsTrigger value="print">Print</TabsTrigger>
         </TabsList>
@@ -66,10 +68,158 @@ const Dashboard = () => {
                       <p>Distinguished by its specific relationship to combined elbow flexion and forearm supination stresses.</p>
                     </AlertDescription>
                   </Alert>
+
+                  <div>
+                    <h3 className="font-semibold text-purple-700">NSAID Response Analysis</h3>
+                    <div className="mt-2 pl-4 border-l-2 border-purple-200 space-y-3">
+                      <div>
+                        <h4 className="font-medium">Limited Effectiveness Explained</h4>
+                        <ul className="list-disc pl-6 mt-1">
+                          <li>Primarily mechanical rather than inflammatory pathology</li>
+                          <li>Deeper tissue involvement limits topical penetration</li>
+                          <li>Poor vascularization at insertion point</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-medium">Treatment Implications</h4>
+                        <ul className="list-disc pl-6 mt-1">
+                          <li>Load management takes priority over anti-inflammatory measures</li>
+                          <li>Mechanical interventions likely more effective than pharmaceutical</li>
+                          <li>Longer recovery timeline typical for insertional patterns</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="immediate">
+          <Card>
+            <CardHeader>
+              <CardTitle>Priority Interventions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold text-blue-600">Primary Focus</h3>
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>Switch to isometric holds in neutral grip</li>
+                    <li>Implement pronation/supination control exercises</li>
+                    <li>Use compression sleeve during activity</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-green-600">Modified Treatment</h3>
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>Continue Diclofenac for 4 more days</li>
+                    <li>Add deep friction massage above pain point</li>
+                    <li>Ice after activity only (not preventively)</li>
+                  </ul>
+                </div>
+
+                <Alert className="bg-yellow-50">
+                  <AlertTitle>Load Management Priority</AlertTitle>
+                  <AlertDescription>
+                    Focus on grip width modification and neutral positioning rather than complete rest
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="exercise">
+          <Card>
+            <CardHeader>
+              <CardTitle>Biomechanical Modifications</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold">Immediate Exercise Adaptations</h3>
+                  <div className="grid grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <h4 className="text-green-600">Permitted Movements</h4>
+                      <ul className="list-disc pl-6 mt-2">
+                        <li>Neutral grip pulls</li>
+                        <li>Wide grip movements</li>
+                        <li>Dead hangs/carries</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-red-600">Avoid Temporarily</h4>
+                      <ul className="list-disc pl-6 mt-2">
+                        <li>Supinated curls</li>
+                        <li>Close grip work</li>
+                        <li>End-range loading</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold">Rehabilitation Exercises</h3>
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>Isometric holds at 60° elbow flexion</li>
+                    <li>Pronation/supination without load</li>
+                    <li>Eccentric-focused neutral grip work</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold">Pre-Workout (10 mins)</h3>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>Wrist flexor/extensor stretches: 30s each</li>
+                    <li>Light band rotations: 20 reps each direction</li>
+                    <li>Isometric holds: 10s at 30°, 60°, 90°</li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="progression">
+          <Card>
+            <CardHeader>
+              <CardTitle>Progressive Loading Strategy</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold">Week 1-2</h3>
+                  <ul className="list-disc pl-6 mt-2">
+                    <li>Isometric work only</li>
+                    <li>Focus on position sensitivity</li>
+                    <li>Build load tolerance</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold">Week 3-4</h3>
+                  <ul className="list-disc pl-6 mt-2">
+                    <li>Introduce controlled eccentrics</li>
+                    <li>Begin supination training</li>
+                    <li>Progressive grip narrowing</li>
+                  </ul>
+                </div>
+
+                <Alert>
+                  <AlertTitle>Progress Indicators</AlertTitle>
+                  <ul className="list-disc pl-6 mt-2">
+                    <li>Pain-free isometrics</li>
+                    <li>Improved supination tolerance</li>
+                    <li>Normal daily activity capacity</li>
+                  </ul>
+                </Alert>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="protocol">
@@ -133,59 +283,6 @@ const Dashboard = () => {
                     Take on an empty stomach or with healthy fat for maximum absorption.
                   </AlertDescription>
                 </Alert>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="exercises">
-          <Card>
-            <CardHeader>
-              <CardTitle>Exercise Protocol</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-semibold">Pre-Workout (10 mins)</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Wrist flexor/extensor stretches: 30s each</li>
-                    <li>Light band rotations: 20 reps each direction</li>
-                    <li>Isometric holds: 10s at 30°, 60°, 90°</li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h3 className="font-semibold">Exercise Selection</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="text-green-600">Approved Exercises</h4>
-                      <ul className="list-disc pl-6 space-y-1">
-                        <li>Machine-based pulls</li>
-                        <li>Supported rows</li>
-                        <li>Limited ROM work</li>
-                        <li>Isometric holds</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="text-red-600">Avoid</h4>
-                      <ul className="list-disc pl-6 space-y-1">
-                        <li>Direct bicep work</li>
-                        <li>Heavy pulling</li>
-                        <li>Full ROM exercises</li>
-                        <li>Explosive movements</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold">Recovery Protocol</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Blood flow work: 2-3 minutes</li>
-                    <li>Ice therapy: 10-15 minutes</li>
-                    <li>Compression sleeve application</li>
-                  </ul>
-                </div>
               </div>
             </CardContent>
           </Card>
