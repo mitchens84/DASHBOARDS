@@ -18,6 +18,9 @@ import EnvironmentalDashboard from "../content/4H-ENVIRONMENT/environmental-dash
 import PlantsCO2Analysis from "../content/4H-ENVIRONMENT/plants-co2-analysis.tsx";
 import MicroplasticsMonitoring from "../content/4H-ENVIRONMENT/microplastics-monitoring-dashboard.tsx";
 
+// 4H-MEDICAL imports
+import DistalBicepsDashboard from "../content/4H-MEDICAL/distal-biceps-tendinopathy-dashboard.tsx";
+
 // 4H-HEALTH imports
 import RetinolProtocolGuide from "../content/4H-HEALTH/retinol-protocol-guide.tsx";
 import VollagenDashboard from "../content/4H-HEALTH/vollagen-dashboard.tsx";
@@ -82,6 +85,8 @@ function App() {
       level: 1,
     },
     // Health Section
+    { id: "medical", title: "4H-MEDICAL", level: 0 },
+    { id: "distal-biceps", title: "Distal Biceps Management", level: 1 },
     { id: "health-reference", title: "4H-HEALTH", level: 0 },
     { id: "apob-reference", title: "ApoB Reference", level: 1 },
     { id: "dental-care", title: "Dental Care Strategy", level: 1 },
@@ -139,6 +144,10 @@ function App() {
         return <PlantsCO2Analysis />;
       case "microplastics-monitoring":
         return <MicroplasticsMonitoring />;
+
+      // Medical
+      case "distal-biceps":
+        return <DistalBicepsDashboard />;
 
       // Health
       case "retinol":
