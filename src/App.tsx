@@ -125,7 +125,7 @@ function App() {
   ];
 
   return (
-    <Router>
+    <Router basename="/DASHBOARDS">
       <Layout
         tableOfContents={
           <TableOfContents
