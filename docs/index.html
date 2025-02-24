@@ -4,19 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <script>
-      // Check if we need to redirect to a specific path
-      (function() {
-        const redirectPath = sessionStorage.getItem('redirectPath');
-        if (redirectPath) {
-          sessionStorage.removeItem('redirectPath');
-          history.replaceState(null, null, '/DASHBOARDS/' + redirectPath);
-        }
-      })();
-    </script>
-    <script type="module" crossorigin src="/DASHBOARDS/assets/main-DPnAA4Fx.js"></script>
-    <link rel="modulepreload" crossorigin href="/DASHBOARDS/assets/vendor-BZPgoMn6.js">
-    <link rel="modulepreload" crossorigin href="/DASHBOARDS/assets/content-BB8eWfWM.js">
+    <base href="/DASHBOARDS/" />
+    <script type="module" crossorigin src="/DASHBOARDS/assets/main-CoB8m5ea.js"></script>
+    <link rel="modulepreload" crossorigin href="/DASHBOARDS/assets/vendor-BaKT9tym.js">
+    <link rel="modulepreload" crossorigin href="/DASHBOARDS/assets/content-Cc10kYTj.js">
     <link rel="stylesheet" crossorigin href="/DASHBOARDS/assets/main-oPf81a9T.css">
   </head>
   <body>

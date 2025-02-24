@@ -4,16 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <script>
-      // Check if we need to redirect to a specific path
-      (function() {
-        const redirectPath = sessionStorage.getItem('redirectPath');
-        if (redirectPath) {
-          sessionStorage.removeItem('redirectPath');
-          history.replaceState(null, null, '/DASHBOARDS/' + redirectPath);
-        }
-      })();
-    </script>
+    <base href="/DASHBOARDS/" />
   </head>
   <body>
     <div id="root"></div>

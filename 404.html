@@ -4,18 +4,11 @@
     <meta charset="utf-8">
     <title>Page Not Found</title>
     <script>
-      // Store the full path minus the base URL for client-side routing
-      const basePath = '/DASHBOARDS/';
-      const path = window.location.pathname;
-      if (path.startsWith(basePath)) {
-        const relativePath = path.slice(basePath.length);
-        sessionStorage.setItem('redirectPath', relativePath);
-      }
-      window.location.href = basePath;
+      window.location.href = '/DASHBOARDS/#' + window.location.pathname.replace('/DASHBOARDS/', '');
     </script>
   </head>
   <body>
     <h1>Page not found</h1>
-    <p>Redirecting...</p>
+    <p>Redirecting to home page...</p>
   </body>
 </html>

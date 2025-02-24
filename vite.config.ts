@@ -4,24 +4,7 @@ import path from 'path';
 
 export default defineConfig({
   base: '/DASHBOARDS/',
-  plugins: [
-    react(),
-    {
-      name: 'history-api-fallback',
-      configureServer(server) {
-        server.middlewares.use((req, res, next) => {
-          if (req.url.startsWith('/assets/') || req.url.startsWith('/@vite/') || req.url.startsWith('/favicon.ico')) {
-            next();
-          } else if (req.method === 'GET' && !req.url.includes('.')) {
-            req.url = '/index.html';
-            next();
-          } else {
-            next();
-          }
-        });
-      },
-    },
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -50,7 +33,6 @@ export default defineConfig({
           if (id.includes('node_modules')) {
             return 'vendor';
           }
-          // Create separate chunks for content files
           if (id.includes('/content/')) {
             return 'content';
           }

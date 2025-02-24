@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { contentManifest } from './content-manifest';
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
@@ -125,21 +125,19 @@ function App() {
   ];
 
   return (
-    <Router basename="/DASHBOARDS">
-      <Layout
-        tableOfContents={
-          <TableOfContents
-            items={tocItems}
-          />
-        }
-      >
-        <Routes>
-          {contentManifest.map((route) => (
-            <Route key={route.path} path={route.path} element={<route.component />} />
-          ))}
-        </Routes>
-      </Layout>
-    </Router>
+    <Layout
+      tableOfContents={
+        <TableOfContents
+          items={tocItems}
+        />
+      }
+    >
+      <Routes>
+        {contentManifest.map((route) => (
+          <Route key={route.path} path={route.path} element={<route.component />} />
+        ))}
+      </Routes>
+    </Layout>
   );
 }
 
