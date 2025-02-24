@@ -1,5 +1,8 @@
 export const contentManifest = {
-  "4H-MEDICAL": ["distal-biceps-tendinopathy-dashboard"],
+  "4H-MEDICAL": [
+    "distal-biceps-tendinopathy-dashboard",
+    "dengue-risk-visualization"
+  ],
   "3P-POSSESSIONS": ["240205-comprehensive-backpack-dashboard"],
   "4H-HEALTH": [
     "apob-reference",

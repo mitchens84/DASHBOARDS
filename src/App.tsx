@@ -20,6 +20,7 @@ import MicroplasticsMonitoring from "../content/4H-ENVIRONMENT/microplastics-mon
 
 // 4H-MEDICAL imports
 import DistalBicepsDashboard from "../content/4H-MEDICAL/distal-biceps-tendinopathy-dashboard.tsx";
+import DengueRiskDashboard from "../content/4H-MEDICAL/dengue-risk-visualization.tsx";
 
 // 4H-HEALTH imports
 import RetinolProtocolGuide from "../content/4H-HEALTH/retinol-protocol-guide.tsx";
@@ -61,7 +62,6 @@ function App() {
     { id: "dashboard-overview", title: "DASHBOARDS", level: 0 },
     // 0A-PREPAREDNESS Section
     { id: "risk-assessment", title: "0A-PREPAREDNESS", level: 0 },
-    { id: "bean-assessment", title: "Bean Risk Assessment", level: 1 },
     // 3P-POSSESSIONS Section
     { id: "possessions", title: "3P-POSSESSIONS", level: 0 },
     { id: "backpack-dashboard", title: "Backpack Analysis", level: 1 },
@@ -87,6 +87,7 @@ function App() {
     // Health Section
     { id: "medical", title: "4H-MEDICAL", level: 0 },
     { id: "distal-biceps", title: "Distal Biceps Management", level: 1 },
+    { id: "dengue-risk", title: "Dengue Risk Assessment", level: 1 },
     { id: "health-reference", title: "4H-HEALTH", level: 0 },
     { id: "apob-reference", title: "ApoB Reference", level: 1 },
     { id: "dental-care", title: "Dental Care Strategy", level: 1 },
@@ -124,6 +125,9 @@ function App() {
 
   const renderContent = (id: string) => {
     switch (id) {
+      // Root level dashboards
+      case "dengue-risk":
+        return <DengueRiskDashboard />;
       case "dashboard-overview":
         return (
           <section id={id} className="p-6 bg-white rounded-lg shadow">
@@ -148,6 +152,8 @@ function App() {
       // Medical
       case "distal-biceps":
         return <DistalBicepsDashboard />;
+      case "dengue-risk":
+        return <DengueRiskDashboard />;
 
       // Health
       case "retinol":
