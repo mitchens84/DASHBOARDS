@@ -1,6 +1,4 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { contentManifest } from './content-manifest';
+import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
 
@@ -59,6 +57,7 @@ import MusicDashboard from "../content/9E-MEDIA/music-dashboard.tsx";
 import SoundTherapy from "../content/9E-MEDIA/sound-therapy-guide.tsx";
 
 function App() {
+  const location = useLocation();
   const tocItems = [
     { id: "dashboard-overview", title: "DASHBOARDS", level: 0 },
     // 0A-PREPAREDNESS Section
@@ -124,18 +123,159 @@ function App() {
     { id: "sound-therapy", title: "Sound Therapy Guide", level: 1 },
   ];
 
+  const renderContent = (id: string) => {
+    switch (id) {
+      // Root level dashboards
+      case "dengue-risk":
+        return <DengueRiskDashboard />;
+      case "dashboard-overview":
+        return (
+          <section id={id} className="p-6 bg-white rounded-lg shadow">
+            <h1 className="text-3xl font-bold mb-4">DASHBOARDS OVERVIEW</h1>
+            <p>
+              Welcome to the collection of interactive visual content across LBS
+              categories
+            </p>
+          </section>
+        );
+
+      // Environment
+      case "env-dashboard":
+        return <EnvDashboard />;
+      case "environmental-dashboard":
+        return <EnvironmentalDashboard />;
+      case "plants-co2":
+        return <PlantsCO2Analysis />;
+      case "microplastics-monitoring":
+        return <MicroplasticsMonitoring />;
+
+      // Medical
+      case "distal-biceps":
+        return <DistalBicepsDashboard />;
+      case "dengue-risk":
+        return <DengueRiskDashboard />;
+
+      // Health
+      case "retinol":
+        return <RetinolProtocolGuide />;
+      case "vollagen":
+        return <VollagenDashboard />;
+      case "apob-reference":
+        return <ApoBReference />;
+      case "dental-care":
+        return <DentalCareStrategy />;
+      case "genetic-dashboard":
+        return <GeneticDashboard />;
+      case "neutering-effects":
+        return <NeuteringEffects />;
+      case "vaccination-timeline":
+        return <VaccinationTimeline />;
+      case "emf-safety-dashboard":
+        return <EmfSafetyDashboard />;
+      case "emf-safety":
+        return <EmfSafetyDashboard />;
+
+      // Nutrition
+      case "sports-nutrition":
+        return <SportsNutrition />;
+      case "legume-guide":
+        return <LegumeGuide />;
+      case "life-smoothie":
+        return <LifeSmoothie />;
+      case "nutrition-processing":
+        return <NutritionProcessing />;
+      case "enhanced-sodium-calculator":
+        return <EnhancedSodiumCalculator />;
+      case "functional-foods-network":
+        return <FunctionalFoodsNetwork />;
+      case "enhanced-sodium":
+        return <EnhancedSodiumCalculator />;
+      case "functional-foods":
+        return <FunctionalFoodsNetwork />;
+      case "therapeutic-spice":
+        return <TherapeuticSpiceBlend />;
+
+      // Bean
+      case "bean-assessment":
+        return <BeanRiskAssessment />;
+      case "antibiotic-dashboard":
+        return <AntibioticDashboard />;
+      case "bean-sodium-intake-dashboard":
+        return <BeanSodiumIntakeDashboard />;
+      case "bean-sodium-intake":
+        return <BeanSodiumIntakeDashboard />;
+      case "bean-treatment":
+        return <BeanTreatmentTimeline />;
+
+      // Intellectual
+      case "reading-dashboard":
+        return <ReadingDashboard />;
+
+      // Media
+      case "hiking-playlist":
+        return <HikingPlaylist />;
+      case "music-dashboard-r1":
+        return <MusicDashboardR1 />;
+      case "music-dashboard":
+        return <MusicDashboard />;
+      case "sound-therapy":
+        return <SoundTherapy />;
+
+      // Skin Biohacking
+      case "holistic-protection":
+        return <HolisticProtection />;
+      case "sunscreen-calculator":
+        return <SunscreenCalculator />;
+      case "sunscreen-boj":
+        return <SunscreenBOJ />;
+
+      // Possessions
+      case "backpack-dashboard":
+        return <BackpackDashboard />;
+
+      default:
+        return null;
+    }
+  };
+
+  // With HashRouter, we need to handle the hash portion of the URL
+  const currentPath = location.pathname.replace(/^\//, '') || 'dashboard-overview';
+
   return (
     <Layout
       tableOfContents={
         <TableOfContents
           items={tocItems}
+          activeItem={currentPath}
         />
       }
     >
       <Routes>
-        {contentManifest.map((route) => (
-          <Route key={route.path} path={route.path} element={<route.component />} />
+        <Route path="/" element={
+          <div className="p-6">
+            <section className="bg-white rounded-lg shadow">
+              <h1 className="text-3xl font-bold mb-4">DASHBOARDS OVERVIEW</h1>
+              <p>Welcome to the collection of interactive visual content</p>
+            </section>
+          </div>
+        } />
+        {tocItems.map((item) => (
+          item.level === 1 && (
+            <Route
+              key={item.id}
+              path={`/${item.id}`}
+              element={<div className="p-6">{renderContent(item.id)}</div>}
+            />
+          )
         ))}
+        <Route path="/dashboard-overview" element={
+          <div className="p-6">
+            <section className="bg-white rounded-lg shadow">
+              <h1 className="text-3xl font-bold mb-4">DASHBOARDS OVERVIEW</h1>
+              <p>Welcome to the collection of interactive visual content</p>
+            </section>
+          </div>
+        } />
       </Routes>
     </Layout>
   );
