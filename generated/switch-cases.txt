@@ -1,0 +1,104 @@
+// Generated switch cases for renderContent function in App.tsx
+
+// 4H-MEDICAL
+case "distal-biceps-tendinopathy-dashboard":
+  return <DistalBicepsTendinopathyDashboard />;
+case "dengue-risk-visualization":
+  return <DengueRiskVisualization />;
+
+// 3P-POSSESSIONS
+case "240205-comprehensive-backpack-dashboard":
+  return <240205ComprehensiveBackpackDashboard />;
+
+// 4H-HEALTH
+case "apob-reference":
+  return <ApobReference />;
+case "dental-care-strategy":
+  return <DentalCareStrategy />;
+case "neutering-effects":
+  return <NeuteringEffects />;
+case "genetic-dashboard-complete":
+  return <GeneticDashboardComplete />;
+case "vaccination-timeline":
+  return <VaccinationTimeline />;
+case "emf-safety-dashboard":
+  return <EmfSafetyDashboard />;
+case "retinol-protocol-guide":
+  return <RetinolProtocolGuide />;
+case "vaccination-timeline-analysis":
+  return <VaccinationTimelineAnalysis />;
+case "vollagen-dashboard":
+  return <VollagenDashboard />;
+
+// 4H-NUTRITION
+case "life-smoothie-visual":
+  return <LifeSmoothieVisual />;
+case "241230-legumes cooking guide":
+  return <241230Legumes cooking guide />;
+case "241118-sports-nutrition-dashboard":
+  return <241118SportsNutritionDashboard />;
+case "nutrition-processing-dashboard":
+  return <NutritionProcessingDashboard />;
+case "enhanced-sodium-calculator copy":
+  return <EnhancedSodiumCalculator copy />;
+case "enhanced-sodium-calculator":
+  return <EnhancedSodiumCalculator />;
+case "functional-foods-network":
+  return <FunctionalFoodsNetwork />;
+case "therapeutic-spice-blend":
+  return <TherapeuticSpiceBlend />;
+case "tvp-dashboard":
+  return <TvpDashboard />;
+
+// 4H-ENVIRONMENT
+case "microplastics-monitoring-dashboard":
+  return <MicroplasticsMonitoringDashboard />;
+case "env-dashboard":
+  return <EnvDashboard />;
+case "environmental-dashboard":
+  return <EnvironmentalDashboard />;
+case "plants-co2-analysis":
+  return <PlantsCo2Analysis />;
+
+// 6I-INTELLECTUAL
+case "reading-dashboard":
+  return <ReadingDashboard />;
+
+// 9E-MEDIA
+case "music-dashboard-r1":
+  return <MusicDashboardR1 />;
+case "hiking-playlist":
+  return <HikingPlaylist />;
+case "korijeni_na_korculi":
+  return <KorijeniNaKorculi />;
+case "music-dashboard":
+  return <MusicDashboard />;
+case "sound-therapy-guide":
+  return <SoundTherapyGuide />;
+
+// 5R-BEAN
+case "bean-complete-nutrition-dashboard":
+  return <BeanCompleteNutritionDashboard />;
+case "bean-treatment-timeline-revised":
+  return <BeanTreatmentTimelineRevised />;
+case "antibiotic-dashboard":
+  return <AntibioticDashboard />;
+case "bean-risk-assessment-v2":
+  return <BeanRiskAssessmentV2 />;
+case "bean-risk-assessment-v2_revised":
+  return <BeanRiskAssessmentV2Revised />;
+case "bean-sodium-intake-dashboard":
+  return <BeanSodiumIntakeDashboard />;
+
+// 4H-BIOHACKING-SKIN
+case "holistic-protection-dashboard":
+  return <HolisticProtectionDashboard />;
+case "sunscreen-protection-calculator":
+  return <SunscreenProtectionCalculator />;
+case "4H-BIOHACKING-SKIN-SUNSCREEN-BOJ":
+  return <4HBIOHACKINGSKINSUNSCREENBOJ />;
+
+// 0A-PREP
+case "bike-maintenance-dashboard":
+  return <BikeMaintenanceDashboard />;
+
