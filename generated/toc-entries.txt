@@ -45,6 +45,7 @@
 { id: "bean-risk-assessment-v2", title: "Bean Risk Assessment V2", level: 1 },
 { id: "bean-risk-assessment-v2_revised", title: "Bean Risk Assessment V2 Revised", level: 1 },
 { id: "bean-sodium-intake-dashboard", title: "Bean Sodium Intake Dashboard", level: 1 },
+{ id: "beans-infection-diet-plan", title: "Beans Infection Diet Plan", level: 1 },
 { id: "4h-biohacking-skin-header", title: "BIOHACKING SKIN", level: 0 },
 { id: "holistic-protection-dashboard", title: "Holistic Protection Dashboard", level: 1 },
 { id: "sunscreen-protection-calculator", title: "Sunscreen Protection Calculator", level: 1 },

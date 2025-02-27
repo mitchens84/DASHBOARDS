@@ -52,6 +52,7 @@ import AntibioticDashboard from "../content/5R-BEAN/antibiotic-dashboard";
 import BeanRiskAssessmentV2 from "../content/5R-BEAN/bean-risk-assessment-v2";
 import BeanRiskAssessmentV2Revised from "../content/5R-BEAN/bean-risk-assessment-v2_revised";
 import BeanSodiumIntakeDashboard from "../content/5R-BEAN/bean-sodium-intake-dashboard";
+import BeansInfectionDietPlan from "../content/5R-BEAN/beans-infection-diet-plan";
 
 // 4H-BIOHACKING-SKIN imports
 import HolisticProtectionDashboard from "../content/4H-BIOHACKING-SKIN/holistic-protection-dashboard";

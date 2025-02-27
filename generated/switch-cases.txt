@@ -89,6 +89,8 @@ case "bean-risk-assessment-v2_revised":
   return <BeanRiskAssessmentV2Revised />;
 case "bean-sodium-intake-dashboard":
   return <BeanSodiumIntakeDashboard />;
+case "beans-infection-diet-plan":
+  return <BeansInfectionDietPlan />;
 
 // 4H-BIOHACKING-SKIN
 case "holistic-protection-dashboard":
