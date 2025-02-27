@@ -1,4 +1,8 @@
 case "legumes-cooking-guide":
-  return <241230Legumes cooking guide />;
+  return <Component241230LegumesCookingGuide />;
 case "enhanced-sodium-calculator-copy":
-  return <EnhancedSodiumCalculator copy />;
+  return <EnhancedSodiumCalculatorCopy />;
+case "korijeninakorculi":
+  return <KorijeniNaKorculi />;
+case "bean-risk-assessment-v2revised":
+  return <BeanRiskAssessmentV2Revised />;

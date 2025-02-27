@@ -1,1 +1,1 @@
-import EnhancedSodiumCalculator copy from "../content/4H-NUTRITION/enhanced-sodium-calculator copy";
+import EnhancedSodiumCalculatorCopy from "../content/4H-NUTRITION/enhanced-sodium-calculator copy";

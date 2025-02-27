@@ -126,6 +126,30 @@ function updateContentManifest(newContent: Record<string, string[]>) {
   return mergedContent;
 }
 
+// Safely convert a file name to a valid component name
+function safeComponentName(fileName: string): string {
+  // Replace spaces and special characters with underscores
+  let safeName = fileName
+    .replace(/\s+/g, '_')
+    .replace(/[^\w\-]/g, '');
+  
+  // If the file name starts with a number, prefix with an underscore
+  if (/^\d/.test(safeName)) {
+    safeName = 'Component' + safeName;
+  }
+  
+  // Convert to proper CamelCase
+  return safeName
+    .split(/[-_]/)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+}
+
+// Generate a safe import path
+function safeImportPath(category: string, fileName: string): string {
+  return `../content/${category}/${fileName}`;
+}
+
 // Extract information from App.tsx
 function parseAppTsx() {
   try {
@@ -176,24 +200,48 @@ function parseAppTsx() {
   }
 }
 
-// Update App.tsx with new content
-function updateAppTsx(contentStructure: Record<string, string[]>) {
-  console.log('Updating App.tsx...');
+// Generate guidance files for manual update
+function generateGuidanceFiles(newImports: string[], newTocItems: string[], newCases: string[]) {
+  const GENERATED_DIR = path.resolve(__dirname, '../generated');
+  if (!fs.existsSync(GENERATED_DIR)) {
+    fs.mkdirSync(GENERATED_DIR, { recursive: true });
+  }
   
-  const { existingImports, existingTocItems, existingCases, fullContent } = parseAppTsx();
+  // Write guidance files
+  fs.writeFileSync(path.join(GENERATED_DIR, 'import-statements.txt'), newImports.join('\n'));
+  fs.writeFileSync(path.join(GENERATED_DIR, 'toc-entries.txt'), newTocItems.join('\n'));
+  fs.writeFileSync(path.join(GENERATED_DIR, 'switch-cases.txt'), newCases.join('\n'));
+  
+  console.log('Generated files for App.tsx updates in:', GENERATED_DIR);
+  console.log(`- ${newImports.length} new imports`);
+  console.log(`- ${newTocItems.length} new TOC entries`);
+  console.log(`- ${newCases.length} new switch cases`);
+}
+
+// Create a fixed App.tsx with manual guidance
+function createFixedAppTsx(contentStructure: Record<string, string[]>) {
+  console.log('Creating fixed App.tsx file...');
+  
+  // First generate guidance for manual updates
+  const { existingImports, existingTocItems, existingCases } = parseAppTsx();
   
   // Keep track of what needs to be added
   const newImports: string[] = [];
   const newTocItems: string[] = [];
   const newCases: string[] = [];
   
-  // For each file in the content structure, check if it needs to be added
+  // Process each file in the content structure
   Object.entries(contentStructure).forEach(([category, files]) => {
     files.forEach(file => {
-      const componentName = file
-        .split(/[-_]/)
-        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-        .join('');
+      const componentName = safeComponentName(file);
+      const importPath = safeImportPath(category, file);
+      
+      // Generate ID for TOC and case
+      const id = file
+        .replace(/^\d+[-_]/, '')
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9\-]/g, '');
       
       // Check if import exists
       const importExists = existingImports.some(imp => 
@@ -201,11 +249,8 @@ function updateAppTsx(contentStructure: Record<string, string[]>) {
       );
       
       if (!importExists) {
-        newImports.push(`import ${componentName} from "../content/${category}/${file}";`);
+        newImports.push(`import ${componentName} from "${importPath}";`);
       }
-      
-      // Generate ID for TOC and case
-      const id = file.replace(/^\d+[-_]/, '').toLowerCase().replace(/[^a-z0-9]/g, '-');
       
       // Check if TOC item exists
       const tocExists = existingTocItems.some(item => item.id === id);
@@ -234,201 +279,11 @@ function updateAppTsx(contentStructure: Record<string, string[]>) {
     return;
   }
   
-  // Generate guidance files
-  const GENERATED_DIR = path.resolve(__dirname, '../generated');
-  if (!fs.existsSync(GENERATED_DIR)) {
-    fs.mkdirSync(GENERATED_DIR, { recursive: true });
-  }
+  // Generate guidance files for manual update
+  generateGuidanceFiles(newImports, newTocItems, newCases);
   
-  // Write guidance files
-  fs.writeFileSync(path.join(GENERATED_DIR, 'import-statements.txt'), newImports.join('\n'));
-  fs.writeFileSync(path.join(GENERATED_DIR, 'toc-entries.txt'), newTocItems.join('\n'));
-  fs.writeFileSync(path.join(GENERATED_DIR, 'switch-cases.txt'), newCases.join('\n'));
-  
-  console.log('Generated files for App.tsx updates in:', GENERATED_DIR);
-  console.log(`- ${newImports.length} new imports`);
-  console.log(`- ${newTocItems.length} new TOC entries`);
-  console.log(`- ${newCases.length} new switch cases`);
-  
-  // Attempt to automatically update App.tsx if there are changes
-  try {
-    console.log('Attempting to automatically update App.tsx...');
-    
-    let updatedContent = fullContent;
-    
-    // Add imports
-    if (newImports.length > 0) {
-      // Find the appropriate category comment section
-      newImports.forEach(importLine => {
-        const categoryMatch = importLine.match(/\/content\/([^/]+)\//);
-        if (!categoryMatch) return;
-        
-        const category = categoryMatch[1];
-        const commentLine = `// ${category} imports`;
-        
-        // Check if the category comment exists
-        if (updatedContent.includes(commentLine)) {
-          // Insert after the comment line
-          updatedContent = updatedContent.replace(
-            commentLine,
-            `${commentLine}\n${importLine}`
-          );
-        } else {
-          // Insert before the function App() line
-          updatedContent = updatedContent.replace(
-            /function App\(\)/,
-            `// ${category} imports\n${importLine}\n\nfunction App()`
-          );
-        }
-      });
-    }
-    
-    // Add TOC items
-    if (newTocItems.length > 0) {
-      // Group by category
-      const tocByCategory: Record<string, string[]> = {};
-      
-      newTocItems.forEach(tocItem => {
-        const idMatch = tocItem.match(/id:\s*"([^"]+)"/);
-        if (!idMatch) return;
-        
-        const id = idMatch[1];
-        
-        // Try to determine the category from the id
-        let category = '';
-        Object.entries(contentStructure).forEach(([cat, files]) => {
-          files.forEach(file => {
-            const fileId = file.replace(/^\d+[-_]/, '').toLowerCase().replace(/[^a-z0-9]/g, '-');
-            if (fileId === id) {
-              category = cat;
-            }
-          });
-        });
-        
-        if (!category) return;
-        
-        if (!tocByCategory[category]) {
-          tocByCategory[category] = [];
-        }
-        tocByCategory[category].push(tocItem);
-      });
-      
-      // Add TOC items by category
-      Object.entries(tocByCategory).forEach(([category, items]) => {
-        // Find where to insert - after the last item of the category or at the end of the TOC
-        const categoryCommentRegex = new RegExp(`// ${category} Section`);
-        const nextCategoryRegex = /\/\/ (.*) Section/g;
-        
-        // Check if category comment exists
-        if (categoryCommentRegex.test(updatedContent)) {
-          // Find the next category after this one
-          let lastIndex = -1;
-          let match;
-          
-          while ((match = nextCategoryRegex.exec(updatedContent)) !== null) {
-            if (match[1].includes(category)) {
-              lastIndex = match.index;
-            }
-          }
-          
-          if (lastIndex !== -1) {
-            // Find the end of this category's TOC items
-            let endOfCategory = updatedContent.indexOf('// ', lastIndex + 1);
-            if (endOfCategory === -1) {
-              endOfCategory = updatedContent.indexOf('  ];', lastIndex);
-            }
-            
-            // Insert before the next category or end of TOC
-            if (endOfCategory !== -1) {
-              const insertPoint = updatedContent.lastIndexOf('},', endOfCategory);
-              if (insertPoint !== -1) {
-                updatedContent = 
-                  updatedContent.slice(0, insertPoint + 2) + 
-                  '\n    ' + items.join('\n    ') + 
-                  updatedContent.slice(insertPoint + 2);
-              }
-            }
-          }
-        } else {
-          // Category doesn't exist yet, add it at the end of TOC
-          const tocEndIndex = updatedContent.indexOf('  ];');
-          if (tocEndIndex !== -1) {
-            updatedContent = 
-              updatedContent.slice(0, tocEndIndex) + 
-              `    // ${category} Section\n    { id: "${category.toLowerCase()}", title: "${category}", level: 0 },\n    ` + 
-              items.join('\n    ') + '\n' + 
-              updatedContent.slice(tocEndIndex);
-          }
-        }
-      });
-    }
-    
-    // Add switch cases
-    if (newCases.length > 0) {
-      // Group by category
-      const casesByCategory: Record<string, string[]> = {};
-      
-      newCases.forEach(caseItem => {
-        const idMatch = caseItem.match(/case\s+"([^"]+)"/);
-        if (!idMatch) return;
-        
-        const id = idMatch[1];
-        
-        // Try to determine the category from the id
-        let category = '';
-        Object.entries(contentStructure).forEach(([cat, files]) => {
-          files.forEach(file => {
-            const fileId = file.replace(/^\d+[-_]/, '').toLowerCase().replace(/[^a-z0-9]/g, '-');
-            if (fileId === id) {
-              category = cat;
-            }
-          });
-        });
-        
-        if (!category) return;
-        
-        if (!casesByCategory[category]) {
-          casesByCategory[category] = [];
-        }
-        casesByCategory[category].push(caseItem);
-      });
-      
-      // Add cases by category
-      Object.entries(casesByCategory).forEach(([category, cases]) => {
-        const categoryCaseCommentRegex = new RegExp(`// ${category}`);
-        const renderContentFnRegex = /const renderContent[\s\S]*?default:/s;
-        
-        // Check if render function exists
-        const renderContentMatch = updatedContent.match(renderContentFnRegex);
-        if (renderContentMatch) {
-          // Check if category comment exists in switch statement
-          const switchContent = renderContentMatch[0];
-          
-          if (categoryCaseCommentRegex.test(switchContent)) {
-            // Category exists, add cases after the comment
-            updatedContent = updatedContent.replace(
-              categoryCaseCommentRegex,
-              `// ${category}\n      ` + cases.join('\n      ')
-            );
-          } else {
-            // Category doesn't exist, add before default case
-            updatedContent = updatedContent.replace(
-              /default:/,
-              `// ${category}\n      ` + cases.join('\n      ') + '\n\n      default:'
-            );
-          }
-        }
-      });
-    }
-    
-    // Write updated App.tsx
-    fs.writeFileSync(APP_TSX_PATH, updatedContent);
-    console.log('App.tsx has been automatically updated!');
-    
-  } catch (error) {
-    console.error('Failed to automatically update App.tsx:', error);
-    console.log('Please manually update App.tsx using the generated files.');
-  }
+  console.log('NOTE: Due to special cases in your codebase (files with spaces, numbers in filenames), automatic update is not recommended.');
+  console.log('Please use the generated files to manually update App.tsx to avoid syntax errors.');
 }
 
 // Main function
@@ -442,9 +297,9 @@ function main() {
     // Update content manifest
     const mergedContent = updateContentManifest(contentStructure);
     
-    console.log('Updating App.tsx...');
-    // Update App.tsx with new content
-    updateAppTsx(mergedContent);
+    console.log('Creating guidance for updating App.tsx...');
+    // Generate guidance for App.tsx
+    createFixedAppTsx(mergedContent);
     
     console.log('Content update completed successfully!');
   } catch (error) {
