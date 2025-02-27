@@ -11,7 +11,6 @@ export const contentManifest = {
     "dental-care-strategy",
     "neutering-effects",
     "genetic-dashboard-complete",
-    "vaccination-timeline",
     "emf-safety-dashboard",
     "retinol-protocol-guide",
     "vaccination-timeline-analysis",

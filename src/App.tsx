@@ -110,7 +110,6 @@ function App() {
     { id: "genetic-dashboard", title: "Genetic Dashboard", level: 1 },
     { id: "neutering-effects", title: "Neutering Effects", level: 1 },
     { id: "retinol", title: "Retinol Protocol Guide", level: 1 },
-    { id: "vaccination-timeline", title: "Vaccination Timeline", level: 1 },
     { id: "vollagen", title: "Vollagen Dashboard", level: 1 },
     { id: "dental-care-strategy", title: "Dental Care Strategy", level: 1 },
     { id: "genetic-dashboard-complete", title: "Genetic Dashboard Complete", level: 1 },

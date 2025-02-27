@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as childProcess from 'child_process';
 
 // Configuration
 const CONTENT_DIR = path.resolve(__dirname, '../content');
@@ -286,8 +287,128 @@ function createFixedAppTsx(contentStructure: Record<string, string[]>) {
   console.log('Please use the generated files to manually update App.tsx to avoid syntax errors.');
 }
 
+// Validate content files to catch potential errors before they break deployments
+async function validateContentFiles(contentStructure: Record<string, string[]>) {
+  console.log('Validating content files for potential errors...');
+  const errors: Array<{file: string, error: string}> = [];
+
+  // For each file, check for common issues
+  for (const [category, files] of Object.entries(contentStructure)) {
+    for (const file of files) {
+      const filePath = path.join(CONTENT_DIR, category, `${file}.tsx`);
+      
+      try {
+        // 1. Basic file existence check
+        if (!fs.existsSync(filePath)) {
+          errors.push({ 
+            file: `${category}/${file}.tsx`, 
+            error: 'File does not exist though it is listed in content structure' 
+          });
+          continue;
+        }
+
+        // 2. Read file content
+        const content = fs.readFileSync(filePath, 'utf8');
+
+        // 3. Check for invalid imports from popular libraries
+        const lucideRegex = /import\s+{([^}]+)}\s+from\s+['"]lucide-react['"]/g;
+        const lucideMatch = lucideRegex.exec(content);
+        
+        if (lucideMatch) {
+          const importedIcons = lucideMatch[1].split(',').map(i => i.trim());
+          
+          // These are commonly misused icons (can be expanded)
+          const potentialInvalidIcons = ['Boat', 'Car', 'Building', 'Person'];
+          
+          for (const icon of potentialInvalidIcons) {
+            if (importedIcons.includes(icon)) {
+              errors.push({
+                file: `${category}/${file}.tsx`,
+                error: `Potentially invalid icon import: ${icon}. Verify it exists in the installed 'lucide-react' package.`
+              });
+            }
+          }
+        }
+
+        // 4. Check for spaces in component/variable names
+        if (/const\s+(\w+\s+\w+)\s+=/.test(content)) {
+          errors.push({
+            file: `${category}/${file}.tsx`,
+            error: 'Contains component/variable names with spaces which can cause build errors'
+          });
+        }
+        
+        // 5. Check for missing default export
+        if (!content.includes('export default')) {
+          errors.push({
+            file: `${category}/${file}.tsx`,
+            error: 'Missing default export which is required for dynamic imports'
+          });
+        }
+      } catch (error) {
+        errors.push({ 
+          file: `${category}/${file}.tsx`, 
+          error: `Error while validating: ${error}` 
+        });
+      }
+    }
+  }
+
+  // Report findings
+  if (errors.length > 0) {
+    console.log('\n⚠️ Potential issues found that could break deployment:');
+    errors.forEach(({file, error}) => {
+      console.log(`  - ${file}: ${error}`);
+    });
+    console.log('\nPlease fix these issues before deploying.');
+  } else {
+    console.log('✅ All content files passed basic validation.');
+  }
+
+  return errors;
+}
+
+// Perform a dry-run build test to catch potential build errors
+async function testBuild(): Promise<boolean> {
+  console.log('Running a test build to check for potential deployment issues...');
+  
+  try {
+    // Create a temporary script that imports all components but doesn't actually build
+    const validateScript = `
+    import * as React from 'react';
+    // Import all content components to validate them
+    ${Object.entries(scanContentDirectories()).flatMap(([category, files]) => 
+      files.map(file => 
+        `import './../content/${category}/${file}.tsx';`
+      )
+    ).join('\n')}
+    
+    console.log('All imports validated successfully.');
+    `;
+    
+    const validatePath = path.resolve(__dirname, '../scripts/validate-imports.tsx');
+    fs.writeFileSync(validatePath, validateScript);
+    
+    // Run the validation script
+    const result = childProcess.execSync('npx tsx ./scripts/validate-imports.tsx', {
+      encoding: 'utf-8',
+      stdio: 'pipe'
+    });
+    
+    console.log('✅ Test build completed successfully.');
+    
+    // Cleanup
+    fs.unlinkSync(validatePath);
+    return true;
+  } catch (error) {
+    console.error('❌ Test build failed. This may indicate issues that would break deployment:');
+    console.error(error.toString());
+    return false;
+  }
+}
+
 // Main function
-function main() {
+async function main() {
   try {
     console.log('Scanning content directories...');
     // Scan content directories
@@ -301,7 +422,16 @@ function main() {
     // Generate guidance for App.tsx
     createFixedAppTsx(mergedContent);
     
-    console.log('Content update completed successfully!');
+    console.log('\n=== Validation Phase ===');
+    // Validate content files for potential issues
+    await validateContentFiles(mergedContent);
+    
+    // Optional: Uncomment to run test build during update
+    // This can catch build errors early but might slow down the update process
+    // await testBuild();
+    
+    console.log('\nContent update completed successfully!');
+    console.log('You can run "npm run build" to verify everything builds correctly.');
   } catch (error) {
     console.error('Error updating content:', error);
   }

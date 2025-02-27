@@ -1,5 +1,3 @@
-case "vaccination-timeline":
-  return <VaccinationTimeline />;
 case "korijeninakorculi":
   return <KorijeniNaKorculi />;
 case "bean-risk-assessment-v2revised":

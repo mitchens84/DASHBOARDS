@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe2, Home, Boat, Sun, Heart } from 'lucide-react';
+import { Globe2, Home, Ship, Sun, Heart } from 'lucide-react';
 
 const SongVisualization = () => {
   const songMetrics = [
@@ -76,7 +76,7 @@ const SongVisualization = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { icon: <Home className="w-6 h-6" />, text: "Unfinished Houses" },
-              { icon: <Boat className="w-6 h-6" />, text: "Winter Sea" },
+              { icon: <Ship className="w-6 h-6" />, text: "Winter Sea" },
               { icon: <Sun className="w-6 h-6" />, text: "Mediterranean Sun" },
               { icon: <Heart className="w-6 h-6" />, text: "Family Bonds" }
             ].map((element, idx) => (
