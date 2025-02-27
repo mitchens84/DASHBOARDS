@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Update Content",
+      "type": "shell",
+      "command": "npx tsx scripts/update-content.ts",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "detail": "Scan for new content, update content manifest, and generate App.tsx update guidance"
+    },
+    {
+      "label": "Build Project",
+      "type": "shell",
+      "command": "npm run build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Build the project for production"
+    },
+    {
+      "label": "Update and Validate Content",
+      "type": "shell",
+      "command": "npx tsx scripts/update-content.ts && npm run build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      },
+      "group": "build",
+      "detail": "Update content manifest and then run a build to validate changes"
+    }
+  ]
+}

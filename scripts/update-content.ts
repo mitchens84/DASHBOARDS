@@ -1,3 +1,32 @@
+/**
+ * DASHBOARDS Content Update Script
+ * =================================
+ * 
+ * This script automates the process of updating content in the DASHBOARDS application.
+ * It scans the content directories, updates the content manifest, and provides guidance
+ * for updating App.tsx with new components. It also validates content files for common
+ * issues that could potentially break the build and deployment.
+ * 
+ * Command to run:
+ * ```
+ * npx tsx scripts/update-content.ts
+ * ```
+ * 
+ * What this script does:
+ * 1. Scans all content directories for .tsx files
+ * 2. Updates src/content-manifest.ts with all discovered content files
+ * 3. Generates guidance files in the /generated directory for updating App.tsx
+ * 4. Validates content files for common issues (missing files, invalid imports, etc.)
+ * 5. Provides warnings about potential deployment issues
+ * 
+ * After running this script:
+ * - Check the generated/ directory for import-statements.txt, toc-entries.txt, and switch-cases.txt
+ * - Manually update App.tsx using these files as a guide
+ * - Address any validation warnings before deploying
+ * 
+ * @author DASHBOARDS Team
+ */
+
 import * as fs from 'fs';
 import * as path from 'path';
 import * as childProcess from 'child_process';
