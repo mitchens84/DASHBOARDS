@@ -1,51 +1,112 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { Card } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
+import { CardHeader } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { AlertDialog } from "@/components/ui/alert-dialog";
+import { AlertDialogContent } from "@/components/ui/alert-dialog";
+import { AlertDialogDescription } from "@/components/ui/alert-dialog";
+import { AlertDialogFooter } from "@/components/ui/alert-dialog";
+import { AlertDialogHeader } from "@/components/ui/alert-dialog";
+import { AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Select } from "@/components/ui/select";
+import { SelectContent } from "@/components/ui/select";
+import { SelectItem } from "@/components/ui/select";
+import { SelectTrigger } from "@/components/ui/select";
+import { SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { 
   BookOpen, AlertTriangle, CheckCircle, XCircle, 
-  Award, Clock, Zap, RotateCcw, Star, 
+  Award, RotateCcw, Star, Trophy,
   TrendingUp, BookMarked, MessageSquare, FileText,
-  Keyboard, Info, ChevronsUp, HelpCircle, Eye
+  Info, ChevronsUp, HelpCircle, Eye, Brain
 } from 'lucide-react';
 
-// Sample data for demonstration purposes
-const sampleHighlights = [
+// Types
+interface Highlight {
+  id: string;
+  text: string;
+  source: string;
+  isReal?: boolean;
+  originalText?: string;
+  changes?: Change[];
+}
+
+interface Change {
+  type: string;
+  original?: string;
+  modified?: string;
+  position?: number;
+  description?: string;
+  detail?: string;
+  words?: string[];
+  word?: string;  // Add this for the negation cases
+  sentence?: number;
+}
+
+interface Answer {
+  isCorrect: boolean;
+  points: number;
+  confidence: number;
+  time: number;
+  guess: boolean;
+  actual: boolean;
+}
+
+interface FeedbackData {
+  item: Highlight;
+  isCorrect: boolean;
+  pointsEarned: number;
+  timeTaken: number;
+  streak: number;
+}
+
+// Add interface for confidence level data
+interface ConfidenceLevelData {
+  correct: number;
+  total: number;
+}
+
+interface ConfidenceLevels {
+  [key: number]: ConfidenceLevelData;
+}
+
+// Sample data
+const sampleHighlights: Highlight[] = [
   {
-    id: '1',
-    text: 'The most efficient way to develop self-control is to practice habits that strengthen your willpower.',
-    source: 'Atomic Habits'
+    id: "1",
+    text: "The most efficient way to develop self-control is to practice habits that strengthen your willpower.",
+    source: "Atomic Habits"
   },
   {
-    id: '2',
-    text: 'Motivation comes and goes, but habits create systems that make change sustainable over the long term.',
-    source: 'Atomic Habits'
+    id: "2",
+    text: "Motivation comes and goes, but habits create systems that make change sustainable over the long term.",
+    source: "Atomic Habits"
   },
   {
-    id: '3',
-    text: 'Success is not just what you know, but how quickly you can adapt to what you don't know.',
-    source: 'Principles'
+    id: "3",
+    text: "Success is not just what you know, but how quickly you can adapt to what you do not know.",
+    source: "Principles"
   },
   {
-    id: '4',
-    text: 'Reflection turns experience into insight. It's the process by which we make sense of what we've learned.',
-    source: 'The 15 Invaluable Laws of Growth'
+    id: "4",
+    text: "Reflection turns experience into insight. It is the process by which we make sense of what we have learned.",
+    source: "The 15 Invaluable Laws of Growth"
   },
   {
-    id: '5',
-    text: 'Your level of success will rarely exceed your level of personal development.',
-    source: 'The 15 Invaluable Laws of Growth'
+    id: "5",
+    text: "Your level of success will rarely exceed your level of personal development.",
+    source: "The 15 Invaluable Laws of Growth"
   }
 ];
 
 // Utility Functions
-const shuffleArray = (array) => {
+const shuffleArray = (array: any[]) => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -55,19 +116,16 @@ const shuffleArray = (array) => {
 };
 
 // Memoized dictionary of opposites for better performance
-const oppositeWords = {
+const oppositeWords: { [key: string]: string } = {
   'good': 'bad',
   'bad': 'good',
   'high': 'low',
   'low': 'high',
   'large': 'small',
   'small': 'large',
-  'increase': 'decrease',
   'decrease': 'increase',
   'positive': 'negative',
-  'negative': 'positive',
   'always': 'never',
-  'never': 'always',
   'everything': 'nothing',
   'nothing': 'everything',
   'everyone': 'no one',
@@ -92,13 +150,10 @@ const oppositeWords = {
   'strong': 'weak',
   'weak': 'strong',
   'more': 'less',
-  'less': 'more',
   'better': 'worse',
   'worse': 'better',
   'best': 'worst',
   'worst': 'best',
-  'increase': 'decrease',
-  'positive': 'negative',
   'beneficial': 'detrimental',
   'advantage': 'disadvantage',
   'success': 'failure',
@@ -108,15 +163,13 @@ const oppositeWords = {
   'support': 'oppose',
   'confirm': 'contradict',
   'significant': 'insignificant',
-  'important': 'unimportant',
   'remember': 'forget',
   'include': 'exclude',
   'enable': 'disable',
   'encourage': 'discourage',
   'all': 'most',
   'every': 'many',
-  'always': 'usually',
-  'never': 'rarely',
+  'usually': 'rarely',
   'none': 'few',
   'must': 'should',
   'will': 'may',
@@ -129,7 +182,7 @@ const oppositeWords = {
 };
 
 // Get opposite or significantly different word with memoized dictionary
-const getOppositeWord = (word) => {
+const getOppositeWord = (word: string) => {
   const lowerWord = word.toLowerCase();
   if (oppositeWords[lowerWord]) {
     // Preserve capitalization
@@ -151,56 +204,13 @@ const getOppositeWord = (word) => {
   return word;
 };
 
-// Track changes made for better feedback
-const trackChanges = (original, modified) => {
-  const originalWords = original.split(/\s+/);
-  const modifiedWords = modified.split(/\s+/);
-  
-  let changes = [];
-  
-  // Simple diff for approximately similar length texts
-  if (Math.abs(originalWords.length - modifiedWords.length) < 5) {
-    for (let i = 0; i < Math.min(originalWords.length, modifiedWords.length); i++) {
-      if (originalWords[i] !== modifiedWords[i]) {
-        changes.push({
-          type: 'word',
-          original: originalWords[i],
-          modified: modifiedWords[i],
-          position: i
-        });
-      }
-    }
-    
-    // Check for added or removed words
-    if (originalWords.length > modifiedWords.length) {
-      changes.push({
-        type: 'removed',
-        words: originalWords.slice(modifiedWords.length)
-      });
-    } else if (modifiedWords.length > originalWords.length) {
-      changes.push({
-        type: 'added',
-        words: modifiedWords.slice(originalWords.length)
-      });
-    }
-  } else {
-    // For significantly different texts, just note a major change
-    changes.push({
-      type: 'major',
-      description: 'Significant restructuring or rewording'
-    });
-  }
-  
-  return changes;
-};
-
 // Generate fake highlights at different difficulty levels with change tracking
-const generateFakeHighlight = (originalText, difficulty) => {
+const generateFakeHighlight = (originalText: string, difficulty: string) => {
   // Tokenize the text for manipulation
   const words = originalText.split(' ');
   const sentences = originalText.split(/[.!?]+/).filter(s => s.trim().length > 0);
   let fakeText = '';
-  let changes = [];
+  let changes: Change[] = [];
   
   // Skip very short highlights
   if (words.length < 3) {
@@ -217,7 +227,7 @@ const generateFakeHighlight = (originalText, difficulty) => {
       if (words.length > 5) {
         // Replace 20-30% of words with alternatives
         const wordsToChange = Math.max(2, Math.floor(words.length * 0.25));
-        const indicesToChange = new Set();
+        const indicesToChange = new Set<number>();
         
         while (indicesToChange.size < wordsToChange) {
           const randomIndex = Math.floor(Math.random() * words.length);
@@ -490,7 +500,7 @@ const generateFakeHighlight = (originalText, difficulty) => {
 };
 
 // Process highlights and generate fake versions
-const processHighlights = (highlights, difficulty) => {
+const processHighlights = (highlights: Highlight[], difficulty: string) => {
   // Generate fake highlights
   const fakeHighlights = highlights.map(highlight => {
     return {
@@ -523,7 +533,7 @@ const processHighlights = (highlights, difficulty) => {
 };
 
 // KeyboardShortcuts component
-const KeyboardShortcuts = ({ enabled, onToggle }) => (
+const KeyboardShortcuts = ({ enabled, onToggle }: { enabled: boolean, onToggle: () => void }) => (
   <div className="flex items-center space-x-2 text-sm">
     <div className="flex items-center space-x-1">
       <Checkbox 
@@ -550,7 +560,7 @@ const KeyboardShortcuts = ({ enabled, onToggle }) => (
 );
 
 // StreakIndicator component
-const StreakIndicator = ({ streak }) => {
+const StreakIndicator = ({ streak }: { streak: number }) => {
   if (streak < 3) return null;
   
   return (
@@ -562,7 +572,7 @@ const StreakIndicator = ({ streak }) => {
 };
 
 // ChangesHighlighter component to visualize text differences
-const ChangesHighlighter = ({ originalText, modifiedText, changes }) => {
+const ChangesHighlighter = ({ originalText, modifiedText, changes }: { originalText: string, modifiedText: string, changes: Change[] }) => {
   if (!changes || changes.length === 0) return null;
   
   // For major changes, show a simple comparison
@@ -622,34 +632,32 @@ const ChangesHighlighter = ({ originalText, modifiedText, changes }) => {
 };
 
 // Game component with game mechanics
-const HighlightDetective = ({ userHighlights = [] }) => {
+const HighlightDetective = ({ userHighlights = [] }: { userHighlights: Highlight[] }) => {
   // Game configuration state
   const [gameState, setGameState] = useState('setup');
   const [difficulty, setDifficulty] = useState('novice');
   const [gameMode, setGameMode] = useState('classic');
-  const [highlightInput, setHighlightInput] = useState('');
   const [enableKeyboardShortcuts, setEnableKeyboardShortcuts] = useState(true);
   const [practiceModeEnabled, setPracticeModeEnabled] = useState(false);
   
   // Game progress state
-  const [gameItems, setGameItems] = useState([]);
+  const [gameItems, setGameItems] = useState<Highlight[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [confidenceLevel, setConfidenceLevel] = useState(1);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState<{ [key: string]: Answer }>({});
   const [showFeedback, setShowFeedback] = useState(false);
-  const [feedbackData, setFeedbackData] = useState(null);
-  const [startTime, setStartTime] = useState(null);
-  const [answerTime, setAnswerTime] = useState(0);
+  const [feedbackData, setFeedbackData] = useState<FeedbackData | null>(null);
+  const [startTime, setStartTime] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(false);
   
   // Refs for cleanup and optimization
-  const timerRef = useRef(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   
   // Keyboard event handling
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (!enableKeyboardShortcuts || gameState !== 'playing' || showFeedback) return;
       
       const key = event.key.toLowerCase();
@@ -708,11 +716,11 @@ const HighlightDetective = ({ userHighlights = [] }) => {
   }, [userHighlights, difficulty, practiceModeEnabled]);
   
   // Handle player answer
-  const handleAnswer = useCallback((isRealGuess) => {
+  const handleAnswer = useCallback((isRealGuess: boolean) => {
     const currentItem = gameItems[currentIndex];
     const isCorrect = currentItem.isReal === isRealGuess;
     const endTime = Date.now();
-    const timeElapsed = (endTime - startTime) / 1000; // in seconds
+    const timeElapsed = (endTime - (startTime || 0)) / 1000; // in seconds
     setAnswerTime(timeElapsed);
     
     // Calculate score
@@ -765,7 +773,7 @@ const HighlightDetective = ({ userHighlights = [] }) => {
         confidence: confidenceLevel,
         time: timeElapsed,
         guess: isRealGuess,
-        actual: currentItem.isReal
+        actual: currentItem.isReal || false
       }
     }));
     
@@ -810,7 +818,7 @@ const HighlightDetective = ({ userHighlights = [] }) => {
       const avgTime = Object.values(answers).reduce((sum, a) => sum + a.time, 0) / totalAnswers;
       
       // Performance by confidence level
-      const confidenceLevels = {1: {correct: 0, total: 0}, 2: {correct: 0, total: 0}, 3: {correct: 0, total: 0}};
+      const confidenceLevels: ConfidenceLevels = {1: {correct: 0, total: 0}, 2: {correct: 0, total: 0}, 3: {correct: 0, total: 0}};
       Object.values(answers).forEach(a => {
         if (confidenceLevels[a.confidence]) {
           confidenceLevels[a.confidence].total++;
@@ -853,7 +861,7 @@ const HighlightDetective = ({ userHighlights = [] }) => {
         
         <div className="space-y-4">
           <p>
-            You've completed the practice round! Now you're ready to start the real game with 
+            You have completed the practice round! Now you are ready to start the real game with 
             {practiceModeEnabled ? '' : ' more'} highlights and higher stakes.
           </p>
           
@@ -899,8 +907,8 @@ const HighlightDetective = ({ userHighlights = [] }) => {
           <div>
             <h4 className="font-medium">Gameplay</h4>
             <ul className="list-disc pl-5 space-y-2">
-              <li>You'll be shown highlights one at a time</li>
-              <li>For each highlight, decide if it's "Real" or "Fake"</li>
+              <li>You will be shown highlights one at a time</li>
+              <li>For each highlight, decide if it is "Real" or "Fake"</li>
               <li>Set your confidence level (1x-3x) to multiply points</li>
               <li>Maintain a streak of correct answers for bonus points</li>
               <li>Review feedback after each answer to improve</li>
@@ -975,7 +983,7 @@ const HighlightDetective = ({ userHighlights = [] }) => {
         
         <KeyboardShortcuts 
           enabled={enableKeyboardShortcuts} 
-          onToggle={setEnableKeyboardShortcuts} 
+          onToggle={() => setEnableKeyboardShortcuts(!enableKeyboardShortcuts)} 
         />
       </div>
       
@@ -1017,7 +1025,7 @@ const HighlightDetective = ({ userHighlights = [] }) => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <Badge variant="outline" className="px-2 py-1">
+            <Badge className="px-2 py-1" variant="outline">
               {currentIndex + 1}/{gameItems.length}
             </Badge>
             <Badge variant="outline" className="px-2 py-1 bg-blue-100">
@@ -1054,7 +1062,7 @@ const HighlightDetective = ({ userHighlights = [] }) => {
         <div className="bg-secondary/20 p-4 rounded-lg">
           {isSpeedMode && (
             <div className="mb-2">
-              <Progress value={(Date.now() - startTime) / 100} className="h-1" />
+              <Progress value={(Date.now() - (startTime || 0)) / 100} className="h-1" />
             </div>
           )}
           
@@ -1124,7 +1132,7 @@ const HighlightDetective = ({ userHighlights = [] }) => {
     if (!gameStats) return <div>No game statistics available</div>;
     
     // Calculate letter grade based on accuracy
-    const getGrade = (accuracy) => {
+    const getGrade = (accuracy: number) => {
       if (accuracy >= 90) return 'A';
       if (accuracy >= 80) return 'B';
       if (accuracy >= 70) return 'C';
@@ -1165,8 +1173,8 @@ const HighlightDetective = ({ userHighlights = [] }) => {
                 <div key={level} className="bg-white p-2 rounded">
                   <div className="font-medium">{level}x Confidence</div>
                   <div>
-                    {data.total > 0 
-                      ? `${Math.round((data.correct / data.total) * 100)}% Correct`
+                    {(data as ConfidenceLevelData).total > 0 
+                      ? `${Math.round(((data as ConfidenceLevelData).correct / (data as ConfidenceLevelData).total) * 100)}% Correct`
                       : 'Not used'}
                   </div>
                 </div>
@@ -1262,7 +1270,7 @@ const HighlightDetective = ({ userHighlights = [] }) => {
                   <ChangesHighlighter
                     originalText={feedbackData.item.originalText || feedbackData.item.text}
                     modifiedText={feedbackData.item.text}
-                    changes={feedbackData.item.changes}
+                    changes={feedbackData.item.changes || []}
                   />
                 </div>
               )}
@@ -1304,9 +1312,9 @@ const HighlightDetective = ({ userHighlights = [] }) => {
 };
 
 // Main component for Highlight Detective Game
-const HighlightDetectiveGame = ({ highlights = [] }) => {
+const HighlightDetectiveGame = ({ highlights = [] }: { highlights?: Highlight[] }) => {
   const [inputHighlights, setInputHighlights] = useState('');
-  const [processedHighlights, setProcessedHighlights] = useState([]);
+  const [processedHighlights, setProcessedHighlights] = useState<Highlight[]>([]);
   const [showGame, setShowGame] = useState(false);
   const [showInstructions, setShowInstructions] = useState(true);
   
@@ -1390,7 +1398,7 @@ const HighlightDetectiveGame = ({ highlights = [] }) => {
                 placeholder="Paste your highlights here, one per line..."
                 className="h-40"
                 value={inputHighlights}
-                onChange={(e) => setInputHighlights(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputHighlights(e.target.value)}
               />
               <p className="text-sm text-muted-foreground">
                 Leave blank to use sample highlights for demonstration.

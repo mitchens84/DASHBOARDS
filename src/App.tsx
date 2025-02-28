@@ -59,6 +59,7 @@ import ReadingDashboard from "../content/6I-INTELLECTUAL/reading-dashboard";
 // 9E-MEDIA imports
 import KorijeniNaKorculi from "../content/9E-MEDIA/korijeni_na_korculi";
 import HikingPlaylist from "../content/9E-MEDIA/hiking-playlist";
+import HighlightDetectiveGame from "../content/9E-MEDIA/highlight_detective_game";
 import MusicDashboardR1 from "../content/9E-MEDIA/music-dashboard-r1";
 import MusicDashboard from "../content/9E-MEDIA/music-dashboard";
 import SoundTherapy from "../content/9E-MEDIA/sound-therapy-guide";
@@ -158,6 +159,7 @@ function App() {
     // Media Section
     { id: "media", title: "9E-EXPERIENCE", level: 0 },
     { id: "hiking-playlist", title: "Hiking Playlist", level: 1 },
+    { id: "highlightdetectivegame", title: "Highlight Detective Game", level: 1 },
     { id: "music-dashboard", title: "Music Dashboard", level: 1 },
     { id: "music-dashboard-r1", title: "Music Dashboard R1", level: 1 },
     { id: "sound-therapy", title: "Sound Therapy Guide", level: 1 },
@@ -298,6 +300,8 @@ function App() {
       // 9E-MEDIA
       case "hiking-playlist":
         return <HikingPlaylist />;
+      case "highlightdetectivegame":
+        return <HighlightDetectiveGame />;
       case "music-dashboard-r1":
         return <MusicDashboardR1 />;
       case "music-dashboard":
