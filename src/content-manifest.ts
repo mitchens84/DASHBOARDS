@@ -42,6 +42,7 @@ export const contentManifest = {
     "korijeni_na_korculi",
     "music-dashboard",
     "sound-therapy-guide",
+    "highlight_detective_game",
   ],
   "5R-BEAN": [
     "bean-complete-nutrition-dashboard",
