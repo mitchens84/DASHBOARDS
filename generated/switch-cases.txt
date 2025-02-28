@@ -1,7 +1,5 @@
 case "korijeninakorculi":
   return <KorijeniNaKorculi />;
-case "highlight-detective-game":
-  return <HighlightDetectiveGame />;
 case "bean-risk-assessment-v2revised":
   return <BeanRiskAssessmentV2Revised />;
 case "bean-sodium-intake-dashboard":
