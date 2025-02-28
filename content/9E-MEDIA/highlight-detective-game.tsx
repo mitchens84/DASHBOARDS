@@ -1,4 +1,4 @@
-    // Render results screen
+// Render results screen
     const renderResultsScreen = () => {
       if (!gameStats) return <div>No game statistics available</div>;
       
@@ -673,48 +673,7 @@ const generateFakeHighlight = (originalText, difficulty) => {
           if (words[randomIndex].length > 3) { // Only change substantial words
             indicesToChange.add(randomIndex);
           }
-        
-        modifiedText = words.join(' ');
-      }
-      
-      fakeText = modifiedText;
-      break;
-      
-    default:
-      // Default to moderate changes
-      fakeText = originalText.split(' ').reverse().join(' ');
-  }
-  
-  // Ensure the fake is actually different
-  if (fakeText === originalText) {
-    if (difficulty === 'expert') {
-      // For expert level, make a minimal change to a single important word
-      const words = originalText.split(' ');
-      const importantWordIndex = words.findIndex(word => word.length > 5);
-      if (importantWordIndex !== -1) {
-        words[importantWordIndex] = getOppositeWord(words[importantWordIndex]);
-      } else {
-        // Add or remove a word
-        const insertionPoint = Math.floor(words.length / 2);
-        if (Math.random() > 0.5) {
-          words.splice(insertionPoint, 0, 'not');
-        } else {
-          words.splice(insertionPoint, 1);
-        }
-      }
-      fakeText = words.join(' ');
-    } else {
-      // For other levels, make more obvious changes
-      fakeText = `The opposite is true: ${originalText}`;
-    }
-  }
-  
-  return {
-    text: fakeText,
-    isReal: false,
-    originalText
-  };
-};        }
+        } // Added missing closing brace here
         
         const modifiedWords = words.map((word, index) => {
           if (indicesToChange.has(index)) {
@@ -869,4 +828,46 @@ const generateFakeHighlight = (originalText, difficulty) => {
               wordsChanged++;
             }
           }
+        }
         
+        modifiedText = words.join(' ');
+      }
+      
+      fakeText = modifiedText;
+      break;
+      
+    default:
+      // Default to moderate changes
+      fakeText = originalText.split(' ').reverse().join(' ');
+  }
+  
+  // Ensure the fake is actually different
+  if (fakeText === originalText) {
+    if (difficulty === 'expert') {
+      // For expert level, make a minimal change to a single important word
+      const words = originalText.split(' ');
+      const importantWordIndex = words.findIndex(word => word.length > 5);
+      if (importantWordIndex !== -1) {
+        words[importantWordIndex] = getOppositeWord(words[importantWordIndex]);
+      } else {
+        // Add or remove a word
+        const insertionPoint = Math.floor(words.length / 2);
+        if (Math.random() > 0.5) {
+          words.splice(insertionPoint, 0, 'not');
+        } else {
+          words.splice(insertionPoint, 1);
+        }
+      }
+      fakeText = words.join(' ');
+    } else {
+      // For other levels, make more obvious changes
+      fakeText = `The opposite is true: ${originalText}`;
+    }
+  }
+  
+  return {
+    text: fakeText,
+    isReal: false,
+    originalText
+  };
+};
