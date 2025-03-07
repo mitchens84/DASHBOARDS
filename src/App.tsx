@@ -55,6 +55,8 @@ import BeanCompleteNutritionDashboard from "../content/5R-BEAN/bean-complete-nut
 
 // 6I-INTELLECTUAL imports
 import ReadingDashboard from "../content/6I-INTELLECTUAL/reading-dashboard";
+import MurderMysteryDinnerParty from "../content/6I-INTELLECTUAL/murder-mystery-dinner-party";
+import MurderMysteryDinnerPartyR1 from "../content/6I-INTELLECTUAL/murder-mystery-dinner-party-r1";
 
 // 9E-MEDIA imports
 import KorijeniNaKorculi from "../content/9E-MEDIA/korijeni_na_korculi";
@@ -155,6 +157,8 @@ function App() {
     // Intellectual Section
     { id: "intellectual", title: "6I-INTELLECTUAL", level: 0 },
     { id: "reading-dashboard", title: "Reading Dashboard", level: 1 },
+    { id: "murder-mystery-dinner-party", title: "Murder Mystery Dinner Party", level: 1 },
+    { id: "murder-mystery-dinner-party-r1", title: "Murder Mystery Dinner Party (Enhanced)", level: 1 },
     
     // Media Section
     { id: "media", title: "9E-EXPERIENCE", level: 0 },
@@ -296,6 +300,10 @@ function App() {
       // 6I-INTELLECTUAL
       case "reading-dashboard":
         return <ReadingDashboard />;
+      case "murder-mystery-dinner-party":
+        return <MurderMysteryDinnerParty />;
+      case "murder-mystery-dinner-party-r1":
+        return <MurderMysteryDinnerPartyR1 />;
 
       // 9E-MEDIA
       case "hiking-playlist":

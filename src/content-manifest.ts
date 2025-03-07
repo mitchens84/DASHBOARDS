@@ -35,6 +35,8 @@ export const contentManifest = {
   ],
   "6I-INTELLECTUAL": [
     "reading-dashboard",
+    "murder-mystery-dinner-party",
+    "murder-mystery-dinner-party-r1",
   ],
   "9E-MEDIA": [
     "music-dashboard-r1",
