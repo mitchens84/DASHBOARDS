@@ -1,6 +1,12 @@
+case "thai-massage-benefits-risks-dashboard":
+  return <ThaiMassageBenefitsRisksDashboard />;
 case "korijeninakorculi":
   return <KorijeniNaKorculi />;
+case "media-preference-dashboard":
+  return <MediaPreferenceDashboard />;
 case "bean-risk-assessment-v2revised":
   return <BeanRiskAssessmentV2Revised />;
 case "bean-sodium-intake-dashboard":
   return <BeanSodiumIntakeDashboard />;
+case "thai-import-calculator":
+  return <ThaiImportCalculator />;

@@ -15,6 +15,7 @@ export const contentManifest = {
     "retinol-protocol-guide",
     "vaccination-timeline-analysis",
     "vollagen-dashboard",
+    "thai-massage-benefits-risks-dashboard",
   ],
   "4H-NUTRITION": [
     "life-smoothie-visual",
@@ -45,6 +46,7 @@ export const contentManifest = {
     "music-dashboard",
     "sound-therapy-guide",
     "highlight_detective_game",
+    "media-preference-dashboard",
   ],
   "5R-BEAN": [
     "bean-complete-nutrition-dashboard",
@@ -62,6 +64,9 @@ export const contentManifest = {
   ],
   "0A-PREP": [
     "bike-maintenance-dashboard",
+  ],
+  "3P-FINANCE": [
+    "thai-import-calculator",
   ],
 };
 

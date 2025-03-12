@@ -44,6 +44,22 @@
       },
       "group": "build",
       "detail": "Update content manifest and then run a build to validate changes"
+    },
+    {
+      "label": "Full Update and Build",
+      "type": "shell",
+      "command": "npm install && npx tsx scripts/update-content.ts && npm run build && npm test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Update content, verify updates in App.tsx, check dependencies, and build/test the project"
     }
   ]
 }
