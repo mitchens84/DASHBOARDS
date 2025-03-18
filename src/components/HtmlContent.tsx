@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 interface HtmlContentProps {
   filePath: string;
@@ -8,6 +8,7 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
   const [html, setHtml] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchHtml = async () => {
@@ -38,6 +39,43 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
     fetchHtml();
   }, [filePath]);
 
+  // Process HTML and execute scripts when content changes
+  useEffect(() => {
+    if (!html || !containerRef.current) return;
+    
+    // Parse the HTML to extract styles, scripts, and content
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    
+    // Execute scripts
+    const executeScripts = () => {
+      if (!containerRef.current) return;
+      
+      // Find all scripts in the content
+      const scripts = containerRef.current.querySelectorAll('script');
+      scripts.forEach(oldScript => {
+        const newScript = document.createElement('script');
+        
+        // Copy all attributes
+        Array.from(oldScript.attributes).forEach(attr => {
+          newScript.setAttribute(attr.name, attr.value);
+        });
+        
+        // Copy the script content
+        newScript.textContent = oldScript.textContent;
+        
+        // Replace the old script with the new one
+        if (oldScript.parentNode) {
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        }
+      });
+    };
+    
+    // Run after render is complete
+    setTimeout(executeScripts, 100);
+    
+  }, [html]);
+
   if (loading) return (
     <div className="flex items-center justify-center p-8">
       <div className="text-center">
@@ -59,8 +97,12 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
   );
 
   return (
-    <div className="html-content-wrapper">
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+    <div className="html-content-wrapper w-full overflow-x-hidden">
+      <div 
+        ref={containerRef}
+        className="html-content" 
+        dangerouslySetInnerHTML={{ __html: html }} 
+      />
     </div>
   );
 };

@@ -24,14 +24,60 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Copy HTML Content (recursively)
+      - name: Copy HTML Content (maintaining structure)
         run: |
           mkdir -p docs/content
-          find content -name "*.html" -type f -exec cp {} docs/content/ \;
+          # Create a function to copy files recursively
+          copy_html_files() {
+            local src_dir=$1
+            local dst_dir=$2
+            local rel_path=$3
+            
+            for file in "$src_dir/$rel_path"/*; do
+              if [ -d "$file" ]; then
+                # It's a directory, create it in destination and recurse
+                local dir_name=$(basename "$file")
+                mkdir -p "$dst_dir/$rel_path/$dir_name"
+                copy_html_files "$src_dir" "$dst_dir" "$rel_path/$dir_name"
+              elif [ -f "$file" ] && [[ "$file" == *.html ]]; then
+                # It's an HTML file, copy it
+                cp "$file" "$dst_dir/$rel_path/$(basename "$file")"
+                # Also copy to flat structure
+                cp "$file" "$dst_dir/$(basename "$file")"
+              fi
+            done
+          }
+          
+          # Copy HTML files with directory structure
+          copy_html_files "content" "docs/content" ""
+          
+          # Also copy asset files (CSS, JS, images)
+          copy_assets() {
+            local src_dir=$1
+            local dst_dir=$2
+            local rel_path=$3
+            
+            for file in "$src_dir/$rel_path"/*; do
+              if [ -d "$file" ]; then
+                # It's a directory, create it in destination and recurse
+                local dir_name=$(basename "$file")
+                mkdir -p "$dst_dir/$rel_path/$dir_name"
+                copy_assets "$src_dir" "$dst_dir" "$rel_path/$dir_name"
+              elif [ -f "$file" ] && [[ "$file" =~ \.(css|js|json|svg|png|jpg|jpeg|gif)$ ]]; then
+                # It's an asset file, copy it
+                mkdir -p "$dst_dir/$rel_path"
+                cp "$file" "$dst_dir/$rel_path/$(basename "$file")"
+              fi
+            done
+          }
+          
+          # Copy asset files with directory structure
+          copy_assets "content" "docs/content" ""
+          
           echo "HTML files found:"
           find content -name "*.html" -type f | sort
           echo "Content files copied to docs/content:"
-          ls -la docs/content/
+          find docs/content -type f | sort
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

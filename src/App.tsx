@@ -2,6 +2,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
 import HtmlContent from './components/HtmlContent';
+import HtmlFrame from './components/HtmlFrame';
 
 // 0A-PREP imports
 import BikeMaintenanceDashboard from "../content/0A-PREP/bike-maintenance-dashboard";
@@ -121,6 +122,7 @@ function App() {
     { id: "retinol-protocol-guide", title: "Retinol Protocol Guide", level: 1 },
     { id: "vaccination-timeline-analysis", title: "Vaccination Timeline Analysis", level: 1 },
     { id: "vollagen-dashboard", title: "Vollagen Dashboard", level: 1 },
+    { id: "sulforaphane-protocol", title: "Sulforaphane Protocol", level: 1 },
     
     // Nutrition Section
     { id: "nutrition", title: "4H-NUTRITION", level: 0 },
@@ -154,6 +156,7 @@ function App() {
     { id: "bean-risk-assessment-v2-revised", title: "Bean Risk Assessment V2 Revised", level: 1 },
     { id: "bean-sodium-intake-dashboard", title: "Bean Sodium Intake Dashboard", level: 1 },
     { id: "beans-infection-diet-plan", title: "Beans Infection Diet Plan", level: 1 },
+    { id: "bean-uti-prevention", title: "Bean UTI Prevention", level: 1 },
     
     // Intellectual Section
     { id: "intellectual", title: "6I-INTELLECTUAL", level: 0 },
@@ -161,8 +164,9 @@ function App() {
     { id: "murder-mystery-dinner-party", title: "Murder Mystery Dinner Party", level: 1 },
     { id: "murder-mystery-dinner-party-r1", title: "Murder Mystery Dinner Party (Enhanced)", level: 1 },
     
-    // Media Section
-    { id: "media", title: "9E-EXPERIENCE", level: 0 },
+    // Experience Section (combined 9E-MEDIA and 9E-TRAVEL)
+    { id: "experience", title: "9E-EXPERIENCE", level: 0 },
+    // Media items
     { id: "hiking-playlist", title: "Hiking Playlist", level: 1 },
     { id: "highlightdetectivegame", title: "Highlight Detective Game", level: 1 },
     { id: "music-dashboard", title: "Music Dashboard", level: 1 },
@@ -170,10 +174,9 @@ function App() {
     { id: "sound-therapy", title: "Sound Therapy Guide", level: 1 },
     { id: "korijeni-na-korculi", title: "Korijeni Na Korculi", level: 1 },
     { id: "sound-therapy-guide", title: "Sound Therapy Guide", level: 1 },
+    // Travel items
     { id: "chiang-mai-air-pollution", title: "Chiang Mai Air Pollution", level: 1 },
-    { id: "bean-uti-prevention", title: "Bean UTI Prevention", level: 1 },
     { id: "interactive-travel-itinerary", title: "Interactive Travel Itinerary", level: 1 },
-    { id: "sulforaphane-protocol", title: "Sulforaphane Protocol", level: 1 },
     { id: "thailand-malaysia-journey", title: "Thailand-Malaysia Journey Planner", level: 1 },
   ];
 
@@ -326,15 +329,15 @@ function App() {
       case "korijeni-na-korculi":
         return <KorijeniNaKorculi />;
       case "chiang-mai-air-pollution":
-        return <HtmlContent filePath="content/chiang-mai-air-pollution-guide.html" />;
+        return <HtmlFrame src="content/chiang-mai-air-pollution-guide.html" title="Chiang Mai Air Pollution Guide" />;
       case "bean-uti-prevention":
-        return <HtmlContent filePath="content/bean-uti-prevention-dashboard.html" />;
+        return <HtmlFrame src="content/bean-uti-prevention-dashboard.html" title="Bean UTI Prevention Dashboard" />;
       case "interactive-travel-itinerary":
-        return <HtmlContent filePath="content/interactive-travel-itinerary.html" />;
+        return <HtmlFrame src="content/interactive-travel-itinerary.html" title="Interactive Travel Itinerary" />;
       case "sulforaphane-protocol":
-        return <HtmlContent filePath="content/sulforaphane-protocol.html" />;
+        return <HtmlFrame src="content/sulforaphane-protocol.html" title="Sulforaphane Protocol" />;
       case "thailand-malaysia-journey":
-        return <HtmlContent filePath="content/thailand-malaysia-interactive-journey-planner.html" />;
+        return <HtmlFrame src="content/thailand-malaysia-interactive-journey-planner.html" title="Thailand-Malaysia Journey Planner" />;
 
       default:
         return null;

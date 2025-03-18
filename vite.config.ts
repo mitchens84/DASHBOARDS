@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
 
-// Create a plugin to copy HTML files to the build directory
+// Create a plugin to copy HTML files to the build directory and maintain their structure
 const copyContentFiles = () => {
   return {
     name: 'copy-content-files',
@@ -16,36 +16,83 @@ const copyContentFiles = () => {
         fs.mkdirSync(contentDestDir, { recursive: true });
       }
 
-      // Copy HTML files from content directory
-      if (fs.existsSync(contentSrcDir)) {
-        // Handle HTML files in root of content directory
-        const files = fs.readdirSync(contentSrcDir);
-        files.forEach(file => {
-          if (file.endsWith('.html')) {
-            const srcFile = path.join(contentSrcDir, file);
-            const destFile = path.join(contentDestDir, file);
-            fs.copyFileSync(srcFile, destFile);
-            console.log(`Copied ${srcFile} to ${destFile}`);
-          }
-        });
+      // Recursive function to copy HTML files maintaining directory structure
+      const copyHtmlFiles = (srcDir, destDir, relativePath = '') => {
+        const currentSrcDir = path.join(srcDir, relativePath);
         
-        // Handle subdirectories
-        files.forEach(file => {
-          const fullPath = path.join(contentSrcDir, file);
-          if (fs.statSync(fullPath).isDirectory()) {
-            const subDir = path.join(contentSrcDir, file);
-            const subFiles = fs.readdirSync(subDir);
-            subFiles.forEach(subFile => {
-              if (subFile.endsWith('.html')) {
-                const srcFile = path.join(subDir, subFile);
-                const destFile = path.join(contentDestDir, subFile);
-                fs.copyFileSync(srcFile, destFile);
-                console.log(`Copied ${srcFile} to ${destFile}`);
-              }
-            });
+        if (!fs.existsSync(currentSrcDir)) return;
+        
+        const entries = fs.readdirSync(currentSrcDir, { withFileTypes: true });
+        
+        entries.forEach(entry => {
+          const entryRelativePath = path.join(relativePath, entry.name);
+          const srcPath = path.join(srcDir, entryRelativePath);
+          const destPath = path.join(destDir, entryRelativePath);
+          
+          if (entry.isDirectory()) {
+            if (!fs.existsSync(destPath)) {
+              fs.mkdirSync(destPath, { recursive: true });
+            }
+            copyHtmlFiles(srcDir, destDir, entryRelativePath);
+          } 
+          else if (entry.isFile() && entry.name.endsWith('.html')) {
+            const destFolder = path.dirname(destPath);
+            if (!fs.existsSync(destFolder)) {
+              fs.mkdirSync(destFolder, { recursive: true });
+            }
+            fs.copyFileSync(srcPath, destPath);
+            console.log(`Copied ${srcPath} to ${destPath}`);
+            
+            // Also copy to flat structure for backward compatibility
+            const flatDestPath = path.join(destDir, entry.name);
+            fs.copyFileSync(srcPath, flatDestPath);
+            console.log(`Also copied to ${flatDestPath} (flat structure)`);
           }
         });
-      }
+      };
+      
+      copyHtmlFiles(contentSrcDir, contentDestDir);
+      
+      // Copy any CSS/JS assets that might be referenced by the HTML files
+      const copyAssets = (srcDir, destDir, relativePath = '') => {
+        const currentSrcDir = path.join(srcDir, relativePath);
+        
+        if (!fs.existsSync(currentSrcDir)) return;
+        
+        const entries = fs.readdirSync(currentSrcDir, { withFileTypes: true });
+        
+        entries.forEach(entry => {
+          const entryRelativePath = path.join(relativePath, entry.name);
+          const srcPath = path.join(srcDir, entryRelativePath);
+          const destPath = path.join(destDir, entryRelativePath);
+          
+          if (entry.isDirectory()) {
+            if (!fs.existsSync(destPath)) {
+              fs.mkdirSync(destPath, { recursive: true });
+            }
+            copyAssets(srcDir, destDir, entryRelativePath);
+          } 
+          else if (entry.isFile() && (
+            entry.name.endsWith('.css') || 
+            entry.name.endsWith('.js') || 
+            entry.name.endsWith('.json') ||
+            entry.name.endsWith('.svg') ||
+            entry.name.endsWith('.png') ||
+            entry.name.endsWith('.jpg') ||
+            entry.name.endsWith('.jpeg') ||
+            entry.name.endsWith('.gif')
+          )) {
+            const destFolder = path.dirname(destPath);
+            if (!fs.existsSync(destFolder)) {
+              fs.mkdirSync(destFolder, { recursive: true });
+            }
+            fs.copyFileSync(srcPath, destPath);
+            console.log(`Copied asset ${srcPath} to ${destPath}`);
+          }
+        });
+      };
+      
+      copyAssets(contentSrcDir, contentDestDir);
     }
   };
 };
@@ -58,6 +105,7 @@ export default defineConfig({
     {
       name: 'history-api-fallback',
       configureServer(server) {
+        // Configure server to handle HTML content paths
         server.middlewares.use((req, res, next) => {
           if (req.url.startsWith('/assets/') || req.url.startsWith('/@vite/') || req.url.startsWith('/favicon.ico')) {
             next();
@@ -99,7 +147,6 @@ export default defineConfig({
           if (id.includes('node_modules')) {
             return 'vendor';
           }
-          // Create separate chunks for content files
           if (id.includes('/content/')) {
             return 'content';
           }
@@ -108,11 +155,9 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000
   },
-  // Add server configuration for development
   server: {
     fs: {
-      // Allow serving files from the content directory
       allow: ['..']
     }
   }
-})
+});
