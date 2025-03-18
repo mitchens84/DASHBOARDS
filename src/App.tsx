@@ -326,15 +326,15 @@ function App() {
       case "korijeni-na-korculi":
         return <KorijeniNaKorculi />;
       case "chiang-mai-air-pollution":
-        return <HtmlContent filePath="/content/chiang-mai-air-pollution-guide.html" />;
+        return <HtmlContent filePath="content/chiang-mai-air-pollution-guide.html" />;
       case "bean-uti-prevention":
-        return <HtmlContent filePath="/content/bean-uti-prevention-dashboard.html" />;
+        return <HtmlContent filePath="content/bean-uti-prevention-dashboard.html" />;
       case "interactive-travel-itinerary":
-        return <HtmlContent filePath="/content/interactive-travel-itinerary.html" />;
+        return <HtmlContent filePath="content/interactive-travel-itinerary.html" />;
       case "sulforaphane-protocol":
-        return <HtmlContent filePath="/content/sulforaphane-protocol.html" />;
+        return <HtmlContent filePath="content/sulforaphane-protocol.html" />;
       case "thailand-malaysia-journey":
-        return <HtmlContent filePath="/content/thailand-malaysia-interactive-journey-planner.html" />;
+        return <HtmlContent filePath="content/thailand-malaysia-interactive-journey-planner.html" />;
 
       default:
         return null;
