@@ -8,7 +8,7 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
   const [html, setHtml] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchHtml = async () => {
@@ -39,41 +39,78 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
     fetchHtml();
   }, [filePath]);
 
-  // Process HTML and execute scripts when content changes
+  // Special hook to handle interactive elements
   useEffect(() => {
-    if (!html || !containerRef.current) return;
+    if (!html || !contentRef.current) return;
     
-    // Parse the HTML to extract styles, scripts, and content
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    
-    // Execute scripts
     const executeScripts = () => {
-      if (!containerRef.current) return;
-      
-      // Find all scripts in the content
-      const scripts = containerRef.current.querySelectorAll('script');
-      scripts.forEach(oldScript => {
+      // Find all script tags in the content and execute them
+      const scriptTags = contentRef.current!.querySelectorAll('script');
+      scriptTags.forEach(oldScript => {
         const newScript = document.createElement('script');
         
-        // Copy all attributes
         Array.from(oldScript.attributes).forEach(attr => {
           newScript.setAttribute(attr.name, attr.value);
         });
         
-        // Copy the script content
-        newScript.textContent = oldScript.textContent;
-        
-        // Replace the old script with the new one
-        if (oldScript.parentNode) {
-          oldScript.parentNode.replaceChild(newScript, oldScript);
+        // Handle both inline and src scripts
+        if (oldScript.src) {
+          newScript.src = oldScript.src;
+        } else {
+          newScript.textContent = oldScript.textContent;
         }
+        
+        // Replace the old script with the new one to execute it
+        oldScript.parentNode?.replaceChild(newScript, oldScript);
       });
+      
+      // Fix any Bootstrap/jQuery interactive elements that need initialization
+      if (typeof window !== 'undefined') {
+        // Wait a moment for scripts to load
+        setTimeout(() => {
+          // Activate any Bootstrap tabs
+          const tabEls = contentRef.current?.querySelectorAll('[data-bs-toggle="tab"], [data-toggle="tab"]');
+          if (tabEls) {
+            tabEls.forEach(el => {
+              if (window.bootstrap && window.bootstrap.Tab) {
+                new window.bootstrap.Tab(el);
+              }
+              
+              // For older Bootstrap versions using jQuery
+              if (window.$ || window.jQuery) {
+                try {
+                  const $ = window.$ || window.jQuery;
+                  $(el).tab();
+                } catch (e) {
+                  console.warn('Error initializing tab with jQuery:', e);
+                }
+              }
+            });
+          }
+          
+          // Initialize any other interactive elements if needed
+          if (window.$ || window.jQuery) {
+            const $ = window.$ || window.jQuery;
+            try {
+              $('[data-toggle="tooltip"]').tooltip();
+              $('[data-toggle="popover"]').popover();
+              $('.collapse').collapse();
+              $('.dropdown-toggle').dropdown();
+            } catch (e) {
+              console.warn('Error initializing Bootstrap components:', e);
+            }
+          }
+        }, 500);
+      }
     };
     
-    // Run after render is complete
+    // Run script execution after render
     setTimeout(executeScripts, 100);
     
+    // Clean up any global event listeners when component unmounts
+    return () => {
+      // Add any cleanup code here if needed
+    };
   }, [html]);
 
   if (loading) return (
@@ -97,9 +134,9 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
   );
 
   return (
-    <div className="html-content-wrapper w-full overflow-x-hidden">
+    <div className="html-content-wrapper w-full">
       <div 
-        ref={containerRef}
+        ref={contentRef}
         className="html-content" 
         dangerouslySetInnerHTML={{ __html: html }} 
       />

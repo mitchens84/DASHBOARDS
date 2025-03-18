@@ -16,6 +16,36 @@ const copyContentFiles = () => {
         fs.mkdirSync(contentDestDir, { recursive: true });
       }
 
+      // Ensure 4H-PSYCHOLOGY directory exists
+      const psychologyDir = path.resolve(contentDestDir, '4H-PSYCHOLOGY');
+      if (!fs.existsSync(psychologyDir)) {
+        fs.mkdirSync(psychologyDir, { recursive: true });
+      }
+
+      // Copy specific HTML files maintaining directory structure
+      const specialFiles = [
+        {
+          src: path.resolve(contentSrcDir, '4H-PSYCHOLOGY/psychometric-dashboard.html'),
+          dest: path.resolve(contentDestDir, '4H-PSYCHOLOGY/psychometric-dashboard.html'),
+          flatDest: path.resolve(contentDestDir, 'psychometric-dashboard.html')
+        },
+        // ...other special files...
+      ];
+
+      specialFiles.forEach(file => {
+        if (fs.existsSync(file.src)) {
+          // Copy to structured location
+          fs.copyFileSync(file.src, file.dest);
+          console.log(`Copied ${file.src} to ${file.dest}`);
+          
+          // Also copy to flat structure for backward compatibility
+          fs.copyFileSync(file.src, file.flatDest);
+          console.log(`Also copied to ${file.flatDest} (flat structure)`);
+        } else {
+          console.warn(`Source file not found: ${file.src}`);
+        }
+      });
+
       // Recursive function to copy HTML files maintaining directory structure
       const copyHtmlFiles = (srcDir, destDir, relativePath = '') => {
         const currentSrcDir = path.join(srcDir, relativePath);

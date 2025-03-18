@@ -2,7 +2,6 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
 import HtmlContent from './components/HtmlContent';
-import HtmlFrame from './components/HtmlFrame';
 
 // 0A-PREP imports
 import BikeMaintenanceDashboard from "../content/0A-PREP/bike-maintenance-dashboard";
@@ -143,6 +142,10 @@ function App() {
     { id: "therapeutic-spice-blend", title: "Therapeutic Spice Blend", level: 1 },
     { id: "tvp-dashboard", title: "TVP Dashboard", level: 1 },
     
+    // 4H-PSYCHOLOGY Section (new)
+    { id: "psychology", title: "4H-PSYCHOLOGY", level: 0 },
+    { id: "psychometric-dashboard", title: "Psychometric Dashboard", level: 1 },
+
     // Bean Section
     { id: "bean", title: "5R-BEAN", level: 0 },
     { id: "antibiotic-dashboard", title: "Antibiotic Dashboard", level: 1 },
@@ -164,9 +167,8 @@ function App() {
     { id: "murder-mystery-dinner-party", title: "Murder Mystery Dinner Party", level: 1 },
     { id: "murder-mystery-dinner-party-r1", title: "Murder Mystery Dinner Party (Enhanced)", level: 1 },
     
-    // Experience Section (combined 9E-MEDIA and 9E-TRAVEL)
-    { id: "experience", title: "9E-EXPERIENCE", level: 0 },
-    // Media items
+    // Media Section
+    { id: "media", title: "9E-MEDIA", level: 0 },
     { id: "hiking-playlist", title: "Hiking Playlist", level: 1 },
     { id: "highlightdetectivegame", title: "Highlight Detective Game", level: 1 },
     { id: "music-dashboard", title: "Music Dashboard", level: 1 },
@@ -174,7 +176,9 @@ function App() {
     { id: "sound-therapy", title: "Sound Therapy Guide", level: 1 },
     { id: "korijeni-na-korculi", title: "Korijeni Na Korculi", level: 1 },
     { id: "sound-therapy-guide", title: "Sound Therapy Guide", level: 1 },
-    // Travel items
+    
+    // Travel Section
+    { id: "travel", title: "9E-TRAVEL", level: 0 },
     { id: "chiang-mai-air-pollution", title: "Chiang Mai Air Pollution", level: 1 },
     { id: "interactive-travel-itinerary", title: "Interactive Travel Itinerary", level: 1 },
     { id: "thailand-malaysia-journey", title: "Thailand-Malaysia Journey Planner", level: 1 },
@@ -286,6 +290,10 @@ function App() {
       case "tvp-dashboard":
         return <TvpDashboard />;
 
+      // 4H-PSYCHOLOGY
+      case "psychometric-dashboard":
+        return <HtmlContent filePath="content/4H-PSYCHOLOGY/psychometric-dashboard.html" />;
+
       // 5R-BEAN
       case "bean-assessment":
       case "bean-risk-assessment-v2-revised":
@@ -328,16 +336,18 @@ function App() {
         return <SoundTherapy />;
       case "korijeni-na-korculi":
         return <KorijeniNaKorculi />;
+
+      // 9E-TRAVEL
       case "chiang-mai-air-pollution":
-        return <HtmlFrame src="content/chiang-mai-air-pollution-guide.html" title="Chiang Mai Air Pollution Guide" />;
+        return <HtmlContent filePath="content/chiang-mai-air-pollution-guide.html" />;
       case "bean-uti-prevention":
-        return <HtmlFrame src="content/bean-uti-prevention-dashboard.html" title="Bean UTI Prevention Dashboard" />;
+        return <HtmlContent filePath="content/bean-uti-prevention-dashboard.html" />;
       case "interactive-travel-itinerary":
-        return <HtmlFrame src="content/interactive-travel-itinerary.html" title="Interactive Travel Itinerary" />;
+        return <HtmlContent filePath="content/interactive-travel-itinerary.html" />;
       case "sulforaphane-protocol":
-        return <HtmlFrame src="content/sulforaphane-protocol.html" title="Sulforaphane Protocol" />;
+        return <HtmlContent filePath="content/sulforaphane-protocol.html" />;
       case "thailand-malaysia-journey":
-        return <HtmlFrame src="content/thailand-malaysia-interactive-journey-planner.html" title="Thailand-Malaysia Journey Planner" />;
+        return <HtmlContent filePath="content/thailand-malaysia-interactive-journey-planner.html" />;
 
       default:
         return null;
