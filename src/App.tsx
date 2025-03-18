@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
+import HtmlContent from './components/HtmlContent';
 
 // 0A-PREP imports
 import BikeMaintenanceDashboard from "../content/0A-PREP/bike-maintenance-dashboard";
@@ -8,10 +9,10 @@ import BikeMaintenanceDashboard from "../content/0A-PREP/bike-maintenance-dashbo
 // 3P-POSSESSIONS imports
 import BackpackDashboard from "../content/3P-POSSESSIONS/240205-comprehensive-backpack-dashboard";
 
-// 4H-BIOHACKING-SKIN imports
-import HolisticProtectionDashboard from "../content/4H-BIOHACKING-SKIN/holistic-protection-dashboard";
-import SunscreenProtectionCalculator from "../content/4H-BIOHACKING-SKIN/sunscreen-protection-calculator";
-import SunscreenBOJ from "../content/4H-BIOHACKING-SKIN/4H-BIOHACKING-SKIN-SUNSCREEN-BOJ";
+// 4H-BIOHACKING imports
+import HolisticProtectionDashboard from "../content/4H-BIOHACKING/holistic-protection-dashboard";
+import SunscreenProtectionCalculator from "../content/4H-BIOHACKING/sunscreen-protection-calculator";
+import SunscreenBOJ from "../content/4H-BIOHACKING/4H-BIOHACKING-SKIN-SUNSCREEN-BOJ";
 
 // 4H-ENVIRONMENT imports
 import EnvDashboard from "../content/4H-ENVIRONMENT/env-dashboard";
@@ -80,7 +81,7 @@ function App() {
     { id: "backpack-dashboard", title: "Backpack Analysis", level: 1 },
     { id: "comprehensive-backpack-dashboard", title: "Comprehensive Backpack Dashboard", level: 1 },
     
-    // 4H-BIOHACKING-SKIN Section
+    // 4H-BIOHACKING Section
     { id: "skin-biohacking", title: "4H-BIOHACKING-SKIN", level: 0 },
     { id: "holistic-protection", title: "Holistic Protection", level: 1 },
     { id: "sunscreen-calculator", title: "Sunscreen Calculator", level: 1 },
@@ -169,6 +170,11 @@ function App() {
     { id: "sound-therapy", title: "Sound Therapy Guide", level: 1 },
     { id: "korijeni-na-korculi", title: "Korijeni Na Korculi", level: 1 },
     { id: "sound-therapy-guide", title: "Sound Therapy Guide", level: 1 },
+    { id: "chiang-mai-air-pollution", title: "Chiang Mai Air Pollution", level: 1 },
+    { id: "bean-uti-prevention", title: "Bean UTI Prevention", level: 1 },
+    { id: "interactive-travel-itinerary", title: "Interactive Travel Itinerary", level: 1 },
+    { id: "sulforaphane-protocol", title: "Sulforaphane Protocol", level: 1 },
+    { id: "thailand-malaysia-journey", title: "Thailand-Malaysia Journey Planner", level: 1 },
   ];
 
   const renderContent = (id: string) => {
@@ -194,7 +200,7 @@ function App() {
       case "comprehensive-backpack-dashboard":
         return <BackpackDashboard />;
 
-      // 4H-BIOHACKING-SKIN
+      // 4H-BIOHACKING
       case "holistic-protection":
       case "holistic-protection-dashboard":
         return <HolisticProtectionDashboard />;
@@ -319,6 +325,16 @@ function App() {
         return <SoundTherapy />;
       case "korijeni-na-korculi":
         return <KorijeniNaKorculi />;
+      case "chiang-mai-air-pollution":
+        return <HtmlContent filePath="/content/chiang-mai-air-pollution-guide.html" />;
+      case "bean-uti-prevention":
+        return <HtmlContent filePath="/content/bean-uti-prevention-dashboard.html" />;
+      case "interactive-travel-itinerary":
+        return <HtmlContent filePath="/content/interactive-travel-itinerary.html" />;
+      case "sulforaphane-protocol":
+        return <HtmlContent filePath="/content/sulforaphane-protocol.html" />;
+      case "thailand-malaysia-journey":
+        return <HtmlContent filePath="/content/thailand-malaysia-interactive-journey-planner.html" />;
 
       default:
         return null;

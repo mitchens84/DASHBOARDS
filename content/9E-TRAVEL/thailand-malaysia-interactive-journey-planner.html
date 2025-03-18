@@ -1,0 +1,3247 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Thailand-Malaysia Journey Planner</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <style>
+            :root {
+                --primary: #2e86de;
+                --primary-light: #54a0ff;
+                --primary-dark: #0984e3;
+                --secondary: #ff9f43;
+                --secondary-light: #feca57;
+                --secondary-dark: #fd9644;
+                --success: #2ecc71;
+                --warning: #f1c40f;
+                --danger: #e74c3c;
+                --info: #3498db;
+                --dark: #2d3436;
+                --light: #f8f9fa;
+                --gray: #636e72;
+                --gray-light: #dfe6e9;
+                --gray-dark: #2d3436;
+                --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                --border-radius: 8px;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            body {
+                background-color: var(--light);
+                color: var(--dark);
+                line-height: 1.6;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            header {
+                background-color: var(--primary);
+                color: white;
+                padding: 20px 0;
+                margin-bottom: 30px;
+                box-shadow: var(--shadow);
+            }
+
+            header .container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+                margin: 0;
+            }
+
+            .trip-stats {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+            .stat-card {
+                flex: 1;
+                min-width: 200px;
+                background: white;
+                padding: 20px;
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow);
+                display: flex;
+                align-items: center;
+                transition: all 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+                margin-right: 15px;
+                color: var(--primary);
+            }
+
+            .stat-content h3 {
+                font-size: 0.9rem;
+                color: var(--gray);
+                margin-bottom: 5px;
+            }
+
+            .stat-content p {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: var(--dark);
+            }
+
+            .tabs {
+                display: flex;
+                border-bottom: 2px solid var(--gray-light);
+                margin-bottom: 20px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            .tab-btn {
+                padding: 10px 20px;
+                background: none;
+                border: none;
+                font-size: 1rem;
+                font-weight: 500;
+                color: var(--gray);
+                border-bottom: 2px solid transparent;
+                margin-bottom: -2px;
+                white-space: nowrap;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .tab-btn.active {
+                color: var(--primary);
+                border-bottom-color: var(--primary);
+            }
+
+            .tab-content {
+                display: none;
+                animation: fadeIn 0.5s ease;
+            }
+
+            .tab-content.active {
+                display: block;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .timeline {
+                position: relative;
+                margin: 30px 0;
+                padding-left: 30px;
+            }
+
+            .timeline::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 4px;
+                background-color: var(--primary-light);
+                border-radius: 4px;
+            }
+
+            .timeline-item {
+                position: relative;
+                margin-bottom: 30px;
+            }
+
+            .timeline-dot {
+                position: absolute;
+                left: -38px;
+                top: 0;
+                width: 20px;
+                height: 20px;
+                background-color: white;
+                border: 3px solid var(--primary);
+                border-radius: 50%;
+                z-index: 1;
+            }
+
+            .timeline-content {
+                background-color: white;
+                padding: 20px;
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow);
+            }
+
+            .timeline-date {
+                font-size: 0.9rem;
+                color: var(--gray);
+                margin-bottom: 5px;
+            }
+
+            .timeline-title {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+                color: var(--primary-dark);
+                display: flex;
+                align-items: center;
+            }
+
+            .timeline-title i {
+                margin-right: 8px;
+            }
+
+            .card {
+                background-color: white;
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow);
+                margin-bottom: 20px;
+                overflow: hidden;
+            }
+
+            .card-header {
+                padding: 15px 20px;
+                background-color: var(--primary);
+                color: white;
+                font-weight: 600;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+
+            .checklist {
+                list-style-type: none;
+            }
+
+            .checklist-item {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid var(--gray-light);
+            }
+
+            .checklist-item:last-child {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+
+            .checklist-checkbox {
+                margin-right: 15px;
+                margin-top: 5px;
+                transform: scale(1.2);
+            }
+
+            .checklist-content {
+                flex: 1;
+            }
+
+            .checklist-title {
+                font-weight: 600;
+                margin-bottom: 5px;
+                display: flex;
+                align-items: center;
+            }
+
+            .checklist-title i {
+                margin-right: 8px;
+                color: var(--primary);
+            }
+
+            .checklist-description {
+                font-size: 0.9rem;
+                color: var(--gray);
+            }
+
+            .checklist-item.checked .checklist-title,
+            .checklist-item.checked .checklist-description {
+                text-decoration: line-through;
+                color: var(--gray);
+            }
+
+            .priority-badge {
+                font-size: 0.7rem;
+                padding: 3px 8px;
+                border-radius: 12px;
+                margin-left: 8px;
+                color: white;
+                font-weight: normal;
+            }
+
+            .priority-high {
+                background-color: var(--danger);
+            }
+
+            .priority-medium {
+                background-color: var(--warning);
+                color: var(--dark);
+            }
+
+            .priority-low {
+                background-color: var(--gray);
+            }
+
+            .progress-container {
+                margin-bottom: 20px;
+            }
+
+            .progress-title {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 5px;
+                font-size: 0.9rem;
+            }
+
+            .progress-bar {
+                height: 8px;
+                background-color: var(--gray-light);
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            .progress-value {
+                height: 100%;
+                background-color: var(--primary);
+                width: 0%;
+                transition: width 0.5s ease;
+            }
+
+            .journey-map {
+                height: 200px;
+                background: linear-gradient(
+                    135deg,
+                    var(--primary-dark),
+                    var(--primary-light)
+                );
+                border-radius: var(--border-radius);
+                position: relative;
+                overflow: hidden;
+                margin-bottom: 30px;
+            }
+
+            .journey-path {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background-color: rgba(255, 255, 255, 0.3);
+                transform: translateY(-50%);
+            }
+
+            .journey-progress {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                height: 4px;
+                background-color: white;
+                transform: translateY(-50%);
+                width: 0%;
+                transition: width 0.5s ease;
+            }
+
+            .journey-location {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 20%;
+            }
+
+            .location-dot {
+                width: 16px;
+                height: 16px;
+                background-color: white;
+                border-radius: 50%;
+                margin-bottom: 10px;
+            }
+
+            .location-name {
+                color: white;
+                font-size: 0.8rem;
+                text-align: center;
+                font-weight: 500;
+            }
+
+            .location-1 {
+                left: 10%;
+            }
+            .location-2 {
+                left: 30%;
+            }
+            .location-3 {
+                left: 50%;
+            }
+            .location-4 {
+                left: 70%;
+            }
+            .location-5 {
+                left: 90%;
+            }
+
+            .day-details {
+                margin-top: 20px;
+            }
+
+            .transport-item {
+                display: flex;
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px solid var(--gray-light);
+            }
+
+            .transport-icon {
+                width: 40px;
+                height: 40px;
+                background-color: var(--primary-light);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 15px;
+                flex-shrink: 0;
+            }
+
+            .transport-icon.flight {
+                background-color: var(--info);
+            }
+            .transport-icon.bus {
+                background-color: var(--secondary);
+            }
+            .transport-icon.ferry {
+                background-color: var(--success);
+            }
+            .transport-icon.taxi {
+                background-color: var(--warning);
+            }
+
+            .transport-content {
+                flex: 1;
+            }
+
+            .transport-title {
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .transport-details {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.9rem;
+                color: var(--gray);
+            }
+
+            .accommodation-card {
+                background-color: var(--gray-light);
+                border-radius: var(--border-radius);
+                padding: 15px;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .accommodation-icon {
+                width: 40px;
+                height: 40px;
+                background-color: var(--secondary);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 15px;
+                flex-shrink: 0;
+            }
+
+            .accommodation-content {
+                flex: 1;
+            }
+
+            .accommodation-name {
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .accommodation-details {
+                font-size: 0.9rem;
+                color: var(--gray);
+            }
+
+            .accommodation-price {
+                font-size: 0.8rem;
+                color: var(--gray-dark);
+                font-weight: 600;
+                margin-top: 5px;
+            }
+
+            .weather-card {
+                display: flex;
+                background-color: var(--gray-light);
+                border-radius: var(--border-radius);
+                padding: 15px;
+                margin-bottom: 15px;
+                align-items: center;
+            }
+
+            .weather-icon {
+                font-size: 2rem;
+                margin-right: 15px;
+                color: var(--secondary);
+            }
+
+            .weather-details {
+                flex: 1;
+            }
+
+            .weather-temp {
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .weather-desc {
+                font-size: 0.9rem;
+                color: var(--gray);
+            }
+
+            .risk-item {
+                background-color: var(--gray-light);
+                border-radius: var(--border-radius);
+                padding: 15px;
+                margin-bottom: 15px;
+                border-left: 4px solid var(--warning);
+            }
+
+            .risk-item.high-risk {
+                border-left-color: var(--danger);
+                background-color: rgba(231, 76, 60, 0.1);
+            }
+
+            .risk-item.medium-risk {
+                border-left-color: var(--warning);
+                background-color: rgba(241, 196, 15, 0.1);
+            }
+
+            .risk-item.low-risk {
+                border-left-color: var(--success);
+                background-color: rgba(46, 204, 113, 0.1);
+            }
+
+            .risk-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .risk-title {
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+            }
+
+            .risk-title i {
+                margin-right: 8px;
+            }
+
+            .risk-level {
+                font-size: 0.8rem;
+                padding: 3px 8px;
+                border-radius: 12px;
+                color: white;
+            }
+
+            .risk-level.high {
+                background-color: var(--danger);
+            }
+
+            .risk-level.medium {
+                background-color: var(--warning);
+                color: var(--dark);
+            }
+
+            .risk-level.low {
+                background-color: var(--success);
+            }
+
+            .risk-content p {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+
+            .risk-content p:last-child {
+                margin-bottom: 0;
+            }
+
+            .risk-mitigation {
+                margin-top: 10px;
+                font-size: 0.9rem;
+                font-style: italic;
+            }
+
+            .section-title {
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid var(--gray-light);
+                color: var(--primary-dark);
+                font-size: 1.3rem;
+            }
+
+            .packing-category {
+                margin-bottom: 30px;
+            }
+
+            .packing-category-title {
+                margin-bottom: 15px;
+                font-size: 1.1rem;
+                color: var(--primary-dark);
+            }
+
+            .packing-list {
+                list-style-type: none;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 10px;
+            }
+
+            .packing-item {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                background-color: white;
+                border-radius: var(--border-radius);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+
+            .packing-checkbox {
+                margin-right: 10px;
+                transform: scale(1.2);
+            }
+
+            .packing-item.checked label {
+                text-decoration: line-through;
+                color: var(--gray);
+            }
+
+            .actions {
+                display: flex;
+                justify-content: space-between;
+                margin: 20px 0;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                border: none;
+                border-radius: var(--border-radius);
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .btn-primary {
+                background-color: var(--primary);
+                color: white;
+            }
+
+            .btn-secondary {
+                background-color: var(--gray-light);
+                color: var(--dark);
+            }
+
+            .btn:hover {
+                opacity: 0.9;
+                transform: translateY(-2px);
+            }
+
+            .countdown {
+                background-color: var(--primary-dark);
+                color: white;
+                padding: 30px;
+                border-radius: var(--border-radius);
+                text-align: center;
+                margin-bottom: 30px;
+                box-shadow: var(--shadow);
+            }
+
+            .countdown-title {
+                margin-bottom: 15px;
+                font-size: 1.2rem;
+            }
+
+            .countdown-timer {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .countdown-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .countdown-number {
+                font-size: 2.5rem;
+                font-weight: 700;
+                line-height: 1;
+            }
+
+            .countdown-label {
+                font-size: 0.8rem;
+                margin-top: 5px;
+            }
+
+            .budget-section {
+                margin-top: 30px;
+            }
+
+            .budget-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+            }
+
+            .budget-table th,
+            .budget-table td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid var(--gray-light);
+            }
+
+            .budget-table th {
+                background-color: var(--primary-light);
+                color: white;
+            }
+
+            .budget-table tr:last-child td {
+                font-weight: 600;
+                border-top: 2px solid var(--primary);
+                border-bottom: none;
+            }
+
+            @media print {
+                body {
+                    font-size: 12pt;
+                    background: white;
+                    color: black;
+                }
+
+                .container {
+                    width: 100%;
+                    max-width: none;
+                    padding: 0;
+                }
+
+                header,
+                .tabs,
+                .actions,
+                .journey-map,
+                .btn {
+                    display: none;
+                }
+
+                .tab-content {
+                    display: block !important;
+                }
+
+                .card {
+                    break-inside: avoid;
+                    box-shadow: none;
+                    border: 1px solid #ddd;
+                }
+
+                .card-header {
+                    background-color: #f5f5f5 !important;
+                    color: black !important;
+                }
+
+                @page {
+                    margin: 1.5cm;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .trip-stats {
+                    flex-direction: column;
+                }
+
+                .stat-card {
+                    width: 100%;
+                }
+
+                .packing-list {
+                    grid-template-columns: 1fr;
+                }
+
+                .countdown-timer {
+                    gap: 10px;
+                }
+
+                .countdown-number {
+                    font-size: 1.8rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <h1>Thailand-Malaysia Journey Planner</h1>
+                <div>
+                    <span id="current-date"></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="countdown">
+                <h2 class="countdown-title">Time Until Departure</h2>
+                <div class="countdown-timer" id="countdown">
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="days">00</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="hours">00</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="minutes">00</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="seconds">00</span>
+                        <span class="countdown-label">Seconds</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="trip-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>DURATION</h3>
+                        <p>12 Days</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>DESTINATIONS</h3>
+                        <p>4 Locations</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>FLIGHTS</h3>
+                        <p>4 Segments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>COMPLETION</h3>
+                        <p id="completion-stat">0%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="journey-map">
+                <div class="journey-path"></div>
+                <div class="journey-progress" id="journey-progress"></div>
+                <div class="journey-location location-1">
+                    <div class="location-dot"></div>
+                    <div class="location-name">Chiang Mai</div>
+                </div>
+                <div class="journey-location location-2">
+                    <div class="location-dot"></div>
+                    <div class="location-name">Koh Phangan</div>
+                </div>
+                <div class="journey-location location-3">
+                    <div class="location-dot"></div>
+                    <div class="location-name">Krabi</div>
+                </div>
+                <div class="journey-location location-4">
+                    <div class="location-dot"></div>
+                    <div class="location-name">Kuala Lumpur</div>
+                </div>
+                <div class="journey-location location-5">
+                    <div class="location-dot"></div>
+                    <div class="location-name">Chiang Mai</div>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-title">
+                    <span>Preparation Progress</span>
+                    <span id="progress-percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value" id="progress-bar"></div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="itinerary">
+                    Itinerary
+                </button>
+                <button class="tab-btn" data-tab="checklist">
+                    Pre-Trip Checklist
+                </button>
+                <button class="tab-btn" data-tab="packing">Packing List</button>
+                <button class="tab-btn" data-tab="risks">
+                    Risk Assessment
+                </button>
+            </div>
+
+            <!-- Itinerary Tab -->
+            <div class="tab-content active" id="itinerary">
+                <h2 class="section-title">Journey Itinerary</h2>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">
+                                FRIDAY, MARCH 21, 2025
+                            </div>
+                            <h3 class="timeline-title">
+                                <i class="fas fa-plane-departure"></i> Departure
+                                Day
+                            </h3>
+
+                            <div class="day-details">
+                                <div class="weather-card">
+                                    <div class="weather-icon">
+                                        <i class="fas fa-sun"></i>
+                                    </div>
+                                    <div class="weather-details">
+                                        <div class="weather-temp">
+                                            30-35°C / 86-95°F
+                                        </div>
+                                        <div class="weather-desc">
+                                            Hot & Humid
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="transport-item">
+                                    <div class="transport-icon flight">
+                                        <i class="fas fa-plane"></i>
+                                    </div>
+                                    <div class="transport-content">
+                                        <div class="transport-title">
+                                            Nok Air DD125: Chiang Mai → Bangkok
+                                        </div>
+                                        <div class="transport-details">
+                                            <span>07:55 - 09:10</span>
+                                            <span>Ref: 7AZLNP</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="transport-item">
+                                    <div class="transport-icon flight">
+                                        <i class="fas fa-plane"></i>
+                                    </div>
+                                    <div class="transport-content">
+                                        <div class="transport-title">
+                                            Nok Air DD574: Bangkok → Surat Thani
+                                        </div>
+                                        <div class="transport-details">
+                                            <span>13:45 - 15:00</span>
+                                            <span>Ref: 7AZLNP</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="transport-item">
+                                    <div class="transport-icon bus">
+                                        <i class="fas fa-bus"></i>
+                                    </div>
+                                    <div class="transport-content">
+                                        <div class="transport-title">
+                                            Bus: Surat Thani Airport → Donsak
+                                            Pier
+                                        </div>
+                                        <div class="transport-details">
+                                            <span>15:30 - 17:30</span>
+                                            <span>Purchase at airport</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="transport-item">
+                                    <div class="transport-icon ferry">
+                                        <i class="fas fa-ship"></i>
+                                    </div>
+                                    <div class="transport-content">
+                                        <div class="transport-title">
+                                            Ferry: Donsak Pier → Koh Phangan
+                                        </div>
+                                        <div class="transport-details">
+                                            <span>18:00 - 20:00</span>
+                                            <span>Thong Sala Pier arrival</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accommodation-card">
+                                    <div class="accommodation-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="accommodation-content">
+                                        <div class="accommodation-name">
+                                            Srithanu Area Accommodation
+                                        </div>
+                                        <div class="accommodation-details">
+                                            ⚠️ BOOKING REQUIRED
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">
+                                SATURDAY-TUESDAY, MARCH 22-26, 2025
+                            </div>
+                            <h3 class="timeline-title">
+                                <i class="fas fa-umbrella-beach"></i> Koh
+                                Phangan
+                            </h3>
+
+                            <div class="day-details">
+                                <div class="weather-card">
+                                    <div class="weather-icon">
+                                        <i class="fas fa-sun"></i>
+                                    </div>
+                                    <div class="weather-details">
+                                        <div class="weather-temp">
+                                            28-33°C / 82-91°F
+                                        </div>
+                                        <div class="weather-desc">
+                                            Generally dry with occasional brief
+                                            showers
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accommodation-card">
+                                    <div class="accommodation-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="accommodation-content">
+                                        <div class="accommodation-name">
+                                            Samma Karuna Retreat
+                                        </div>
+                                        <div class="accommodation-details">
+                                            Yoga classes, meditation spaces,
+                                            beachfront
+                                        </div>
+                                        <div class="accommodation-price">
+                                            ฿900-1,200/night
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accommodation-card">
+                                    <div class="accommodation-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="accommodation-content">
+                                        <div class="accommodation-name">
+                                            Phangan Cove
+                                        </div>
+                                        <div class="accommodation-details">
+                                            Garden setting, near beach, peaceful
+                                        </div>
+                                        <div class="accommodation-price">
+                                            ฿750-1,100/night
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accommodation-card">
+                                    <div class="accommodation-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="accommodation-content">
+                                        <div class="accommodation-name">
+                                            Benjamin's Hut
+                                        </div>
+                                        <div class="accommodation-details">
+                                            Simple living, nature setting,
+                                            sustainable
+                                        </div>
+                                        <div class="accommodation-price">
+                                            ฿600-800/night
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">
+                                WEDNESDAY, MARCH 26, 2025
+                            </div>
+                            <h3 class="timeline-title">
+                                <i class="fas fa-exchange-alt"></i> Transit to
+                                Krabi
+                            </h3>
+
+                            <div class="day-details">
+                                <div class="weather-card">
+                                    <div class="weather-icon">
+                                        <i class="fas fa-cloud-sun"></i>
+                                    </div>
+                                    <div class="weather-details">
+                                        <div class="weather-temp">
+                                            29-34°C / 84-93°F
+                                        </div>
+                                        <div class="weather-desc">
+                                            Chance of afternoon thunderstorms
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="transport-item">
+                                    <div class="transport-icon ferry">
+                                        <i class="fas fa-ship"></i>
+                                    </div>
+                                    <div class="transport-content">
+                                        <div class="transport-title">
+                                            Ferry + Bus: Koh Phangan → Krabi
+                                        </div>
+                                        <div class="transport-details">
+                                            <span>08:00 - 15:00</span>
+                                            <span
+                                                >฿850 via
+                                                Lomprayah/Seatran</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accommodation-card">
+                                    <div class="accommodation-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="accommodation-content">
+                                        <div class="accommodation-name">
+                                            Pak-Up Hostel
+                                        </div>
+                                        <div class="accommodation-details">
+                                            Private rooms, central location
+                                        </div>
+                                        <div class="accommodation-price">
+                                            ฿700-900/night
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accommodation-card">
+                                    <div class="accommodation-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="accommodation-content">
+                                        <div class="accommodation-name">
+                                            Ibis Styles Krabi
+                                        </div>
+                                        <div class="accommodation-details">
+                                            Reliable chain hotel with airport
+                                            shuttle
+                                        </div>
+                                        <div class="accommodation-price">
+                                            ฿1,200-1,600/night
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">
+                                THURSDAY, MARCH 27, 2025
+                            </div>
+                            <h3 class="timeline-title">
+                                <i class="fas fa-plane"></i> International
+                                Transit
+                            </h3>
+
+                            <div class="day-details">
+                                <div class="weather-card">
+                                    <div class="weather-icon">
+                                        <i class="fas fa-cloud-sun"></i>
+                                    </div>
+                                    <div class="weather-details">
+                                        <div class="weather-temp">
+                                            28-33°C / 82-91°F
+                                        </div>
+                                        <div class="weather-desc">
+                                            Possible afternoon thunderstorms
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="transport-item">
+                                    <div class="transport-icon taxi">
+                                        <i class="fas fa-taxi"></i>
+                                    </div>
+                                    <div class="transport-content">
+                                        <div class="transport-title">
+                                            Transfer to Krabi Airport
+                                        </div>
+                                        <div class="transport-details">
+                                            <span>11:30 departure</span>
+                                            <span>~30 minutes</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="transport-item">
+                                    <div class="transport-icon flight">
+                                        <i class="fas fa-plane"></i>
+                                    </div>
+                                    <div class="transport-content">
+                                        <div class="transport-title">
+                                            Batik Air OD587: Krabi → Kuala
+                                            Lumpur
+                                        </div>
+                                        <div class="transport-details">
+                                            <span>13:55 - 16:30</span>
+                                            <span>Confirmed</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accommodation-card">
+                                    <div class="accommodation-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="accommodation-content">
+                                        <div class="accommodation-name">
+                                            Kuala Lumpur Accommodation
+                                        </div>
+                                        <div class="accommodation-details">
+                                            ⚠️ BOOKING REQUIRED
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">
+                                FRIDAY-MONDAY, MARCH 28-31, 2025
+                            </div>
+                            <h3 class="timeline-title">
+                                <i class="fas fa-city"></i> Kuala Lumpur
+                            </h3>
+
+                            <div class="day-details">
+                                <div class="weather-card">
+                                    <div class="weather-icon">
+                                        <i class="fas fa-cloud-sun-rain"></i>
+                                    </div>
+                                    <div class="weather-details">
+                                        <div class="weather-temp">
+                                            28-33°C / 82-91°F
+                                        </div>
+                                        <div class="weather-desc">
+                                            Afternoon thunderstorms common
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accommodation-card">
+                                    <div class="accommodation-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="accommodation-content">
+                                        <div class="accommodation-name">
+                                            Komune Living
+                                        </div>
+                                        <div class="accommodation-details">
+                                            Serviced apartment with co-working
+                                            space
+                                        </div>
+                                        <div class="accommodation-price">
+                                            MYR 180-240/night
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accommodation-card">
+                                    <div class="accommodation-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="accommodation-content">
+                                        <div class="accommodation-name">
+                                            The Bed KLCC
+                                        </div>
+                                        <div class="accommodation-details">
+                                            Boutique guesthouse, peaceful
+                                            setting
+                                        </div>
+                                        <div class="accommodation-price">
+                                            MYR 120-160/night
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">
+                                TUESDAY, APRIL 1, 2025
+                            </div>
+                            <h3 class="timeline-title">
+                                <i class="fas fa-plane-arrival"></i> Return to
+                                Chiang Mai
+                            </h3>
+
+                            <div class="day-details">
+                                <div class="transport-item">
+                                    <div class="transport-icon taxi">
+                                        <i class="fas fa-taxi"></i>
+                                    </div>
+                                    <div class="transport-content">
+                                        <div class="transport-title">
+                                            Transfer to Kuala Lumpur Airport
+                                        </div>
+                                        <div class="transport-details">
+                                            <span>12:00 departure</span>
+                                            <span>~1 hour</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="transport-item">
+                                    <div class="transport-icon flight">
+                                        <i class="fas fa-plane"></i>
+                                    </div>
+                                    <div class="transport-content">
+                                        <div class="transport-title">
+                                            AirAsia AK856: Kuala Lumpur → Chiang
+                                            Mai
+                                        </div>
+                                        <div class="transport-details">
+                                            <span>15:05 - 16:50</span>
+                                            <span>Confirmed</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="budget-section">
+                    <h3 class="section-title">Budget Framework</h3>
+                    <table class="budget-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Estimated Cost (THB)</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Flights</td>
+                                <td>Prepaid</td>
+                                <td>All flights already booked</td>
+                            </tr>
+                            <tr>
+                                <td>Ferry & Bus Combinations</td>
+                                <td>฿1,500-2,000</td>
+                                <td>Two segments total</td>
+                            </tr>
+                            <tr>
+                                <td>Accommodation (11 nights)</td>
+                                <td>฿12,000-18,000</td>
+                                <td>Varies by choice</td>
+                            </tr>
+                            <tr>
+                                <td>Meals</td>
+                                <td>฿6,000-9,000</td>
+                                <td>฿550-800 per day average</td>
+                            </tr>
+                            <tr>
+                                <td>Local Transportation</td>
+                                <td>฿3,000-4,000</td>
+                                <td>Taxis, transport to accommodations</td>
+                            </tr>
+                            <tr>
+                                <td>Activities & Experiences</td>
+                                <td>฿2,000-4,000</td>
+                                <td>Optional activities</td>
+                            </tr>
+                            <tr>
+                                <td>Contingency (15%)</td>
+                                <td>฿3,500-5,000</td>
+                                <td>Buffer for unexpected expenses</td>
+                            </tr>
+                            <tr>
+                                <td>TOTAL ESTIMATED BUDGET</td>
+                                <td>฿29,200-43,800</td>
+                                <td>Excluding pre-booked flights</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Checklist Tab -->
+            <div class="tab-content" id="checklist">
+                <h2 class="section-title">Pre-Trip Checklist</h2>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Critical Deadlines</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="checklist" id="critical-checklist">
+                            <li class="checklist-item checked">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="deadline-1"
+                                    checked
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-calendar-check"></i>
+                                        90-Day Report
+                                    </div>
+                                    <div class="checklist-description">
+                                        Completed March 18, 2025
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="deadline-2"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-plane-departure"></i>
+                                        Thailand Exit
+                                        <span
+                                            class="priority-badge priority-high"
+                                            >Critical</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Required by March 27, 2025
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="deadline-3"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-passport"></i> DTV Visa
+                                        <span
+                                            class="priority-badge priority-high"
+                                            >Critical</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Expires March 27, 2025
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Immediate Actions (By March 19)</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="checklist" id="immediate-checklist">
+                            <li class="checklist-item checked">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="immediate-1"
+                                    checked
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-plane"></i> Bangkok to
+                                        Surat Thani Flight
+                                    </div>
+                                    <div class="checklist-description">
+                                        Confirmed: Nok Air DD574, 13:45-15:00
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="immediate-2"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-ship"></i> Koh Phangan
+                                        to Krabi Ferry+Bus
+                                        <span
+                                            class="priority-badge priority-high"
+                                            >High</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Book for March 26 via Lomprayah or
+                                        Seatran (฿850)
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="immediate-3"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-bed"></i> Koh Phangan
+                                        Accommodation
+                                        <span
+                                            class="priority-badge priority-high"
+                                            >High</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Book for March 21-26 in Srithanu area
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="immediate-4"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-bed"></i> Krabi
+                                        Accommodation
+                                        <span
+                                            class="priority-badge priority-medium"
+                                            >Medium</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Book for March 26-27 in Ao Nang area
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="immediate-5"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-bed"></i> Kuala Lumpur
+                                        Accommodation
+                                        <span
+                                            class="priority-badge priority-medium"
+                                            >Medium</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Book for March 27-April 1 in Bangsar
+                                        area
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="immediate-6"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-user-friends"></i>
+                                        Contact Friends in Malaysia
+                                    </div>
+                                    <div class="checklist-description">
+                                        Discuss potential meetups during KL stay
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="immediate-7"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-shield-alt"></i> Verify
+                                        Travel Insurance
+                                    </div>
+                                    <div class="checklist-description">
+                                        Confirm coverage for entire journey
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="immediate-8"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-passport"></i> Check
+                                        Passport Validity
+                                    </div>
+                                    <div class="checklist-description">
+                                        Ensure minimum 6 months beyond return
+                                        date
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Documentation Preparation (By March 19)</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="checklist" id="documentation-checklist">
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="docs-1"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-passport"></i> Passport
+                                        and Visa Documents
+                                        <span
+                                            class="priority-badge priority-high"
+                                            >High</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Passport, visa page copy, entry stamp
+                                        copy
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="docs-2"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-file-alt"></i> Travel
+                                        Documents
+                                        <span
+                                            class="priority-badge priority-medium"
+                                            >Medium</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Flight confirmations, accommodations,
+                                        insurance policy
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="docs-3"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        Financial Preparation
+                                        <span
+                                            class="priority-badge priority-medium"
+                                            >Medium</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Notify bank, check card compatibility,
+                                        withdraw Baht
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Digital Preparation (By March 19)</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="checklist" id="digital-checklist">
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="digital-1"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        Essential Applications
+                                        <span
+                                            class="priority-badge priority-medium"
+                                            >Medium</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Grab, offline maps, banking apps,
+                                        translation app
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="digital-2"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-laptop"></i> Work
+                                        Essentials
+                                        <span
+                                            class="priority-badge priority-medium"
+                                            >Medium</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Cloud backup, reference materials,
+                                        inform clients
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="digital-3"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-headphones"></i>
+                                        Entertainment and Comfort
+                                        <span
+                                            class="priority-badge priority-low"
+                                            >Low</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Meditation tracks, reading materials,
+                                        entertainment
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Chiang Mai Arrangements (By March 20)</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="checklist" id="chiang-mai-checklist">
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="cm-1"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-home"></i>
+                                        Accommodation
+                                        <span
+                                            class="priority-badge priority-medium"
+                                            >Medium</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Inform landlord, arrange mail handling,
+                                        security checks
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="cm-2"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-seedling"></i> Plants
+                                        and Belongings
+                                        <span
+                                            class="priority-badge priority-low"
+                                            >Low</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Arrange plant care, secure valuables,
+                                        empty perishables
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="cm-3"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-file-invoice"></i>
+                                        Memberships and Services
+                                        <span
+                                            class="priority-badge priority-low"
+                                            >Low</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Notify gym, pause delivery services,
+                                        schedule payments
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Final Preparations (March 20-21)</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="checklist" id="final-checklist">
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="final-1"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-check-double"></i>
+                                        Final Confirmations
+                                        <span
+                                            class="priority-badge priority-high"
+                                            >High</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Check-in for flights, confirm
+                                        reservations, check weather
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="final-2"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-battery-full"></i>
+                                        Final Preparations
+                                        <span
+                                            class="priority-badge priority-high"
+                                            >High</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Charge devices, prepare day pack, set
+                                        out travel outfit
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="final-3"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-home"></i> Home
+                                        Departure Checks
+                                        <span
+                                            class="priority-badge priority-high"
+                                            >High</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Turn off appliances, adjust AC, lock
+                                        doors, take out trash
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="checklist-item">
+                                <input
+                                    type="checkbox"
+                                    class="checklist-checkbox"
+                                    id="final-4"
+                                />
+                                <div class="checklist-content">
+                                    <div class="checklist-title">
+                                        <i class="fas fa-clipboard-check"></i>
+                                        Travel Essentials Check
+                                        <span
+                                            class="priority-badge priority-high"
+                                            >High</span
+                                        >
+                                    </div>
+                                    <div class="checklist-description">
+                                        Passport, money, phone, medication,
+                                        airport transport
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Packing List Tab -->
+            <div class="tab-content" id="packing">
+                <h2 class="section-title">Packing List</h2>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Essentials</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="packing-category">
+                            <ul class="packing-list" id="essentials-packing">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="essentials-1"
+                                    />
+                                    <label for="essentials-1">Passport</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="essentials-2"
+                                    />
+                                    <label for="essentials-2"
+                                        >Printed documents</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="essentials-3"
+                                    />
+                                    <label for="essentials-3"
+                                        >Thai Baht cash</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="essentials-4"
+                                    />
+                                    <label for="essentials-4"
+                                        >Credit/debit cards</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="essentials-5"
+                                    />
+                                    <label for="essentials-5"
+                                        >Emergency contacts</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="essentials-6"
+                                    />
+                                    <label for="essentials-6"
+                                        >Travel insurance info</label
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Clothing</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="packing-category">
+                            <h4 class="packing-category-title">Basics</h4>
+                            <ul class="packing-list" id="clothing-basics">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="clothing-1"
+                                    />
+                                    <label for="clothing-1"
+                                        >4-5 T-shirts/tops</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="clothing-2"
+                                    />
+                                    <label for="clothing-2"
+                                        >2-3 shorts/skirts</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="clothing-3"
+                                    />
+                                    <label for="clothing-3"
+                                        >1-2 light pants</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="clothing-4"
+                                    />
+                                    <label for="clothing-4"
+                                        >Light long-sleeve shirt</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="clothing-5"
+                                    />
+                                    <label for="clothing-5"
+                                        >5-7 underwear</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="clothing-6"
+                                    />
+                                    <label for="clothing-6"
+                                        >3-4 pairs of socks</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="clothing-7"
+                                    />
+                                    <label for="clothing-7">Sleepwear</label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="packing-category">
+                            <h4 class="packing-category-title">
+                                Outerwear & Footwear
+                            </h4>
+                            <ul class="packing-list" id="clothing-outerwear">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="outerwear-1"
+                                    />
+                                    <label for="outerwear-1"
+                                        >Light rain jacket</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="outerwear-2"
+                                    />
+                                    <label for="outerwear-2"
+                                        >Light sweater</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="outerwear-3"
+                                    />
+                                    <label for="outerwear-3"
+                                        >Walking sandals</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="outerwear-4"
+                                    />
+                                    <label for="outerwear-4">Sneakers</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="outerwear-5"
+                                    />
+                                    <label for="outerwear-5">Flip flops</label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="packing-category">
+                            <h4 class="packing-category-title">Accessories</h4>
+                            <ul class="packing-list" id="clothing-accessories">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="accessories-1"
+                                    />
+                                    <label for="accessories-1">Sun hat</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="accessories-2"
+                                    />
+                                    <label for="accessories-2"
+                                        >Sunglasses</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="accessories-3"
+                                    />
+                                    <label for="accessories-3"
+                                        >Bandana/buff</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="accessories-4"
+                                    />
+                                    <label for="accessories-4"
+                                        >Travel towel</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="accessories-5"
+                                    />
+                                    <label for="accessories-5">Swimwear</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Technology</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="packing-category">
+                            <ul class="packing-list" id="tech-packing">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="tech-1"
+                                    />
+                                    <label for="tech-1"
+                                        >Laptop and charger</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="tech-2"
+                                    />
+                                    <label for="tech-2"
+                                        >Smartphone and charger</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="tech-3"
+                                    />
+                                    <label for="tech-3"
+                                        >Universal power adapter</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="tech-4"
+                                    />
+                                    <label for="tech-4"
+                                        >External battery pack</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="tech-5"
+                                    />
+                                    <label for="tech-5">Headphones</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="tech-6"
+                                    />
+                                    <label for="tech-6"
+                                        >Camera (if not using phone)</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="tech-7"
+                                    />
+                                    <label for="tech-7"
+                                        >Electronic cables</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="tech-8"
+                                    />
+                                    <label for="tech-8"
+                                        >Waterproof case/bag</label
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Health & Hygiene</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="packing-category">
+                            <h4 class="packing-category-title">Toiletries</h4>
+                            <ul class="packing-list" id="toiletries-packing">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="toiletries-1"
+                                    />
+                                    <label for="toiletries-1"
+                                        >Toothbrush and toothpaste</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="toiletries-2"
+                                    />
+                                    <label for="toiletries-2"
+                                        >Shampoo/conditioner</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="toiletries-3"
+                                    />
+                                    <label for="toiletries-3"
+                                        >Body wash/soap</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="toiletries-4"
+                                    />
+                                    <label for="toiletries-4">Deodorant</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="toiletries-5"
+                                    />
+                                    <label for="toiletries-5"
+                                        >Razor and blades</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="toiletries-6"
+                                    />
+                                    <label for="toiletries-6"
+                                        >Nail clippers</label
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="packing-category">
+                            <h4 class="packing-category-title">
+                                Medications & First Aid
+                            </h4>
+                            <ul class="packing-list" id="medical-packing">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="medical-1"
+                                    />
+                                    <label for="medical-1"
+                                        >Personal medications</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="medical-2"
+                                    />
+                                    <label for="medical-2"
+                                        >Pain relievers</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="medical-3"
+                                    />
+                                    <label for="medical-3"
+                                        >Anti-diarrheal medication</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="medical-4"
+                                    />
+                                    <label for="medical-4"
+                                        >Antihistamines</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="medical-5"
+                                    />
+                                    <label for="medical-5"
+                                        >Rehydration salts</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="medical-6"
+                                    />
+                                    <label for="medical-6"
+                                        >Bandages and antiseptic</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="medical-7"
+                                    />
+                                    <label for="medical-7"
+                                        >Insect bite treatment</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="medical-8"
+                                    />
+                                    <label for="medical-8"
+                                        >Motion sickness remedies</label
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="packing-category">
+                            <h4 class="packing-category-title">Protection</h4>
+                            <ul class="packing-list" id="protection-packing">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="protection-1"
+                                    />
+                                    <label for="protection-1">Sunscreen</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="protection-2"
+                                    />
+                                    <label for="protection-2"
+                                        >Insect repellent (DEET)</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="protection-3"
+                                    />
+                                    <label for="protection-3"
+                                        >Hand sanitizer</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="protection-4"
+                                    />
+                                    <label for="protection-4">Face masks</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="protection-5"
+                                    />
+                                    <label for="protection-5"
+                                        >Mosquito repellent bands</label
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Meditation & Practice</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="packing-category">
+                            <ul class="packing-list" id="meditation-packing">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="meditation-1"
+                                    />
+                                    <label for="meditation-1"
+                                        >Meditation cushion</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="meditation-2"
+                                    />
+                                    <label for="meditation-2"
+                                        >Yoga mat or travel mat</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="meditation-3"
+                                    />
+                                    <label for="meditation-3"
+                                        >Journal and pen</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="meditation-4"
+                                    />
+                                    <label for="meditation-4"
+                                        >Meditation timer</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="meditation-5"
+                                    />
+                                    <label for="meditation-5"
+                                        >Reference texts</label
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Miscellaneous</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="packing-category">
+                            <ul class="packing-list" id="misc-packing">
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-1"
+                                    />
+                                    <label for="misc-1"
+                                        >Reusable water bottle</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-2"
+                                    />
+                                    <label for="misc-2"
+                                        >Collapsible coffee cup</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-3"
+                                    />
+                                    <label for="misc-3"
+                                        >Reusable utensils</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-4"
+                                    />
+                                    <label for="misc-4"
+                                        >Energy bars/snacks</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-5"
+                                    />
+                                    <label for="misc-5">Daypack</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-6"
+                                    />
+                                    <label for="misc-6">Packing cubes</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-7"
+                                    />
+                                    <label for="misc-7">Travel locks</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-8"
+                                    />
+                                    <label for="misc-8"
+                                        >Earplugs and sleep mask</label
+                                    >
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-9"
+                                    />
+                                    <label for="misc-9">Laundry soap</label>
+                                </li>
+                                <li class="packing-item">
+                                    <input
+                                        type="checkbox"
+                                        class="packing-checkbox"
+                                        id="misc-10"
+                                    />
+                                    <label for="misc-10">Ziplock bags</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Assessment Tab -->
+            <div class="tab-content" id="risks">
+                <h2 class="section-title">Risk Assessment</h2>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>High Priority Risks</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="risk-item high-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-ship"></i> Transportation
+                                    Disruptions
+                                </div>
+                                <div class="risk-level high">High Risk</div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    Ferry cancellations or delays between
+                                    islands and mainland, potentially affecting
+                                    international flight connection.
+                                </p>
+                                <div class="risk-mitigation">
+                                    <strong>Mitigation:</strong> Book morning
+                                    ferries, allow full buffer day between Koh
+                                    Phangan departure and Malaysia flight,
+                                    research alternative routes
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="risk-item high-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-thermometer-full"></i>
+                                    Heat-Related Health Issues
+                                </div>
+                                <div class="risk-level high">High Risk</div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    Dehydration, heat exhaustion, sunburn from
+                                    high temperatures (28-35°C) with high
+                                    humidity.
+                                </p>
+                                <div class="risk-mitigation">
+                                    <strong>Mitigation:</strong> Plan activities
+                                    during cooler hours, maintain hydration
+                                    (2-3L daily), wear sun protection, carry
+                                    electrolyte supplements
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="risk-item high-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-bed"></i> Accommodation
+                                    Availability
+                                </div>
+                                <div class="risk-level high">High Risk</div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    Limited availability in Koh Phangan during
+                                    high season.
+                                </p>
+                                <div class="risk-mitigation">
+                                    <strong>Mitigation:</strong> Book Koh
+                                    Phangan accommodation immediately, have
+                                    backup options in different areas, consider
+                                    higher budget if needed
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="risk-item high-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-passport"></i>
+                                    Visa/Immigration Issues
+                                </div>
+                                <div class="risk-level high">High Risk</div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    Problems during Thailand exit or re-entry.
+                                </p>
+                                <div class="risk-mitigation">
+                                    <strong>Mitigation:</strong> Carry all
+                                    previous visa documentation, have proof of
+                                    onward travel, maintain copies of all
+                                    immigration documents
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Medium Priority Risks</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="risk-item medium-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-wifi"></i> Digital Work
+                                    Disruptions
+                                </div>
+                                <div class="risk-level medium">Medium Risk</div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    Unreliable internet, particularly on Koh
+                                    Phangan.
+                                </p>
+                                <div class="risk-mitigation">
+                                    <strong>Mitigation:</strong> Research backup
+                                    work locations with reliable WiFi, download
+                                    essential files for offline access, use
+                                    mobile hotspot as backup
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="risk-item medium-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-hospital"></i> Health
+                                    Access Limitations
+                                </div>
+                                <div class="risk-level medium">Medium Risk</div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    Limited medical services in island
+                                    locations.
+                                </p>
+                                <div class="risk-mitigation">
+                                    <strong>Mitigation:</strong> Carry
+                                    comprehensive medical kit, know location of
+                                    best medical facilities, ensure travel
+                                    insurance covers evacuation
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="risk-item medium-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-bug"></i> Dengue Risk
+                                </div>
+                                <div class="risk-level medium">Medium Risk</div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    Mosquito-borne illness more common in
+                                    coastal Thailand.
+                                </p>
+                                <div class="risk-mitigation">
+                                    <strong>Mitigation:</strong> Use high-DEET
+                                    repellent consistently, wear long
+                                    sleeves/pants during peak mosquito hours,
+                                    choose accommodations with screens/nets
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Location-Specific Risks</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="risk-item medium-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-map-marker-alt"></i> Koh
+                                    Phangan
+                                </div>
+                                <div class="risk-level medium">
+                                    Location Risks
+                                </div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    <strong>Road Safety:</strong> Motorbike
+                                    rental requires extreme caution - consider
+                                    alternatives
+                                </p>
+                                <p>
+                                    <strong>Water Safety:</strong> Check
+                                    conditions before swimming, particularly
+                                    during low season
+                                </p>
+                                <p>
+                                    <strong>Beach Security:</strong> Don't leave
+                                    valuables unattended, even on quieter
+                                    beaches
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="risk-item medium-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-map-marker-alt"></i> Krabi
+                                </div>
+                                <div class="risk-level medium">
+                                    Location Risks
+                                </div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    <strong>Boat Operators:</strong> Use only
+                                    licensed operators for any excursions
+                                </p>
+                                <p>
+                                    <strong>Wildlife:</strong> Be aware of
+                                    monkeys at viewpoints - secure food and
+                                    belongings
+                                </p>
+                                <p>
+                                    <strong>Tides:</strong> Check tide schedules
+                                    for beach visits - some areas have strong
+                                    currents
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="risk-item medium-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-map-marker-alt"></i> Kuala
+                                    Lumpur
+                                </div>
+                                <div class="risk-level medium">
+                                    Location Risks
+                                </div>
+                            </div>
+                            <div class="risk-content">
+                                <p>
+                                    <strong>Flash Flooding:</strong> Heavy
+                                    afternoon downpours can cause urban flooding
+                                </p>
+                                <p>
+                                    <strong>Air Quality:</strong> Occasional
+                                    haze events possible (check daily AQI)
+                                </p>
+                                <p>
+                                    <strong>Transportation:</strong> Use
+                                    official taxi services or ride-hailing apps
+                                    rather than unofficial taxis
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span>Emergency Contacts</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="risk-item low-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-phone-alt"></i> Thailand
+                                    Emergency Numbers
+                                </div>
+                            </div>
+                            <div class="risk-content">
+                                <p><strong>Tourist Police:</strong> 1155</p>
+                                <p><strong>Medical Emergency:</strong> 1669</p>
+                                <p>
+                                    <strong>Tourist Assistance Center:</strong>
+                                    1672
+                                </p>
+                                <p>
+                                    <strong>Bangkok Hospital Samui:</strong> +66
+                                    77 429 500 (nearest to Koh Phangan)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="risk-item low-risk">
+                            <div class="risk-header">
+                                <div class="risk-title">
+                                    <i class="fas fa-phone-alt"></i> Malaysia
+                                    Emergency Numbers
+                                </div>
+                            </div>
+                            <div class="risk-content">
+                                <p><strong>General Emergency:</strong> 999</p>
+                                <p>
+                                    <strong>Tourist Police:</strong> +60 3 2149
+                                    6590
+                                </p>
+                                <p>
+                                    <strong
+                                        >Kuala Lumpur General Hospital:</strong
+                                    >
+                                    +60 3 2615 5555
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-secondary" id="print-btn">
+                    <i class="fas fa-print"></i> Print Checklist
+                </button>
+                <button class="btn btn-primary" id="save-btn">
+                    <i class="fas fa-save"></i> Save Progress
+                </button>
+            </div>
+        </div>
+
+        <script>
+            // Set current date
+            document.getElementById("current-date").textContent =
+                new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                });
+
+            // Countdown timer
+            function updateCountdown() {
+                const departureDate = new Date("2025-03-21T07:00:00").getTime();
+                const now = new Date().getTime();
+                const distance = departureDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor(
+                    (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+                );
+                const minutes = Math.floor(
+                    (distance % (1000 * 60 * 60)) / (1000 * 60),
+                );
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").textContent = days
+                    .toString()
+                    .padStart(2, "0");
+                document.getElementById("hours").textContent = hours
+                    .toString()
+                    .padStart(2, "0");
+                document.getElementById("minutes").textContent = minutes
+                    .toString()
+                    .padStart(2, "0");
+                document.getElementById("seconds").textContent = seconds
+                    .toString()
+                    .padStart(2, "0");
+
+                // Update journey progress
+                const totalDuration = 12 * 24 * 60 * 60 * 1000; // 12 days in milliseconds
+                const elapsed = now - (departureDate - totalDuration);
+                let progressPercentage = 0;
+
+                if (elapsed > 0) {
+                    progressPercentage = Math.min(
+                        100,
+                        (elapsed / totalDuration) * 100,
+                    );
+                }
+
+                document.getElementById("journey-progress").style.width =
+                    `${progressPercentage}%`;
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+
+            // Tab switching
+            document.querySelectorAll(".tab-btn").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const tab = button.dataset.tab;
+
+                    // Update active button
+                    document.querySelectorAll(".tab-btn").forEach((btn) => {
+                        btn.classList.remove("active");
+                    });
+                    button.classList.add("active");
+
+                    // Show active tab content
+                    document
+                        .querySelectorAll(".tab-content")
+                        .forEach((content) => {
+                            content.classList.remove("active");
+                        });
+                    document.getElementById(tab).classList.add("active");
+
+                    // Save active tab to localStorage
+                    localStorage.setItem("activeTab", tab);
+                });
+            });
+
+            // Restore active tab from localStorage
+            const savedTab = localStorage.getItem("activeTab");
+            if (savedTab) {
+                document.querySelectorAll(".tab-btn").forEach((button) => {
+                    if (button.dataset.tab === savedTab) {
+                        button.click();
+                    }
+                });
+            }
+
+            // Checkbox handling
+            function handleCheckboxChange(checkbox) {
+                const item = checkbox.closest(".checklist-item, .packing-item");
+
+                if (checkbox.checked) {
+                    item.classList.add("checked");
+                } else {
+                    item.classList.remove("checked");
+                }
+
+                updateProgress();
+                saveProgress();
+            }
+
+            document
+                .querySelectorAll(".checklist-checkbox, .packing-checkbox")
+                .forEach((checkbox) => {
+                    checkbox.addEventListener("change", () =>
+                        handleCheckboxChange(checkbox),
+                    );
+                });
+
+            // Update progress bar
+            function updateProgress() {
+                const allCheckboxes = document.querySelectorAll(
+                    ".checklist-checkbox, .packing-checkbox",
+                );
+                const checkedCheckboxes = document.querySelectorAll(
+                    ".checklist-checkbox:checked, .packing-checkbox:checked",
+                );
+
+                const percentage =
+                    allCheckboxes.length > 0
+                        ? (checkedCheckboxes.length / allCheckboxes.length) *
+                          100
+                        : 0;
+
+                document.getElementById("progress-bar").style.width =
+                    `${percentage}%`;
+                document.getElementById("progress-percentage").textContent =
+                    `${Math.round(percentage)}%`;
+                document.getElementById("completion-stat").textContent =
+                    `${Math.round(percentage)}%`;
+            }
+
+            // Save progress to localStorage
+            function saveProgress() {
+                const checkboxStates = {};
+
+                document
+                    .querySelectorAll(".checklist-checkbox, .packing-checkbox")
+                    .forEach((checkbox) => {
+                        checkboxStates[checkbox.id] = checkbox.checked;
+                    });
+
+                localStorage.setItem(
+                    "checkboxStates",
+                    JSON.stringify(checkboxStates),
+                );
+
+                // Show saved notification
+                const saveBtn = document.getElementById("save-btn");
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML =
+                    '<i class="fas fa-check"></i> Progress Saved';
+
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalText;
+                }, 2000);
+            }
+
+            // Load saved progress
+            function loadProgress() {
+                const savedStates = localStorage.getItem("checkboxStates");
+
+                if (savedStates) {
+                    const checkboxStates = JSON.parse(savedStates);
+
+                    Object.keys(checkboxStates).forEach((id) => {
+                        const checkbox = document.getElementById(id);
+
+                        if (checkbox) {
+                            checkbox.checked = checkboxStates[id];
+                            handleCheckboxChange(checkbox);
+                        }
+                    });
+                }
+
+                updateProgress();
+            }
+
+            // Print functionality
+            document
+                .getElementById("print-btn")
+                .addEventListener("click", () => {
+                    window.print();
+                });
+
+            // Save button
+            document
+                .getElementById("save-btn")
+                .addEventListener("click", saveProgress);
+
+            // Load saved progress on page load
+            document.addEventListener("DOMContentLoaded", loadProgress);
+
+            // Initialize progress on page load
+            updateProgress();
+        </script>
+    </body>
+</html>

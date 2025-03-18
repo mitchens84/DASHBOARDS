@@ -2,8 +2,11 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
+// Use repository name for GitHub Pages
+const base = process.env.NODE_ENV === 'production' ? '/DASHBOARDS/' : '/';
+
 export default defineConfig({
-  base: '/DASHBOARDS/',
+  base,
   plugins: [
     react(),
     {
@@ -40,6 +43,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'docs',
+    emptyOutDir: true,
     rollupOptions: {
       input: {
         main: './index.html',
@@ -59,4 +63,4 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000
   }
-})
+});

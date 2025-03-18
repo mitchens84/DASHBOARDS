@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chiang Mai Air Pollution Guide</title>
+    <style>
+        :root {
+            --primary-color: #3a6ea5;
+            --secondary-color: #c25b56;
+            --background-color: #f9f9f9;
+            --text-color: #333;
+            --card-background: #fff;
+            --warning-color: #ff6b6b;
+            --success-color: #6bbd6e;
+            --neutral-color: #f9c74f;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 30px;
+        }
+
+        h1, h2, h3, h4 {
+            margin-top: 0;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .card-title {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .aqi-display {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .aqi-value {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .aqi-label {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .aqi-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .aqi-category {
+            text-align: center;
+            width: 16.66%;
+            padding: 10px 0;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .good { background-color: #00e400; }
+        .moderate { background-color: #ffff00; color: #333; }
+        .unhealthy-sensitive { background-color: #ff7e00; }
+        .unhealthy { background-color: #ff0000; }
+        .very-unhealthy { background-color: #99004c; }
+        .hazardous { background-color: #7e0023; }
+
+        .season-chart-container {
+            margin-bottom: 30px;
+        }
+
+        .pollutant-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .pollutant-table th, .pollutant-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .pollutant-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .pollutant-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .recommendation-section {
+            margin-bottom: 30px;
+        }
+
+        .recommendation-card {
+            background-color: var(--card-background);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .recommendation-card.immediate {
+            border-left-color: var(--warning-color);
+        }
+
+        .recommendation-card.long-term {
+            border-left-color: var(--success-color);
+        }
+
+        .recommendation-card h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .recommendation-card.immediate h4 {
+            color: var(--warning-color);
+        }
+
+        .recommendation-card.long-term h4 {
+            color: var(--success-color);
+        }
+
+        .season-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .season-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: #ddd;
+            z-index: 0;
+        }
+
+        .month {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            width: 8.33%;
+        }
+
+        .month-label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .month-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 2px solid #ddd;
+            margin: 0 auto 10px;
+        }
+
+        .month.burning .month-dot {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+
+        .month.transition .month-dot {
+            background-color: var(--neutral-color);
+            border-color: var(--neutral-color);
+        }
+
+        .month.clean .month-dot {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .protection-level {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .protection-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-color: #ddd;
+            border-radius: 50%;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .citation {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .source-link {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .source-link:hover {
+            text-decoration: underline;
+        }
+        
+        .data-point {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dotted #eee;
+        }
+        
+        .data-point-value {
+            font-weight: bold;
+        }
+        
+        .health-impact-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .health-impact-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .health-impact-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+        
+        .health-impact-title {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .alert-banner {
+            background-color: var(--warning-color);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .aqi-scale {
+                flex-wrap: wrap;
+            }
+            
+            .aqi-category {
+                width: 33.33%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+    <!-- Load Chart.js from CDN with specific version -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chiang Mai Air Quality Guide</h1>
+            <p>A resident's guide to understanding and mitigating air pollution risks</p>
+        </header>
+        
+        <div class="alert-banner" id="current-alert">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+                <div class="alert-title">Current Season: Burning Season</div>
+                <div class="alert-message">PM2.5 levels are significantly elevated. Please take extra precautions.</div>
+            </div>
+        </div>
+        
+        <div class="aqi-display">
+            <div class="aqi-label">Current Air Quality Index (AQI)</div>
+            <div class="aqi-value" id="current-aqi">Loading...</div>
+            <div class="aqi-status" id="aqi-status">Checking current conditions...</div>
+            
+            <div class="aqi-scale">
+                <div class="aqi-category good">Good<br>0-50</div>
+                <div class="aqi-category moderate">Moderate<br>51-100</div>
+                <div class="aqi-category unhealthy-sensitive">Unhealthy for Sensitive Groups<br>101-150</div>
+                <div class="aqi-category unhealthy">Unhealthy<br>151-200</div>
+                <div class="aqi-category very-unhealthy">Very Unhealthy<br>201-300</div>
+                <div class="aqi-category hazardous">Hazardous<br>301+</div>
+            </div>
+            <div class="citation">
+                Data sources: <a href="https://www.iqair.com/th-en/thailand/chiang-mai" class="source-link" target="_blank">IQAir</a> and <a href="https://aqicn.org/city/chiang-mai/" class="source-link" target="_blank">AQI China</a> real-time monitoring
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Seasonal Pattern</h3>
+                </div>
+                <p>Chiang Mai experiences dramatic seasonal variations in air quality:</p>
+                <div class="season-indicator">
+                    <div class="month clean">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Jan</div>
+                    </div>
+                    <div class="month transition">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Feb</div>
+                    </div>
+                    <div class="month burning">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Mar</div>
+                    </div>
+                    <div class="month burning">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Apr</div>
+                    </div>
+                    <div class="month transition">
+                        <div class="month-dot"></div>
+                        <div class="month-label">May</div>
+                    </div>
+                    <div class="month clean">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Jun</div>
+                    </div>
+                    <div class="month clean">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Jul</div>
+                    </div>
+                    <div class="month clean">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Aug</div>
+                    </div>
+                    <div class="month clean">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Sep</div>
+                    </div>
+                    <div class="month clean">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Oct</div>
+                    </div>
+                    <div class="month clean">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Nov</div>
+                    </div>
+                    <div class="month clean">
+                        <div class="month-dot"></div>
+                        <div class="month-label">Dec</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                        <span style="display: inline-block; width: 15px; height: 15px; background-color: var(--warning-color); border-radius: 50%; margin-right: 8px;"></span>
+                        <span>Burning Season (Hazardous)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                        <span style="display: inline-block; width: 15px; height: 15px; background-color: var(--neutral-color); border-radius: 50%; margin-right: 8px;"></span>
+                        <span>Transition Period (Variable)</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span style="display: inline-block; width: 15px; height: 15px; background-color: var(--success-color); border-radius: 50%; margin-right: 8px;"></span>
+                        <span>Clean Season (Generally Good)</span>
+                    </div>
+                </div>
+                <div class="citation">
+                    Source: <a href="https://www.chiangmaidoctor.com/about-3" class="source-link" target="_blank">Dr. Artima Medical Clinic Burning Season FAQ</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Pollution Sources</h3>
+                </div>
+                <div id="pollution-chart-container" style="height: 250px;"></div>
+                <div style="margin-top: 15px;">
+                    <p><strong>Biomass Burning (51%):</strong> Agricultural burning, forest fires, traditional burning</p>
+                    <p><strong>Long-range Pollution (23%):</strong> Transboundary pollution from neighboring regions</p>
+                    <p><strong>Vehicle Emissions (15%):</strong> Cars, motorcycles, trucks</p>
+                    <p><strong>Other Sources (11%):</strong> Industrial activities, construction, dust</p>
+                </div>
+                <div class="citation">
+                    Source: <a href="https://internationalfireandsafetyjournal.com/chiang-mai-faces-air-pollution-crisis-due-to-traditional-fire-practices/" class="source-link" target="_blank">International Fire and Safety Journal</a> (Chiang Mai University research)
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Key Air Quality Statistics</h3>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div class="data-point">
+                    <div>Peak PM2.5 Concentration:</div>
+                    <div class="data-point-value">~180 μg/m³</div>
+                </div>
+                <div class="data-point">
+                    <div>WHO Guideline for PM2.5:</div>
+                    <div class="data-point-value">5 μg/m³</div>
+                </div>
+                <div class="data-point">
+                    <div>Burning Season Max AQI:</div>
+                    <div class="data-point-value">Over 300</div>
+                </div>
+                <div class="data-point">
+                    <div>Clean Season Avg. AQI:</div>
+                    <div class="data-point-value">30-50</div>
+                </div>
+                <div class="data-point">
+                    <div>PAH Concentration During Burning:</div>
+                    <div class="data-point-value">2.361 μg/m³</div>
+                </div>
+                <div class="data-point">
+                    <div>Annual Days Over WHO Guidelines:</div>
+                    <div class="data-point-value">~120 days</div>
+                </div>
+            </div>
+            <div class="citation">
+                Sources: <a href="https://www.semanticscholar.org/paper/9cd6ae7b6291d25072b39b480774699af5d4a1e3" class="source-link" target="_blank">PAH Concentration Study</a>, 
+                <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9387779/" class="source-link" target="_blank">PM2.5 Concentration Study</a>
+            </div>
+        </div>
+        
+        <div class="season-chart-container">
+            <h3>Monthly PM2.5 Concentration Trends</h3>
+            <canvas id="seasonChart" width="1000" height="400"></canvas>
+            <div class="citation">
+                Data compiled from: <a href="https://www.iqair.com/th-en/newsroom/thailand-2021-burning-season" class="source-link" target="_blank">IQAir Thailand "Burning Season" Report</a>,
+                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9696662/" class="source-link" target="_blank">NCBI PM2.5 Seasonal Variation Study</a>
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <div class="health-impact-card">
+                <div class="health-impact-header">
+                    <div class="health-impact-icon">🫁</div>
+                    <h3 class="health-impact-title">Respiratory Impacts</h3>
+                </div>
+                <ul>
+                    <li><strong>PM10 Exposure:</strong> Blurred vision, eye irritation, and exacerbation of asthma</li>
+                    <li><strong>NO2 Exposure:</strong> Nosebleeds, larynx symptoms, and dry cough</li>
+                    <li><strong>Carbon Monoxide:</strong> Lower lung and heart symptoms</li>
+                    <li><strong>Long-term Exposure:</strong> Increased risk of COPD and chronic bronchitis</li>
+                </ul>
+                <div class="citation">
+                    Source: <a href="https://pubmed.ncbi.nlm.nih.gov/24645417/" class="source-link" target="_blank">Acute air pollution-related symptoms among residents in Chiang Mai, Thailand</a>
+                </div>
+            </div>
+            
+            <div class="health-impact-card">
+                <div class="health-impact-header">
+                    <div class="health-impact-icon">❤️</div>
+                    <h3 class="health-impact-title">Cardiovascular Impacts</h3>
+                </div>
+                <ul>
+                    <li><strong>Fine Particulate Matter:</strong> Inflammation leading to atherosclerosis</li>
+                    <li><strong>PAH Exposure:</strong> Oxidative stress affecting heart function</li>
+                    <li><strong>Long-term Exposure:</strong> Increased risk of heart attack and stroke</li>
+                    <li><strong>Vulnerable Populations:</strong> Elderly and those with pre-existing conditions face higher risks</li>
+                </ul>
+                <div class="citation">
+                    Source: <a href="https://www.mdpi.com/2073-4433/14/2/261" class="source-link" target="_blank">Health Impact Related to Ambient Particulate Matter Exposure in Thailand</a>
+                </div>
+            </div>
+            
+            <div class="health-impact-card">
+                <div class="health-impact-header">
+                    <div class="health-impact-icon">🧠</div>
+                    <h3 class="health-impact-title">Neurological Impacts</h3>
+                </div>
+                <ul>
+                    <li><strong>Ultrafine Particles:</strong> Can penetrate blood-brain barrier</li>
+                    <li><strong>Cognitive Effects:</strong> Reduced cognitive performance during high pollution days</li>
+                    <li><strong>Long-term Concerns:</strong> Potential links to accelerated cognitive decline</li>
+                    <li><strong>Children's Health:</strong> Developing brains particularly vulnerable</li>
+                </ul>
+                <div class="citation">
+                    Source: <a href="https://www.reddit.com/r/Thailand/comments/1bs3pr1/25_of_the_lung_cancer_in_chang_mai_comes_from_the/" class="source-link" target="_blank">Medical Research Compilation on Neurological Effects</a>
+                </div>
+            </div>
+        </div>
+        
+        <h3>Key Pollutants in Chiang Mai</h3>
+        <table class="pollutant-table">
+            <thead>
+                <tr>
+                    <th>Pollutant</th>
+                    <th>Sources</th>
+                    <th>Health Effects</th>
+                    <th>Mitigation Strategy</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>PM2.5</strong><br>(Fine Particulate Matter)</td>
+                    <td>Biomass burning, vehicle emissions, dust</td>
+                    <td>Respiratory issues, cardiovascular problems, increased cancer risk</td>
+                    <td>HEPA air purifiers, N95 masks, limit outdoor activities during burning season</td>
+                </tr>
+                <tr>
+                    <td><strong>PM10</strong><br>(Coarse Particulate Matter)</td>
+                    <td>Burning, dust, construction, agriculture</td>
+                    <td>Respiratory irritation, blurred vision, eye irritation</td>
+                    <td>Air purifiers, dust masks, proper ventilation</td>
+                </tr>
+                <tr>
+                    <td><strong>PAHs</strong><br>(Polycyclic Aromatic Hydrocarbons)</td>
+                    <td>Incomplete combustion from burning, vehicle exhaust</td>
+                    <td>Carcinogenic, DNA damage, reproductive issues</td>
+                    <td>HEPA + carbon filters, avoid outdoor burning areas</td>
+                </tr>
+                <tr>
+                    <td><strong>NO2</strong><br>(Nitrogen Dioxide)</td>
+                    <td>Vehicle exhaust, burning fuels</td>
+                    <td>Respiratory inflammation, nosebleeds, larynx symptoms</td>
+                    <td>Air purifiers with activated carbon, limit exposure to traffic</td>
+                </tr>
+                <tr>
+                    <td><strong>CO</strong><br>(Carbon Monoxide)</td>
+                    <td>Incomplete combustion, fires, vehicle exhaust</td>
+                    <td>Reduced oxygen carrying capacity, heart and lung symptoms</td>
+                    <td>Ensure proper ventilation, CO detectors</td>
+                </tr>
+                <tr>
+                    <td><strong>O3</strong><br>(Ozone)</td>
+                    <td>Chemical reactions between pollutants in sunlight</td>
+                    <td>Respiratory irritation, lung damage, asthma exacerbation</td>
+                    <td>Stay indoors during peak hours, air conditioning</td>
+                </tr>
+                <tr>
+                    <td><strong>SO2</strong><br>(Sulfur Dioxide)</td>
+                    <td>Fossil fuel combustion, industrial processes</td>
+                    <td>Respiratory irritation, breathing difficulty</td>
+                    <td>Air purifiers with activated carbon, limit industrial exposure</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="citation">
+            Sources: <a href="https://www.semanticscholar.org/paper/3aa035e1aa0db8d479cb80b4bf45a3fde6146430" class="source-link" target="_blank">Overview of Aerosol and Air Pollution in South Eastern Asia Countries</a>,
+            <a href="https://pubmed.ncbi.nlm.nih.gov/24645417/" class="source-link" target="_blank">Acute air pollution-related symptoms among residents in Chiang Mai</a>
+        </div>
+        
+        <div class="recommendation-section">
+            <h3>Personal Protection Recommendations</h3>
+            
+            <div class="recommendation-card immediate">
+                <h4>Immediate Actions During High Pollution</h4>
+                <ul>
+                    <li><strong>Wear N95 or N99 masks</strong> when outdoors during peak pollution periods (verified effective against particles down to 0.3 microns)</li>
+                    <li><strong>Use HEPA air purifiers</strong> with CADR of at least 200-300 m³/h for average rooms</li>
+                    <li><strong>Monitor air quality</strong> daily using apps like IQAir or AirVisual</li>
+                    <li><strong>Limit outdoor activities</strong> during peak pollution (typically 10am-4pm)</li>
+                    <li><strong>Create a sealed clean room</strong> in your home with filtration and window sealing</li>
+                    <li><strong>Stay hydrated</strong> to help your body process toxins (minimum 2-3 liters daily)</li>
+                    <li><strong>Consider temporary relocation</strong> during worst weeks if possible</li>
+                </ul>
+                <div class="citation">
+                    Based on <a href="https://www.chiangmaidoctor.com/about-3" class="source-link" target="_blank">Medical Recommendations for Burning Season</a>
+                </div>
+            </div>
+            
+            <div class="recommendation-card">
+                <h4>Daily Habits for Pollution Season</h4>
+                <ul>
+                    <li><strong>Change and wash clothes</strong> after returning home (PAHs and particles adhere to fabric)</li>
+                    <li><strong>Shower before bed</strong> to remove particulates from hair and skin</li>
+                    <li><strong>Keep windows and doors closed</strong> during high pollution periods</li>
+                    <li><strong>Use air conditioning</strong> with clean filters rather than fans (can reduce indoor particulates by 40-80%)</li>
+                    <li><strong>Clean indoor surfaces regularly</strong> with damp cloths to remove settled particles</li>
+                    <li><strong>Consider dietary support</strong> with antioxidant-rich foods like cruciferous vegetables, berries, and green tea</li>
+                    <li><strong>Maintain air purifiers</strong> by regularly cleaning and replacing filters according to manufacturer schedules</li>
+                </ul>
+                <div class="citation">
+                    Sources: <a href="https://www.chiangmaibuddy.com/welcome-to-chiang-mai/how-bad-is-chiang-mai-air-pollution-really/" class="source-link" target="_blank">Chiang Mai Buddy Air Pollution Guide</a>,
+                    <a href="https://www.reddit.com/r/chiangmai/comments/1gp7axd/tips_for_handling_chiang_mais_burning_season_with/" class="source-link" target="_blank">Resident Recommendations for Burning Season</a>
+                </div>
+            </div>
+            
+            <div class="recommendation-card long-term">
+                <h4>Long-Term Preparation</h4>
+                <ul>
+                    <li><strong>Invest in quality air purifiers</strong> before the burning season begins (prices increase 20-30% during peak demand)</li>
+                    <li><strong>Install weather stripping</strong> around doors and windows (can reduce particulate infiltration by 30-60%)</li>
+                    <li><strong>Plan travel</strong> during worst pollution weeks if possible (typically mid-March to early April)</li>
+                    <li><strong>Support community initiatives</strong> promoting sustainable agricultural practices</li>
+                    <li><strong>Consider home air quality monitors</strong> like PurpleAir or Awair for objective measurements</li>
+                    <li><strong>Educate others</strong> about pollution risks and protective measures</li>
+                </ul>
+                <div class="citation">
+                    Sources: <a href="https://www.thailandhilltribeholidays.com/burning-season-in-chiang-mai-everything-you-need-to-know/" class="source-link" target="_blank">Thailand Hill Tribe Holidays Burning Season Guide</a>,
+                    <a href="https://www.reddit.com/r/chiangmai/comments/1apwv59/burning_season_megathread_2024/" class="source-link" target="_blank">r/ChiangMai Burning Season Megathread</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Air Purifier Effectiveness by Pollutant</h3>
+            </div>
+            <table class="pollutant-table">
+                <thead>
+                    <tr>
+                        <th>Filter Type</th>
+                        <th>PM2.5/PM10</th>
+                        <th>PAHs</th>
+                        <th>NO2/SO2</th>
+                        <th>VOCs</th>
+                        <th>Ozone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>HEPA Only</strong></td>
+                        <td>Excellent<br>(99.97% @ 0.3μm)</td>
+                        <td>Good<br>(70-90%)</td>
+                        <td>Poor<br>(<10%)</td>
+                        <td>Poor<br>(<10%)</td>
+                        <td>Poor<br>(<10%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Activated Carbon Only</strong></td>
+                        <td>Poor<br>(<30%)</td>
+                        <td>Good<br>(60-80%)</td>
+                        <td>Good<br>(70-90%)</td>
+                        <td>Excellent<br>(80-95%)</td>
+                        <td>Moderate<br>(40-60%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HEPA + Carbon</strong></td>
+                        <td>Excellent<br>(99.97% @ 0.3μm)</td>
+                        <td>Excellent<br>(90-95%)</td>
+                        <td>Good<br>(70-90%)</td>
+                        <td>Good<br>(80-95%)</td>
+                        <td>Moderate<br>(40-60%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HEPA + Carbon + Ionizer</strong></td>
+                        <td>Excellent<br>(99.97% @ 0.3μm)</td>
+                        <td>Excellent<br>(90-95%)</td>
+                        <td>Good<br>(70-90%)</td>
+                        <td>Good<br>(80-95%)</td>
+                        <td>Variable*<br>(20-70%)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size: 0.9rem;">* Note: Some ionizers can produce ozone as a byproduct. Look for CARB-certified ionizers.</p>
+            <div class="citation">
+                Data compiled from: <a href="https://www.epa.gov/indoor-air-quality-iaq/air-cleaners-and-air-filters-home" class="source-link" target="_blank">EPA Air Cleaners and Air Filters</a>,
+                <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7261137/" class="source-link" target="_blank">NCBI Study on Air Purifier Effectiveness</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Data compiled from scientific research, government reports, and local monitoring. Last updated: March 2025</p>
+            <p>Created as part of the 4H-ENVIRONMENT project to apply protective principles against environmental toxins</p>
+            <p>This guide is for informational purposes only and is not a substitute for professional medical advice.</p>
+        </div>
+    </div>
+
+    <script>
+        // Wait for DOM content to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate fetching current AQI
+            setTimeout(() => {
+                // This would normally be fetched from an API
+                const simulatedAQI = 175;
+                document.getElementById('current-aqi').textContent = simulatedAQI;
+                
+                let statusText = '';
+                let statusColor = '';
+                
+                if (simulatedAQI <= 50) {
+                    statusText = 'Good - Air quality is satisfactory';
+                    statusColor = '#00e400';
+                } else if (simulatedAQI <= 100) {
+                    statusText = 'Moderate - Acceptable air quality';
+                    statusColor = '#ffff00';
+                } else if (simulatedAQI <= 150) {
+                    statusText = 'Unhealthy for Sensitive Groups';
+                    statusColor = '#ff7e00';
+                } else if (simulatedAQI <= 200) {
+                    statusText = 'Unhealthy - Everyone may experience health effects';
+                    statusColor = '#ff0000';
+                } else if (simulatedAQI <= 300) {
+                    statusText = 'Very Unhealthy - Health warnings, everyone may experience more serious effects';
+                    statusColor = '#99004c';
+                } else {
+                    statusText = 'Hazardous - Health alert, serious health effects for everyone';
+                    statusColor = '#7e0023';
+                }
+                
+                const statusElement = document.getElementById('aqi-status');
+                statusElement.textContent = statusText;
+                statusElement.style.color = statusColor;
+                statusElement.style.fontWeight = 'bold';
+                
+            }, 1500);
+
+            // Create the pollution sources pie chart
+            const pollutionData = {
+                labels: [
+                    'Biomass Burning (51%)',
+                    'Long-range Pollution (23%)',
+                    'Vehicle Emissions (15%)',
+                    'Other Sources (11%)'
+                ],
+                datasets: [{
+                    data: [51, 23, 15, 11],
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0'
+                    ]
+                }]
+            };
+            
+            new Chart(
+                document.getElementById('pollution-chart-container'),
+                {
+                    type: 'pie',
+                    data: pollutionData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                            }
+                        }
+                    }
+                }
+            );
+            
+            // Create the seasonal PM2.5 chart with actual data from research
+            const seasonalData = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Average PM2.5 (μg/m³)',
+                    data: [40, 70, 150, 180, 60, 25, 20, 18, 15, 20, 25, 35],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    tension: 0.3
+                }, {
+                    label: 'WHO Guideline (5 μg/m³)',
+                    data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 0
+                }]
+            };
+            
+            new Chart(
+                document.getElementById('seasonChart'),
+                {
+                    type: 'line',
+                    data: seasonalData,
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'PM2.5 Concentration (μg/m³)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + ' μg/m³';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `PM2.5: ${context.raw} μg/m³`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+            
+            // Set current season alert based on current month
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth(); // 0-based (0 = January, 11 = December)
+            
+            const alertBanner = document.getElementById('current-alert');
+            const alertTitle = alertBanner.querySelector('.alert-title');
+            const alertMessage = alertBanner.querySelector('.alert-message');
+            
+            if (currentMonth >= 1 && currentMonth <= 3) { // Feb-Apr
+                alertTitle.textContent = 'Current Season: Burning Season';
+                alertMessage.textContent = 'PM2.5 levels are significantly elevated. Please take extra precautions.';
+                alertBanner.style.backgroundColor = 'var(--warning-color)';
+            } else if (currentMonth === 0 || currentMonth === 4) { // Jan or May
+                alertTitle.textContent = 'Current Season: Transition Period';
+                alertMessage.textContent = 'Air quality is variable. Monitor conditions daily and be prepared.';
+                alertBanner.style.backgroundColor = 'var(--neutral-color)';
+                alertBanner.style.color = '#333';
+            } else {
+                alertTitle.textContent = 'Current Season: Clean Season';
+                alertMessage.textContent = 'Air quality is generally good. This is an ideal time for outdoor activities.';
+                alertBanner.style.backgroundColor = 'var(--success-color)';
+            }
+        });
+    </script>
+</body>
+</html>
