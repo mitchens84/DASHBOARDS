@@ -6,12 +6,9 @@
 1. [Getting Started](#getting-started)
 2. [Dashboard Structure](#dashboard-structure)
 3. [Adding a New Dashboard](#adding-a-new-dashboard)
-4. [Updating Existing Dashboards](#updating-existing-dashboards)
-5. [Persistent Storage System](#persistent-storage-system)
-6. [Working with Interactive Elements](#working-with-interactive-elements)
-7. [Build and Update Scripts](#build-and-update-scripts)
-8. [React Native Content](#react-native-content)
-9. [Troubleshooting](#troubleshooting)
+4. [Persistent Storage System](#persistent-storage-system)
+5. [Working with Interactive Elements](#working-with-interactive-elements)
+6. [Troubleshooting](#troubleshooting)
 
 ## Getting Started
 
@@ -77,40 +74,61 @@ The persistent storage will automatically work with your new content without add
 
 ## Persistent Storage System
 
-All dashboards automatically save user data and settings using the integrated storage system.
+Selected dashboards now include persistent storage for user preferences and inputs.
 
-### How the Storage System Works
+### Dashboards with Storage
 
-- The system automatically detects interactive elements like forms, checkboxes, and dropdowns
-- Changes are automatically saved to the browser's local storage
-- When a user revisits the dashboard, their previous state is restored
-- No manual code is required to enable this functionality
+The following dashboards have persistent storage enabled:
+- Sulforaphane Information
+- Thailand-Malaysia Journey
 
-### Including Storage in Your Dashboard
+### Adding Storage to New Dashboards
 
-To enable automatic storage in any dashboard, simply add this line before your dashboard-specific scripts:
+To add persistent storage to a new dashboard:
+
+1. Ensure your HTML file references the storage script:
 
 ```html
-<script src="index.js" type="module"></script>
+<script src="../simple-storage.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Choose a unique ID for your dashboard
+    const dashboardId = 'your-dashboard-id';
+    
+    // Enable checkbox persistence
+    SimpleStorage.loadCheckboxes(dashboardId);
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        SimpleStorage.saveCheckboxes(dashboardId);
+      });
+    });
+    
+    // Enable form element persistence if needed
+    // Additional code for saving form fields...
+  });
+</script>
 ```
 
-This includes the auto-storage system that handles all persistence automatically.
+2. Make sure all interactive elements have unique IDs:
 
-### Manual Storage Control (Advanced)
+```html
+<input type="checkbox" id="unique-checkbox-id">
+<input type="text" id="unique-input-id">
+```
 
-For more advanced control, you can use the storage API directly:
+### Using Storage API Directly
+
+You can also use the storage API directly in your code:
 
 ```javascript
-import dashboardStorage from './storage-manager.js';
-
 // Save data
-dashboardStorage.saveDashboard('your-dashboard-id', yourData);
+SimpleStorage.save('your-key', yourData);
 
 // Load data
-const savedData = dashboardStorage.loadDashboard('your-dashboard-id', defaultData);
+const savedData = SimpleStorage.load('your-key', defaultValue);
 
-// Clear data
-dashboardStorage.clearDashboard('your-dashboard-id');
+// Delete data
+SimpleStorage.delete('your-key');
 ```
 
 ## Working with Interactive Elements

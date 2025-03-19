@@ -1,0 +1,18 @@
+<!-- Fix script placement - it should be before closing body tag -->
+<script src="../simple-storage.js"></script>
+<script>
+  // Initialize when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    // Load any saved checkbox states
+    SimpleStorage.loadCheckboxes('sulforaphane');
+    
+    // Save checkbox states when they change
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        SimpleStorage.saveCheckboxes('sulforaphane');
+      });
+    });
+  });
+</script>
+</body>
+</html>

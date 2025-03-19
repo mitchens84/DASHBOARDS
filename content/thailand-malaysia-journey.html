@@ -1,0 +1,47 @@
+<!-- Fix script placement - it should be before closing body tag -->
+<script src="../simple-storage.js"></script>
+<script>
+  // Initialize when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    // Dashboard ID
+    const dashboardId = 'thailand-malaysia';
+    
+    // Load any saved checkbox states
+    SimpleStorage.loadCheckboxes(dashboardId);
+    
+    // Save checkbox states when they change
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        SimpleStorage.saveCheckboxes(dashboardId);
+      });
+    });
+    
+    // For other interactive elements like textareas, inputs, etc.
+    function saveFormState() {
+      const formData = {};
+      document.querySelectorAll('input[type="text"], textarea, select').forEach(el => {
+        if (el.id) {
+          formData[el.id] = el.value;
+        }
+      });
+      SimpleStorage.save(dashboardId + '-forms', formData);
+    }
+    
+    // Load saved form data
+    const savedFormData = SimpleStorage.load(dashboardId + '-forms', {});
+    Object.keys(savedFormData).forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.value = savedFormData[id];
+      }
+    });
+    
+    // Add change listeners to form elements
+    document.querySelectorAll('input[type="text"], textarea, select').forEach(el => {
+      el.addEventListener('change', saveFormState);
+      el.addEventListener('blur', saveFormState);
+    });
+  });
+</script>
+</body>
+</html>
