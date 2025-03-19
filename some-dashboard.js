@@ -1,0 +1,3 @@
+import './auto-storage.js';
+
+// ...existing code...

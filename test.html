@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storage Test Dashboard</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 16px; background-color: white; }
+    h1, h2 { color: #111827; }
+    .debug { background: #f3f4f6; padding: 10px; border-radius: 4px; margin-top: 20px; }
+    .checkbox-group { margin: 16px 0; }
+    button { padding: 8px 16px; border-radius: 4px; border: none; background-color: #3b82f6; color: white; cursor: pointer; }
+    button:hover { background-color: #2563eb; }
+    .problem { margin-top: 10px; padding: 8px; border-left: 4px solid #ef4444; background-color: #fee2e2; }
+    .solution { margin-top: 10px; padding: 8px; border-left: 4px solid #10b981; background-color: #d1fae5; }
+    label { display: block; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Storage Implementation Test</h1>
+  
+  <div class="card">
+    <h2>Test Checkboxes with IDs</h2>
+    <p>These checkboxes have explicit IDs and should persist their state between page reloads.</p>
+    
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="test-checkbox-1"> Checkbox with ID 1</label>
+      <label><input type="checkbox" id="test-checkbox-2"> Checkbox with ID 2</label>
+      <label><input type="checkbox" id="test-checkbox-3"> Checkbox with ID 3</label>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Test Checkboxes with Names</h2>
+    <p>These checkboxes have names but no IDs and should still persist state.</p>
+    
+    <div class="checkbox-group">
+      <label><input type="checkbox" name="named-checkbox-1"> Checkbox with name 1</label>
+      <label><input type="checkbox" name="named-checkbox-2"> Checkbox with name 2</label>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Test Checkboxes with data-id Attribute</h2>
+    <p>These checkboxes have data-id attributes and should persist state.</p>
+    
+    <div class="checkbox-group">
+      <label><input type="checkbox" data-id="data-checkbox-1"> Checkbox with data-id 1</label>
+      <label><input type="checkbox" data-id="data-checkbox-2"> Checkbox with data-id 2</label>
+    </div>
+  </div>
+  
+  <div class="card" id="unnamed-container">
+    <h2>Test Checkboxes without Any Identifiers</h2>
+    <p>These checkboxes have no explicit identifiers but should still persist through path generation.</p>
+    
+    <div class="checkbox-group">
+      <label><input type="checkbox"> Unnamed checkbox 1</label>
+      <label><input type="checkbox"> Unnamed checkbox 2</label>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Test Text Inputs and Select</h2>
+    <p>These form elements should also persist their values.</p>
+    
+    <div>
+      <label>
+        Text input:
+        <input type="text" id="test-input" placeholder="Type something here...">
+      </label>
+    </div>
+    
+    <div style="margin-top: 10px;">
+      <label>
+        Select: 
+        <select id="test-select">
+          <option>Option 1</option>
+          <option>Option 2</option>
+          <option>Option 3</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Storage Controls</h2>
+    <button id="btn-clear">Clear All Storage</button>
+    <button id="btn-inspect">Inspect Current Storage</button>
+  </div>
+  
+  <div class="debug">
+    <h3>Debug Information</h3>
+    <div id="storage-debug"></div>
+  </div>
+  
+  <!-- Import storage system -->
+  <script type="module">
+    // Import auto-storage system
+    import autoStorage from './auto-storage.js';
+    
+    // Setup debug controls
+    document.getElementById('btn-clear').addEventListener('click', () => {
+      localStorage.clear();
+      document.getElementById('storage-debug').innerHTML = 
+        '<div class="solution">All storage cleared. Reload the page to start fresh.</div>';
+    });
+    
+    document.getElementById('btn-inspect').addEventListener('click', () => {
+      const storageContent = Object.keys(localStorage).map(key => {
+        try {
+          const value = localStorage.getItem(key);
+          const parsed = JSON.parse(value);
+          return `<strong>${key}</strong>: ${JSON.stringify(parsed, null, 2)}`;
+        } catch (e) {
+          return `<strong>${key}</strong>: ${localStorage.getItem(key)}`;
+        }
+      }).join('<br><br>');
+      
+      document.getElementById('storage-debug').innerHTML = 
+        `<pre>${storageContent || 'No storage data found.'}</pre>`;
+    });
+    
+    // Show status of storage systems
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('storage-debug').innerHTML = `
+        <p>Storage systems available:</p>
+        <ul>
+          <li>autoStorage: ${typeof window.autoStorage !== 'undefined' ? '✅' : '❌'}</li>
+          <li>dashboardStorage: ${typeof window.dashboardStorage !== 'undefined' ? '✅' : '❌'}</li>
+          <li>SimpleStorage: ${typeof window.SimpleStorage !== 'undefined' ? '✅' : '❌'}</li>
+          <li>localStorage: ${typeof localStorage !== 'undefined' ? '✅' : '❌'}</li>
+        </ul>
+        <p>Current dashboardId: ${window.autoStorage?.dashboardId || 'unknown'}</p>
+      `;
+    });
+  </script>
+</body>
+</html>

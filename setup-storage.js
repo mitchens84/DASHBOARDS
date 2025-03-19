@@ -12,49 +12,31 @@ const files = fs.readdirSync(contentDir).filter(file => file.endsWith('.html'));
 
 // Storage script to inject
 const storageScript = `
-<script src="../simple-storage.js"></script>
-<script>
-  // Initialize when page loads
-  document.addEventListener('DOMContentLoaded', function() {
-    // Generate a dashboard ID from filename
-    const dashboardId = window.location.pathname.split('/').pop().replace('.html', '');
-    
-    // Load any saved checkbox states
-    SimpleStorage.loadCheckboxes(dashboardId);
-    
-    // Save checkbox states when they change
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
-        SimpleStorage.saveCheckboxes(dashboardId);
-      });
-    });
-    
-    // For other interactive elements like textareas, inputs, etc.
-    function saveFormState() {
-      const formData = {};
-      document.querySelectorAll('input[type="text"], textarea, select').forEach(el => {
-        if (el.id) {
-          formData[el.id] = el.value;
-        }
-      });
-      SimpleStorage.save(dashboardId + '-forms', formData);
+<script type="module">
+  // Import auto-storage system
+  import autoStorage from '../auto-storage.js';
+  
+  // For backward compatibility with any manual SimpleStorage calls
+  window.SimpleStorage = {
+    saveCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    loadCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    save: (key, data) => {
+      localStorage.setItem(key, JSON.stringify(data));
+    },
+    load: (key, defaultValue = null) => {
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : defaultValue;
+    },
+    delete: (key) => {
+      localStorage.removeItem(key);
     }
-    
-    // Load saved form data
-    const savedFormData = SimpleStorage.load(dashboardId + '-forms', {});
-    Object.keys(savedFormData).forEach(id => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.value = savedFormData[id];
-      }
-    });
-    
-    // Add change listeners to form elements
-    document.querySelectorAll('input[type="text"], textarea, select').forEach(el => {
-      el.addEventListener('change', saveFormState);
-      el.addEventListener('blur', saveFormState);
-    });
-  });
+  };
 </script>
 `;
 
@@ -64,11 +46,16 @@ files.forEach(file => {
   let content = fs.readFileSync(filePath, 'utf8');
   
   // Check if script is already added
-  if (!content.includes('simple-storage.js')) {
+  if (!content.includes('auto-storage.js') && !content.includes('simple-storage.js')) {
     // Find the closing body tag and insert our scripts before it
     content = content.replace('</body>', `${storageScript}\n</body>`);
     fs.writeFileSync(filePath, content);
-    console.log(`Added storage to ${file}`);
+    console.log(`Added auto-storage to ${file}`);
+  } else if (content.includes('simple-storage.js')) {
+    // Replace simple-storage with auto-storage
+    content = content.replace(/<script src="..\/simple-storage.js"><\/script>[\s\S]*?<\/script>/m, storageScript);
+    fs.writeFileSync(filePath, content);
+    console.log(`Upgraded ${file} from simple-storage to auto-storage`);
   } else {
     console.log(`${file} already has storage`);
   }
