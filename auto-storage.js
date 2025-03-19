@@ -175,7 +175,7 @@ class AutoStorage {
     });
     
     // Text inputs and textareas
-    document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
+    document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], textarea').forEach(input => {
       if (!input.hasAttribute('data-storage-bound')) {
         input.setAttribute('data-storage-bound', 'true');
         input.addEventListener('change', () => this.saveCurrentState());
@@ -211,6 +211,17 @@ class AutoStorage {
       }
     });
     
+    // Tab panels or custom UI components
+    document.querySelectorAll('[role="tabpanel"], [data-tab-panel], .tab-content').forEach(tabPanel => {
+      if (!tabPanel.hasAttribute('data-storage-bound')) {
+        tabPanel.setAttribute('data-storage-bound', 'true');
+        // Create a MutationObserver for class changes that might indicate active state
+        const tabObserver = new MutationObserver(() => this.saveCurrentState());
+        tabObserver.observe(tabPanel, { attributes: true, attributeFilter: ['class'] });
+        newBindings++;
+      }
+    });
+    
     if (newBindings > 0) {
       this.log(`Bound storage to ${newBindings} new element(s)`);
     }
@@ -223,7 +234,8 @@ class AutoStorage {
       inputs: {},
       selects: {},
       radios: {},
-      collapsibles: {}
+      collapsibles: {},
+      tabs: {}
     };
     
     // Checkboxes
@@ -236,7 +248,7 @@ class AutoStorage {
     });
     
     // Text inputs and textareas
-    document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
+    document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], textarea').forEach(input => {
       const id = this.getElementIdentifier(input);
       if (id) {
         state.inputs[id] = input.value;
@@ -264,6 +276,14 @@ class AutoStorage {
       const id = this.getElementIdentifier(section);
       if (id) {
         state.collapsibles[id] = !section.classList.contains('collapsed');
+      }
+    });
+    
+    // Tab panels
+    document.querySelectorAll('[role="tabpanel"], [data-tab-panel], .tab-content').forEach(tabPanel => {
+      const id = this.getElementIdentifier(tabPanel);
+      if (id && tabPanel.classList.contains('active')) {
+        state.tabs[id] = true;
       }
     });
     
@@ -330,6 +350,42 @@ class AutoStorage {
         } else {
           section.classList.add('collapsed');
         }
+        appliedCount++;
+      } else {
+        failedCount++;
+      }
+    }
+    
+    // Apply tab states
+    for (const [id] of Object.entries(state.tabs || {})) {
+      const tab = this.findElementById(id);
+      if (tab) {
+        // Find all siblings and deactivate them first
+        const siblings = Array.from(tab.parentNode?.children || []);
+        siblings.forEach(sibling => {
+          sibling.classList.remove('active');
+          sibling.setAttribute('aria-selected', 'false');
+        });
+        
+        // Activate this tab
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        
+        // Activate corresponding tab button if possible
+        const tabId = tab.getAttribute('aria-labelledby') || tab.id;
+        if (tabId) {
+          const tabButton = document.querySelector(`[aria-controls="${tabId}"]`);
+          if (tabButton) {
+            const tabButtons = Array.from(tabButton.parentNode?.children || []);
+            tabButtons.forEach(btn => {
+              btn.classList.remove('active');
+              btn.setAttribute('aria-selected', 'false');
+            });
+            tabButton.classList.add('active');
+            tabButton.setAttribute('aria-selected', 'true');
+          }
+        }
+        
         appliedCount++;
       } else {
         failedCount++;

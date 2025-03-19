@@ -180,7 +180,6 @@ function App() {
     // Travel Section
     { id: "travel", title: "9E-TRAVEL", level: 0 },
     { id: "chiang-mai-air-pollution", title: "Chiang Mai Air Pollution", level: 1 },
-    { id: "interactive-travel-itinerary", title: "Interactive Travel Itinerary", level: 1 },
     { id: "thailand-malaysia-journey", title: "Thailand-Malaysia Journey Planner", level: 1 },
   ];
 
@@ -342,8 +341,6 @@ function App() {
         return <HtmlContent filePath="content/chiang-mai-air-pollution-guide.html" />;
       case "bean-uti-prevention":
         return <HtmlContent filePath="content/bean-uti-prevention-dashboard.html" />;
-      case "interactive-travel-itinerary":
-        return <HtmlContent filePath="content/interactive-travel-itinerary.html" />;
       case "sulforaphane-protocol":
         return <HtmlContent filePath="content/sulforaphane-protocol.html" />;
       case "thailand-malaysia-journey":
