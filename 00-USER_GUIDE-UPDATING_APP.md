@@ -1,203 +1,283 @@
-# Adding New Content to the Dashboards Project
+# DASHBOARDS USER GUIDE
 
-This guide outlines the process for integrating new content into the dashboards project.
+## Adding and Updating Content
 
-## Automated Content Integration
+### Table of Contents
+1. [Getting Started](#getting-started)
+2. [Dashboard Structure](#dashboard-structure)
+3. [Adding a New Dashboard](#adding-a-new-dashboard)
+4. [Updating Existing Dashboards](#updating-existing-dashboards)
+5. [Persistent Storage System](#persistent-storage-system)
+6. [Working with Interactive Elements](#working-with-interactive-elements)
+7. [Build and Update Scripts](#build-and-update-scripts)
+8. [React Native Content](#react-native-content)
+9. [Troubleshooting](#troubleshooting)
 
-The project includes an automated script to simplify the content integration process.
+## Getting Started
 
-### Using VS Code Tasks
+This application provides interactive dashboards for various purposes. All dashboards support persistent storage, meaning user data and preferences are saved automatically between sessions.
 
-1. Open the Command Palette (`Cmd+Shift+P` on Mac)
-2. Type "Tasks: Run Task" and select it
-3. Choose one of the following tasks:
-   - **Update Content**: Scans for new content and updates manifests
-   - **Update and Validate Content**: Updates content and runs a build to validate changes
+## Dashboard Structure
 
-### What the Automation Does
+Each dashboard consists of:
+- HTML file defining the layout and content
+- JavaScript file for interactive functionality
+- Shared resources (images, styles, etc.)
 
-The `update-content.ts` script automatically:
-- Scans all content directories for new dashboard files
-- Updates `src/content-manifest.ts` with discovered content
-- Generates guidance files in the `/generated` directory with:
-  - Import statements for App.tsx
-  - Table of contents entries
-  - Switch case statements
-- Validates content files for common errors that might break the build
+All dashboards automatically save their state to the browser's local storage.
 
-After running the task:
-1. Check the `generated/` directory for guidance files
-2. Update `App.tsx` using these files
-3. Address any validation warnings before deploying
+## Adding a New Dashboard
 
-## Manual Content Integration Steps
+To add a new dashboard:
 
-If you prefer to manually integrate content or need to handle special cases, follow these steps:
+1. Create a new HTML file in the DASHBOARDS directory:
 
-## 1. Identify Content Type and Category
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Dashboard Title</title>
+  <link rel="stylesheet" href="common/styles.css">
+</head>
+<body>
+  <!-- Your dashboard content -->
 
-1. Review the new content to determine which LBS category it belongs to (e.g., 4H-MEDICAL, 4H-NUTRITION, etc.)
-2. Check existing categories in `content/` directory and `src/content-manifest.ts`
-3. Create a new category directory if needed (e.g., `content/4H-MEDICAL/`)
-
-## 2. Name the Dashboard File
-
-1. Follow the established naming convention: `{YYMMDD}-{descriptive-name}-type.tsx`
-2. Ensure the name is kebab-case (lowercase with hyphens)
-3. Include any relevant date prefixes if temporal ordering is important (e.g., `240205-comprehensive-backpack-dashboard.tsx`)
-
-## 3. Move/Create Content File
-
-1. Place the file in the appropriate category directory:
-   ```bash
-   mv new-dashboard.tsx content/{CATEGORY}/
-   ```
-2. If creating new content, use the existing dashboards as templates for structure and styling
-
-## 4. Update Content Manifest
-
-1. Open `src/content-manifest.ts`
-2. Find or add the appropriate category section
-3. Add the new dashboard's filename (without extension) to the category's array:
-   ```typescript
-   export const contentManifest = {
-     "4H-MEDICAL": ["distal-biceps-tendinopathy-dashboard"],
-     // other categories...
-   };
-   ```
-
-## 5. Update App.tsx
-
-1. Add import statement in the appropriate section:
-   ```typescript
-   // {CATEGORY} imports
-   import NewDashboard from "../content/{CATEGORY}/{filename}.tsx";
-   ```
-
-2. Add table of contents entry in the `tocItems` array:
-   ```typescript
-   // {Category} Section
-   { id: "category-header", title: "{CATEGORY}", level: 0 },
-   { id: "new-dashboard", title: "Dashboard Title", level: 1 },
-   ```
-
-3. Add the rendering logic in the `renderContent` switch statement:
-   ```typescript
-   // {Category}
-   case "new-dashboard":
-     return <NewDashboard />;
-   ```
-
-## 6. Verify Integration
-
-1. Check for TypeScript errors
-2. Test navigation to the new dashboard
-3. Verify all tabs and interactive elements work
-4. Test responsiveness on different screen sizes
-
-## Common Issues and Solutions
-
-### TypeScript Errors
-
-- **Import Path Issues**: Ensure the import path in App.tsx matches the actual file location
-- **Component Props**: Make sure any UI components (Tabs, Cards, etc.) have the correct prop types
-- **Missing Type Definitions**: Import required types from component libraries
-
-### Navigation Issues
-
-- Verify the `id` in `tocItems` matches the case statement in `renderContent`
-- Check that the dashboard is exported as default from its file
-- Ensure the content manifest entry matches the filename exactly
-
-### Component Errors
-
-- Review UI component documentation for proper usage
-- Check for required vs optional props
-- Verify state management implementation
-
-## Example Integration
-
-```typescript
-// 1. File naming and placement
-// content/4H-MEDICAL/distal-biceps-tendinopathy-dashboard.tsx
-
-// 2. Content manifest update
-export const contentManifest = {
-  "4H-MEDICAL": ["distal-biceps-tendinopathy-dashboard"],
-};
-
-// 3. App.tsx updates
-// Import
-import DistalBicepsDashboard from "../content/4H-MEDICAL/distal-biceps-tendinopathy-dashboard.tsx";
-
-// TOC entry
-{ id: "medical", title: "4H-MEDICAL", level: 0 },
-{ id: "distal-biceps", title: "Distal Biceps Management", level: 1 },
-
-// Render logic
-case "distal-biceps":
-  return <DistalBicepsDashboard />;
+  <!-- Include auto-storage system for persistence -->
+  <script src="index.js" type="module"></script>
+  
+  <!-- Dashboard specific code -->
+  <script src="your-dashboard-name.js" type="module"></script>
+</body>
+</html>
 ```
 
-## Package Dependencies and Troubleshooting
+2. Create a JavaScript file with the same name as your HTML file:
 
-### Package Dependencies
+```javascript
+// your-dashboard-name.js
+// Your dashboard-specific code
 
-- **Missing Package Errors**: If you encounter errors like `Cannot find module 'x'` or `x is not defined`:
-  ```bash
-  # Install the missing package
-  npm install package-name
-  # or with yarn
-  yarn add package-name
-  ```
+// Storage is automatically handled by including index.js
+// You don't need to manually implement storage functionality
+```
 
-- **Version Conflicts**: If components aren't rendering properly, check versions match:
-  ```bash
-  # Check what versions are installed
-  npm list package-name
-  # Install specific version if needed
-  npm install package-name@version
-  ```
+3. Update the main index or navigation to include a link to your new dashboard.
 
-- **Common Dashboard Dependencies**: Most dashboards require these packages:
-  - `@mui/material` and `@mui/icons-material` - UI components
-  - `react-chartjs-2` - For charts and visualizations
-  - `@heroicons/react` - For icons
+## Updating Existing Dashboards
 
-### Advanced Debugging
+When updating existing dashboards:
 
-- **Browser Console**: Use browser dev tools (F12) to check for runtime errors
+1. Make your content changes to the HTML file
+2. Add any new interactive elements (forms, checkboxes, etc.)
+3. Update JavaScript functionality as needed
 
-- **Component Debugging**:
-  ```typescript
-  // Add temporary debug logging
-  console.log("Dashboard rendering with props:", props);
-  console.log("State value:", someStateVariable);
-  
-  // Test individual components in isolation
-  return <ProblemComponent {...mockProps} />;
-  ```
+The persistent storage will automatically work with your new content without additional code.
 
-- **TypeScript Build Issues**:
-  ```bash
-  # Get more verbose type errors
-  npm run build -- --verbose
-  
-  # Check specific file types
-  npx tsc --noEmit --jsx preserve src/path/to/file.tsx
-  ```
+## Persistent Storage System
 
-- **React DevTools**: Install the browser extension to inspect component hierarchy and props
+All dashboards automatically save user data and settings using the integrated storage system.
 
-- **Layout Issues**: Add temporary borders to identify component boundaries:
-  ```tsx
-  <div style={{ border: '1px solid red' }}>
-    {/* Component content */}
+### How the Storage System Works
+
+- The system automatically detects interactive elements like forms, checkboxes, and dropdowns
+- Changes are automatically saved to the browser's local storage
+- When a user revisits the dashboard, their previous state is restored
+- No manual code is required to enable this functionality
+
+### Including Storage in Your Dashboard
+
+To enable automatic storage in any dashboard, simply add this line before your dashboard-specific scripts:
+
+```html
+<script src="index.js" type="module"></script>
+```
+
+This includes the auto-storage system that handles all persistence automatically.
+
+### Manual Storage Control (Advanced)
+
+For more advanced control, you can use the storage API directly:
+
+```javascript
+import dashboardStorage from './storage-manager.js';
+
+// Save data
+dashboardStorage.saveDashboard('your-dashboard-id', yourData);
+
+// Load data
+const savedData = dashboardStorage.loadDashboard('your-dashboard-id', defaultData);
+
+// Clear data
+dashboardStorage.clearDashboard('your-dashboard-id');
+```
+
+## Working with Interactive Elements
+
+For best compatibility with the automatic storage system:
+
+1. Always provide `id` or `name` attributes for form elements:
+
+```html
+<input type="checkbox" id="task1" name="task1">
+<select id="country-select" name="country">
+  <option value="us">United States</option>
+  <option value="ca">Canada</option>
+</select>
+```
+
+2. For collapsible sections, use standard classes:
+
+```html
+<div class="collapsible" id="section1">
+  <h2>Collapsible Section</h2>
+  <div class="content">
+    <!-- Section content -->
   </div>
-  ```
+</div>
+```
 
-- **Using Content Validation**: The automated script includes validation to catch common issues:
-  ```bash
-  # Run validation directly
-  npx tsx scripts/update-content.ts
-  ```
+3. For custom interactive elements, add the `data-id` attribute:
+
+```html
+<div class="custom-component" data-id="unique-identifier">
+  <!-- Component content -->
+</div>
+```
+
+## Build and Update Scripts
+
+The application includes several scripts to automate common tasks:
+
+### Building the Application
+
+To build the application for production:
+
+```bash
+# From the project root
+./scripts/build.sh
+```
+
+This will:
+- Compile all JavaScript files
+- Optimize assets
+- Create a production-ready build in the `dist/` folder
+
+### Updating Content
+
+When updating content, use the update script:
+
+```bash
+# From the project root
+./scripts/update-content.sh
+```
+
+This script will:
+- Check for content structure issues
+- Update navigation links automatically
+- Rebuild indexes for search functionality
+- Update the manifest
+
+### Deploying Changes
+
+After making changes and testing locally:
+
+```bash
+# From the project root
+./scripts/deploy.sh
+```
+
+This will deploy your changes to the production environment.
+
+## React Native Content
+
+The dashboards can also be used in React Native mobile applications.
+
+### Adding React Native Components
+
+1. Place React Native components in the `/Users/mitchens/Local/6I-CYBORG-AGENTS/DASHBOARDS/react-native/` directory
+
+2. Create a component file:
+
+```javascript
+// Example component: MyDashboardComponent.js
+import React from 'react';
+import { View, Text } from 'react-native';
+
+export default function MyDashboardComponent() {
+  return (
+    <View>
+      <Text>My Dashboard Component</Text>
+    </View>
+  );
+}
+```
+
+3. Update the React Native export index:
+
+```javascript
+// In react-native/index.js
+export { default as MyDashboardComponent } from './MyDashboardComponent';
+```
+
+### Converting Web Dashboards to React Native
+
+To adapt an existing web dashboard for React Native use:
+
+1. Create a React Native version in the `/react-native/` directory
+2. Use the provided adapter utilities:
+
+```javascript
+// Example
+import { webStorageAdapter } from '../utils/storage-adapters';
+
+// This adapts the web storage system to React Native's AsyncStorage
+const dashboardStorage = webStorageAdapter('dashboard-name');
+```
+
+### Building for Mobile
+
+To build dashboards for mobile use:
+
+```bash
+# Build for iOS
+./scripts/build-ios.sh
+
+# Build for Android
+./scripts/build-android.sh
+```
+
+## Troubleshooting
+
+### Storage Issues
+
+If dashboard states aren't being saved:
+
+1. Verify your dashboard includes `index.js`:
+```html
+<script src="index.js" type="module"></script>
+```
+
+2. Check browser console for any errors
+
+3. Ensure interactive elements have proper identifiers (id, name, or data-id attributes)
+
+4. For privacy modes or incognito browsing, be aware that localStorage may be disabled
+
+### Clearing Stored Data
+
+To reset a dashboard to its default state, you can run this in the browser console:
+
+```javascript
+localStorage.removeItem('dashboards');
+```
+
+Or to selectively clear a specific dashboard:
+
+```javascript
+import dashboardStorage from './storage-manager.js';
+dashboardStorage.clearDashboard('dashboard-id');
+```
+
+For any additional assistance, contact the technical team.
