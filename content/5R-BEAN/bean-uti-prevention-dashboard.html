@@ -818,5 +818,33 @@
       });
     });
   </script>
+
+<script type="module">
+  // Import auto-storage system
+  import autoStorage from '../../../auto-storage.js';
+  
+  // For backward compatibility with any manual SimpleStorage calls
+  window.SimpleStorage = {
+    saveCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    loadCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    save: (key, data) => {
+      localStorage.setItem(key, JSON.stringify(data));
+    },
+    load: (key, defaultValue = null) => {
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : defaultValue;
+    },
+    delete: (key) => {
+      localStorage.removeItem(key);
+    }
+  };
+</script>
+
 </body>
 </html>

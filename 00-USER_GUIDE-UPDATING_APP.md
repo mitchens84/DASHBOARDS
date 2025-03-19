@@ -41,8 +41,11 @@ To add a new dashboard:
 <body>
   <!-- Your dashboard content -->
 
-  <!-- Include auto-storage system for persistence -->
-  <script src="index.js" type="module"></script>
+  <!-- Include storage system for persistence -->
+  <script type="module">
+    // Import auto-storage system
+    import autoStorage from '../../auto-storage.js';
+  </script>
   
   <!-- Dashboard specific code -->
   <script src="your-dashboard-name.js" type="module"></script>
@@ -56,11 +59,17 @@ To add a new dashboard:
 // your-dashboard-name.js
 // Your dashboard-specific code
 
-// Storage is automatically handled by including index.js
+// Storage is automatically handled by the auto-storage.js system
 // You don't need to manually implement storage functionality
 ```
 
 3. Update the main index or navigation to include a link to your new dashboard.
+
+Alternatively, you can run the setup script to automatically add storage to all your dashboard HTML files:
+
+```bash
+node setup-storage.js
+```
 
 ## Updating Existing Dashboards
 
@@ -74,60 +83,69 @@ The persistent storage will automatically work with your new content without add
 
 ## Persistent Storage System
 
-Selected dashboards now include persistent storage for user preferences and inputs.
+All dashboard files now include persistent storage for user preferences and inputs through our enhanced auto-storage system.
 
 ### Dashboards with Storage
 
 The following dashboards have persistent storage enabled:
-- Sulforaphane Information
-- Thailand-Malaysia Journey
+- All HTML dashboards in content subdirectories
+
+### Storage Implementation
+
+The system uses three components working together:
+1. **auto-storage.js** - Primary system that automatically detects and manages form elements
+2. **storage-manager.js** - Core storage engine for saving/loading data
+3. **simple-storage.js** - Legacy compatibility layer (for backward compatibility)
+
+### Enhanced Features
+
+The latest storage system offers:
+1. **Automatic element identification** - Works with elements that have:
+   - id attribute
+   - name attribute
+   - data-id attribute
+   - Or elements without any identifier using path-based identification
+2. **Storage for all interactive elements:**
+   - Checkboxes
+   - Text inputs
+   - Select dropdowns
+   - Radio buttons
+   - Collapsible sections
+3. **Mutation Observer** - Automatically detects and binds to new elements added dynamically
 
 ### Adding Storage to New Dashboards
 
-To add persistent storage to a new dashboard:
+The easiest way to add storage to new dashboards is to run the setup script:
 
-1. Ensure your HTML file references the storage script:
-
-```html
-<script src="../simple-storage.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Choose a unique ID for your dashboard
-    const dashboardId = 'your-dashboard-id';
-    
-    // Enable checkbox persistence
-    SimpleStorage.loadCheckboxes(dashboardId);
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
-        SimpleStorage.saveCheckboxes(dashboardId);
-      });
-    });
-    
-    // Enable form element persistence if needed
-    // Additional code for saving form fields...
-  });
-</script>
+```bash
+node setup-storage.js
 ```
 
-2. Make sure all interactive elements have unique IDs:
+Or manually import the auto-storage system in your HTML:
 
 ```html
-<input type="checkbox" id="unique-checkbox-id">
-<input type="text" id="unique-input-id">
+<script type="module">
+  // Import auto-storage system
+  import autoStorage from '../../auto-storage.js';
+</script>
 ```
 
 ### Using Storage API Directly
 
-You can also use the storage API directly in your code:
+You can also use the storage API directly in your JavaScript:
 
 ```javascript
-// Save data
+// Using auto-storage (recommended)
+import autoStorage from '../../auto-storage.js';
+
+// Using dashboard storage directly
+import dashboardStorage from '../../storage-manager.js';
+dashboardStorage.saveDashboard('dashboard-id', yourData);
+const savedData = dashboardStorage.loadDashboard('dashboard-id', defaultValue);
+
+// Legacy SimpleStorage API (still supported)
 SimpleStorage.save('your-key', yourData);
-
-// Load data
 const savedData = SimpleStorage.load('your-key', defaultValue);
-
-// Delete data
 SimpleStorage.delete('your-key');
 ```
 
@@ -135,7 +153,7 @@ SimpleStorage.delete('your-key');
 
 For best compatibility with the automatic storage system:
 
-1. Always provide `id` or `name` attributes for form elements:
+1. Always provide `id`, `name`, or `data-id` attributes for form elements:
 
 ```html
 <input type="checkbox" id="task1" name="task1">
@@ -163,6 +181,18 @@ For best compatibility with the automatic storage system:
   <!-- Component content -->
 </div>
 ```
+
+4. Elements without identifiers will still work, but explicit IDs are recommended for reliability.
+
+## Testing Storage Implementation
+
+To verify storage is working properly:
+
+1. Open the test page: `test.html`
+2. Toggle checkboxes and interact with form elements
+3. Reload the page - all selections should persist
+4. Click "Run Storage Tests" to run automated tests
+5. Click "Inspect Current Storage" to see stored data
 
 ## Build and Update Scripts
 
@@ -196,6 +226,12 @@ This script will:
 - Update navigation links automatically
 - Rebuild indexes for search functionality
 - Update the manifest
+
+When adding new dashboards, run the storage setup script after updating content:
+
+```bash
+node setup-storage.js
+```
 
 ### Deploying Changes
 
@@ -272,9 +308,11 @@ To build dashboards for mobile use:
 
 If dashboard states aren't being saved:
 
-1. Verify your dashboard includes `index.js`:
+1. Verify your dashboard includes the auto-storage system:
 ```html
-<script src="index.js" type="module"></script>
+<script type="module">
+  import autoStorage from '../../auto-storage.js';
+</script>
 ```
 
 2. Check browser console for any errors
@@ -283,12 +321,14 @@ If dashboard states aren't being saved:
 
 4. For privacy modes or incognito browsing, be aware that localStorage may be disabled
 
+5. Run the test.html file to diagnose storage functionality
+
 ### Clearing Stored Data
 
-To reset a dashboard to its default state, you can run this in the browser console:
+To reset all dashboards to their default state, you can run this in the browser console:
 
 ```javascript
-localStorage.removeItem('dashboards');
+localStorage.clear();
 ```
 
 Or to selectively clear a specific dashboard:
@@ -296,6 +336,14 @@ Or to selectively clear a specific dashboard:
 ```javascript
 import dashboardStorage from './storage-manager.js';
 dashboardStorage.clearDashboard('dashboard-id');
+```
+
+### Storage System Debugging
+
+To enable verbose debugging, add this to your browser console:
+
+```javascript
+localStorage.setItem('debug-storage', 'true');
 ```
 
 For any additional assistance, contact the technical team.

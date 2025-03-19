@@ -5,6 +5,8 @@ import dashboardStorage from './storage-manager.js';
  */
 class AutoStorage {
   constructor() {
+    // Check for debug mode
+    this.debugMode = localStorage.getItem('debug-storage') === 'true';
     this.dashboardId = this.detectDashboardId();
     this.setupMutationObserver();
     
@@ -16,31 +18,47 @@ class AutoStorage {
     }
   }
   
+  // Logging helper that respects debug mode
+  log(...args) {
+    if (this.debugMode) {
+      console.log(`[AutoStorage]`, ...args);
+    }
+  }
+  
+  // Warning helper that always shows
+  warn(...args) {
+    console.warn(`[AutoStorage]`, ...args);
+  }
+  
   // Detect dashboard ID from filename, URL, or document title
   detectDashboardId() {
     // Try to get from current script path
     const scriptPath = document.currentScript?.src?.split('/').pop()?.replace('.js', '');
     if (scriptPath && scriptPath !== 'auto-storage') {
+      this.log(`Dashboard ID from script path: ${scriptPath}`);
       return scriptPath;
     }
     
     // Try from page URL
     const urlPath = window.location.pathname.split('/').pop()?.replace('.html', '');
     if (urlPath) {
+      this.log(`Dashboard ID from URL path: ${urlPath}`);
       return urlPath;
     }
     
     // Fallback to document title or fixed string
-    return document.title ? document.title.toLowerCase().replace(/\s+/g, '-') : 'dashboard';
+    const titleId = document.title ? document.title.toLowerCase().replace(/\s+/g, '-') : 'dashboard';
+    this.log(`Dashboard ID from document title: ${titleId}`);
+    return titleId;
   }
   
   // Initialize storage
   init() {
-    console.log(`AutoStorage initialized for "${this.dashboardId}"`, this);
+    this.log(`AutoStorage initialized for "${this.dashboardId}"`);
     
     // Load saved state
     const savedState = dashboardStorage.loadDashboard(this.dashboardId, {});
-    console.log(`Loading saved state for "${this.dashboardId}":`, savedState);
+    this.log(`Loading saved state for "${this.dashboardId}":`, savedState);
     
     // Apply saved state if exists
     if (Object.keys(savedState).length > 0) {
@@ -52,6 +70,33 @@ class AutoStorage {
     
     // Import legacy data if it exists
     this.importLegacyStorageData();
+    
+    // Add storage indicator to page if in debug mode
+    if (this.debugMode) {
+      this.addDebugIndicator();
+    }
+  }
+  
+  // Add visual indicator for debug mode
+  addDebugIndicator() {
+    const indicator = document.createElement('div');
+    indicator.style.position = 'fixed';
+    indicator.style.bottom = '10px';
+    indicator.style.right = '10px';
+    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    indicator.style.color = 'white';
+    indicator.style.padding = '5px 10px';
+    indicator.style.borderRadius = '5px';
+    indicator.style.fontSize = '12px';
+    indicator.style.zIndex = '9999';
+    indicator.style.cursor = 'pointer';
+    indicator.textContent = `📦 Storage: ${this.dashboardId}`;
+    
+    indicator.addEventListener('click', () => {
+      console.log('[AutoStorage] Current state:', dashboardStorage.loadDashboard(this.dashboardId, {}));
+    });
+    
+    document.body.appendChild(indicator);
   }
   
   // Import data from the old SimpleStorage format
@@ -62,7 +107,7 @@ class AutoStorage {
       const legacyData = localStorage.getItem(legacyKey);
       if (legacyData) {
         const checkboxes = JSON.parse(legacyData);
-        console.log(`Found legacy checkbox data for "${this.dashboardId}":`, checkboxes);
+        this.log(`Found legacy checkbox data for "${this.dashboardId}":`, checkboxes);
         
         // Apply legacy checkbox states to elements
         let migrationCount = 0;
@@ -75,14 +120,14 @@ class AutoStorage {
         });
         
         if (migrationCount > 0) {
-          console.log(`Migrated ${migrationCount} checkboxes from legacy storage`);
+          this.log(`Migrated ${migrationCount} checkboxes from legacy storage`);
           // Save current state to new format and remove legacy data
           this.saveCurrentState();
           localStorage.removeItem(legacyKey);
         }
       }
     } catch (e) {
-      console.warn('Error importing legacy storage data:', e);
+      this.warn('Error importing legacy storage data:', e);
     }
   }
   
@@ -98,6 +143,7 @@ class AutoStorage {
       });
       
       if (shouldUpdateListeners) {
+        this.log('DOM mutation detected, setting up listeners for new elements');
         this.setupEventListeners();
       }
     });
@@ -114,14 +160,17 @@ class AutoStorage {
   
   // Add event listeners to all interactive elements
   setupEventListeners() {
+    let newBindings = 0;
+    
     // Checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
       if (!checkbox.hasAttribute('data-storage-bound')) {
         checkbox.setAttribute('data-storage-bound', 'true');
         checkbox.addEventListener('change', () => {
-          console.log(`Checkbox changed: ${this.getElementIdentifier(checkbox) || 'unnamed'} = ${checkbox.checked}`);
+          this.log(`Checkbox changed: ${this.getElementIdentifier(checkbox) || 'unnamed'} = ${checkbox.checked}`);
           this.saveCurrentState();
         });
+        newBindings++;
       }
     });
     
@@ -131,6 +180,7 @@ class AutoStorage {
         input.setAttribute('data-storage-bound', 'true');
         input.addEventListener('change', () => this.saveCurrentState());
         input.addEventListener('blur', () => this.saveCurrentState());
+        newBindings++;
       }
     });
     
@@ -139,6 +189,7 @@ class AutoStorage {
       if (!select.hasAttribute('data-storage-bound')) {
         select.setAttribute('data-storage-bound', 'true');
         select.addEventListener('change', () => this.saveCurrentState());
+        newBindings++;
       }
     });
     
@@ -147,6 +198,7 @@ class AutoStorage {
       if (!radio.hasAttribute('data-storage-bound')) {
         radio.setAttribute('data-storage-bound', 'true');
         radio.addEventListener('change', () => this.saveCurrentState());
+        newBindings++;
       }
     });
     
@@ -155,8 +207,13 @@ class AutoStorage {
       if (!section.hasAttribute('data-storage-bound')) {
         section.setAttribute('data-storage-bound', 'true');
         section.addEventListener('toggle', () => this.saveCurrentState());
+        newBindings++;
       }
     });
+    
+    if (newBindings > 0) {
+      this.log(`Bound storage to ${newBindings} new element(s)`);
+    }
   }
   
   // Collect all form data
@@ -215,14 +272,19 @@ class AutoStorage {
   
   // Apply state to all elements
   applyState(state) {
+    let appliedCount = 0;
+    let failedCount = 0;
+    
     // Apply checkbox states
     for (const [id, isChecked] of Object.entries(state.checkboxes || {})) {
       const checkbox = this.findElementById(id);
       if (checkbox) {
         checkbox.checked = isChecked;
-        console.log(`Applied saved state to checkbox ${id}: ${isChecked}`);
+        this.log(`Applied state to checkbox ${id}: ${isChecked}`);
+        appliedCount++;
       } else {
-        console.warn(`Could not find checkbox with ID: ${id}`);
+        this.debugMode && this.warn(`Could not find checkbox with ID: ${id}`);
+        failedCount++;
       }
     }
     
@@ -231,6 +293,9 @@ class AutoStorage {
       const input = this.findElementById(id);
       if (input) {
         input.value = value;
+        appliedCount++;
+      } else {
+        failedCount++;
       }
     }
     
@@ -239,6 +304,9 @@ class AutoStorage {
       const select = this.findElementById(id);
       if (select) {
         select.value = value;
+        appliedCount++;
+      } else {
+        failedCount++;
       }
     }
     
@@ -247,6 +315,9 @@ class AutoStorage {
       const radio = document.querySelector(`input[type="radio"][name="${name}"][value="${value}"]`);
       if (radio) {
         radio.checked = true;
+        appliedCount++;
+      } else {
+        failedCount++;
       }
     }
     
@@ -259,8 +330,13 @@ class AutoStorage {
         } else {
           section.classList.add('collapsed');
         }
+        appliedCount++;
+      } else {
+        failedCount++;
       }
     }
+    
+    this.log(`Applied saved state to ${appliedCount} element(s), ${failedCount} element(s) not found`);
   }
   
   // Get a unique identifier for an element
@@ -297,12 +373,15 @@ class AutoStorage {
     
     if (path.length > 0) {
       // Create a stable path identifier
-      return `path:${path.join('>')}`;
+      const pathId = `path:${path.join('>')}`;
+      this.log(`Generated path ID for element: ${pathId}`);
+      return pathId;
     }
     
     // Fallback to a data attribute to mark this element
     const generatedId = `auto-id-${Math.random().toString(36).substring(2, 10)}`;
     element.setAttribute('data-auto-id', generatedId);
+    this.log(`Generated random ID for element: ${generatedId}`);
     return generatedId;
   }
   
@@ -368,7 +447,18 @@ class AutoStorage {
   saveCurrentState() {
     const state = this.collectCurrentState();
     dashboardStorage.saveDashboard(this.dashboardId, state);
-    console.log(`Saved state for "${this.dashboardId}"`);
+    this.log(`Saved state for "${this.dashboardId}"`);
+    
+    // Dispatch a custom event that other code can listen for
+    const event = new CustomEvent('autostorage:save', { 
+      detail: { dashboardId: this.dashboardId, state } 
+    });
+    document.dispatchEvent(event);
+  }
+  
+  // Public API for forcing a state update
+  forceUpdate() {
+    this.saveCurrentState();
   }
 }
 

@@ -10,11 +10,14 @@
     h1, h2 { color: #111827; }
     .debug { background: #f3f4f6; padding: 10px; border-radius: 4px; margin-top: 20px; }
     .checkbox-group { margin: 16px 0; }
-    button { padding: 8px 16px; border-radius: 4px; border: none; background-color: #3b82f6; color: white; cursor: pointer; }
+    button { padding: 8px 16px; border-radius: 4px; border: none; background-color: #3b82f6; color: white; cursor: pointer; margin-right: 8px; }
     button:hover { background-color: #2563eb; }
     .problem { margin-top: 10px; padding: 8px; border-left: 4px solid #ef4444; background-color: #fee2e2; }
     .solution { margin-top: 10px; padding: 8px; border-left: 4px solid #10b981; background-color: #d1fae5; }
     label { display: block; margin-bottom: 8px; }
+    .test-result { padding: 8px; border-radius: 4px; margin-top: 4px; font-family: monospace; white-space: pre-wrap; }
+    .success { background-color: #d1fae5; }
+    .failure { background-color: #fee2e2; }
   </style>
 </head>
 <body>
@@ -86,8 +89,17 @@
   
   <div class="card">
     <h2>Storage Controls</h2>
-    <button id="btn-clear">Clear All Storage</button>
-    <button id="btn-inspect">Inspect Current Storage</button>
+    <div class="flex space-x-2">
+      <button id="btn-clear">Clear All Storage</button>
+      <button id="btn-inspect">Inspect Current Storage</button>
+      <button id="btn-run-tests">Run Storage Tests</button>
+      <button id="btn-toggle-checkboxes">Toggle All Checkboxes</button>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Test Results</h2>
+    <div id="test-results"></div>
   </div>
   
   <div class="debug">
@@ -105,6 +117,9 @@
       localStorage.clear();
       document.getElementById('storage-debug').innerHTML = 
         '<div class="solution">All storage cleared. Reload the page to start fresh.</div>';
+      
+      // Also clear test results
+      document.getElementById('test-results').innerHTML = '';
     });
     
     document.getElementById('btn-inspect').addEventListener('click', () => {
@@ -122,6 +137,117 @@
         `<pre>${storageContent || 'No storage data found.'}</pre>`;
     });
     
+    document.getElementById('btn-toggle-checkboxes').addEventListener('click', () => {
+      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = !checkbox.checked;
+      });
+      // Trigger storage
+      setTimeout(() => {
+        document.getElementById('storage-debug').innerHTML = '<div class="solution">Toggled all checkboxes. This should be saved in storage.</div>';
+      }, 100);
+    });
+    
+    // Helper function to run tests
+    document.getElementById('btn-run-tests').addEventListener('click', runStorageTests);
+    
+    function runStorageTests() {
+      const results = document.getElementById('test-results');
+      results.innerHTML = '';
+      
+      // Test 1: Verify autoStorage is initialized
+      addTestResult(
+        'AutoStorage Initialization',
+        window.autoStorage !== undefined,
+        'autoStorage global object exists'
+      );
+      
+      // Test 2: Verify dashboardStorage is initialized
+      addTestResult(
+        'DashboardStorage Initialization',
+        window.autoStorage.dashboardId !== undefined,
+        `Dashboard ID detected: ${window.autoStorage?.dashboardId || 'none'}`
+      );
+      
+      // Test 3: Test storage writing
+      const testKey = 'test-storage-write';
+      const testValue = { test: true, timestamp: Date.now() };
+      localStorage.setItem(testKey, JSON.stringify(testValue));
+      
+      const readValue = JSON.parse(localStorage.getItem(testKey) || 'null');
+      addTestResult(
+        'Storage Write/Read',
+        readValue?.test === true,
+        'localStorage can write and read values'
+      );
+      
+      // Test 4: Test checkbox state changes
+      const checkbox = document.getElementById('test-checkbox-1');
+      const originalState = checkbox.checked;
+      checkbox.checked = !originalState;
+      
+      // Trigger change event
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+      
+      // Wait a moment for storage systems to process
+      setTimeout(() => {
+        // Get the current storage
+        const dashboardId = window.autoStorage.dashboardId;
+        const dashboards = JSON.parse(localStorage.getItem('dashboards') || '{}');
+        const state = dashboards[dashboardId]?.data;
+        
+        addTestResult(
+          'Checkbox State Storage',
+          state?.checkboxes?.['test-checkbox-1'] === !originalState,
+          `Checkbox state changed to ${!originalState} and stored correctly`
+        );
+        
+        // Reset checkbox to original state
+        checkbox.checked = originalState;
+        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+      }, 50);
+      
+      // Test 5: Check storage on reload
+      if (sessionStorage.getItem('reload-test-run') === 'true') {
+        // This is after reload
+        const testInput = document.getElementById('test-input');
+        const expectedValue = 'test-value-123';
+        
+        addTestResult(
+          'Persistence Across Reload',
+          testInput.value === expectedValue,
+          `Input value persisted as "${testInput.value}" (expected "${expectedValue}")`
+        );
+        
+        // Clear test flag
+        sessionStorage.removeItem('reload-test-run');
+      } else {
+        // Set up for reload test
+        const testInput = document.getElementById('test-input');
+        testInput.value = 'test-value-123';
+        testInput.dispatchEvent(new Event('change', { bubbles: true }));
+        
+        // Set flag for after reload
+        sessionStorage.setItem('reload-test-run', 'true');
+        
+        addTestResult(
+          'Reload Test Setup',
+          true,
+          'Set test value - reload page to verify persistence'
+        );
+      }
+    }
+    
+    function addTestResult(name, success, details) {
+      const results = document.getElementById('test-results');
+      const resultEl = document.createElement('div');
+      resultEl.className = `test-result ${success ? 'success' : 'failure'}`;
+      resultEl.innerHTML = `
+        <strong>${name}:</strong> ${success ? 'PASSED' : 'FAILED'}
+        <div>${details || ''}</div>
+      `;
+      results.appendChild(resultEl);
+    }
+    
     // Show status of storage systems
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('storage-debug').innerHTML = `
@@ -134,6 +260,11 @@
         </ul>
         <p>Current dashboardId: ${window.autoStorage?.dashboardId || 'unknown'}</p>
       `;
+      
+      // Run reload test if flag is set
+      if (sessionStorage.getItem('reload-test-run') === 'true') {
+        setTimeout(runStorageTests, 500);
+      }
     });
   </script>
 </body>

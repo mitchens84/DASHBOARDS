@@ -430,5 +430,33 @@
         <div class="tip-header">Scientific Insight:</div>
         Sulforaphane isn't directly present in intact sprouts but forms when the enzyme myrosinase converts glucoraphanin during cell disruption. This two-step process explains why both growing conditions and post-harvest handling significantly impact final sulforaphane content.
     </div>
+
+<script type="module">
+  // Import auto-storage system
+  import autoStorage from '../../../auto-storage.js';
+  
+  // For backward compatibility with any manual SimpleStorage calls
+  window.SimpleStorage = {
+    saveCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    loadCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    save: (key, data) => {
+      localStorage.setItem(key, JSON.stringify(data));
+    },
+    load: (key, defaultValue = null) => {
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : defaultValue;
+    },
+    delete: (key) => {
+      localStorage.removeItem(key);
+    }
+  };
+</script>
+
 </body>
 </html>
