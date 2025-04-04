@@ -57,16 +57,16 @@ export const contentManifest = {
     "bean-sodium-intake-dashboard",
     "beans-infection-diet-plan",
   ],
-  "4H-BIOHACKING-SKIN": [
-    "holistic-protection-dashboard",
-    "sunscreen-protection-calculator",
-    "4H-BIOHACKING-SKIN-SUNSCREEN-BOJ",
-  ],
   "0A-PREP": [
     "bike-maintenance-dashboard",
   ],
   "3P-FINANCE": [
     "thai-import-calculator",
+  ],
+  "4H-BIOHACKING": [
+    "4H-BIOHACKING-SKIN-SUNSCREEN-BOJ",
+    "holistic-protection-dashboard",
+    "sunscreen-protection-calculator",
   ],
 };
 

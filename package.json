@@ -8,7 +8,8 @@
     "preview": "vite preview",
     "deploy": "gh-pages -d dist",
     "start": "vite preview --host 0.0.0.0 --port $PORT",
-    "update-content": "ts-node src/scripts/update-content.ts"
+    "update-content": "ts-node src/scripts/update-content.ts",
+    "test": "echo \"No tests specified yet\" && exit 0"
   },
   "keywords": [],
   "author": "",
