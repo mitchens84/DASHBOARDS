@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bean's UTI Prevention Dashboard</title>
+  <style>
+    :root {
+      --primary: #3a7ca5;
+      --secondary: #16425b;
+      --success: #2e8b57;
+      --warning: #f0ad4e;
+      --danger: #d9534f;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --gray: #6c757d;
+      --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    .dashboard {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+    }
+    
+    .header {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 10px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .card-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: var(--secondary);
+    }
+    
+    .icon {
+      font-size: 1.8rem;
+      color: var(--primary);
+    }
+    
+    .checklist {
+      list-style-type: none;
+      padding: 0;
+    }
+    
+    .checklist li {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+    }
+    
+    .checklist input[type="checkbox"] {
+      margin-right: 10px;
+      margin-top: 5px;
+    }
+    
+    .task-text {
+      flex: 1;
+    }
+    
+    .frequency {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-left: 10px;
+      white-space: nowrap;
+    }
+    
+    .priority-high {
+      border-left: 4px solid var(--danger);
+      padding-left: 10px;
+    }
+    
+    .priority-medium {
+      border-left: 4px solid var(--warning);
+      padding-left: 10px;
+    }
+    
+    .priority-low {
+      border-left: 4px solid var(--success);
+      padding-left: 10px;
+    }
+    
+    .meter-container {
+      margin: 15px 0;
+      background-color: #eee;
+      border-radius: 4px;
+      height: 20px;
+      overflow: hidden;
+    }
+    
+    .meter-fill {
+      height: 100%;
+      background-color: var(--primary);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    
+    .meter-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 5px;
+    }
+    
+    .note {
+      background-color: #FFF9C4;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      margin-top: 15px;
+    }
+    
+    .supplement-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.9rem;
+    }
+    
+    table th {
+      background-color: var(--light);
+      padding: 8px;
+      text-align: left;
+    }
+    
+    table td {
+      border-top: 1px solid #eee;
+      padding: 8px;
+    }
+    
+    .monitoring-row {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+    
+    .progress-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: conic-gradient(var(--primary) 0%, #eee 0%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px auto;
+    }
+    
+    .progress-circle-inner {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Bean's UTI Prevention Dashboard</h1>
+    <p>Comprehensive management plan for preventing Proteus mirabilis infections</p>
+  </div>
+  
+  <div class="dashboard">
+    <!-- Daily Care Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Daily Care</h2>
+        <span class="icon">🐾</span>
+      </div>
+      
+      <ul class="checklist">
+        <li class="priority-high">
+          <input type="checkbox" id="water-intake">
+          <div class="task-text">
+            <label for="water-intake">Ensure adequate water intake (approx. 60ml/kg)</label>
+            <span class="frequency">Daily</span>
+          </div>
+        </li>
+        <li class="priority-high">
+          <input type="checkbox" id="food-water">
+          <div class="task-text">
+            <label for="food-water">Add 100ml water to each meal</label>
+            <span class="frequency">Every meal</span>
+          </div>
+        </li>
+        <li class="priority-medium">
+          <input type="checkbox" id="bathroom-breaks">
+          <div class="task-text">
+            <label for="bathroom-breaks">Regular bathroom breaks (every 4-6 hours)</label>
+            <span class="frequency">Daily</span>
+          </div>
+        </li>
+        <li class="priority-medium">
+          <input type="checkbox" id="supplements">
+          <div class="task-text">
+            <label for="supplements">Administer supplements as prescribed</label>
+            <span class="frequency">Daily</span>
+          </div>
+        </li>
+        <li class="priority-medium">
+          <input type="checkbox" id="exercise">
+          <div class="task-text">
+            <label for="exercise">Complete low-impact exercise (15-20 min)</label>
+            <span class="frequency">Daily</span>
+          </div>
+        </li>
+        <li class="priority-low">
+          <input type="checkbox" id="perineal-cleaning">
+          <div class="task-text">
+            <label for="perineal-cleaning">Clean perineal area if needed</label>
+            <span class="frequency">As needed</span>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="note">
+        <strong>Note:</strong> Morning and evening routines should include checking water bowl cleanliness and encouraging complete bladder emptying.
+      </div>
+    </div>
+    
+    <!-- Hydration Tracker Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Hydration Tracker</h2>
+        <span class="icon">💧</span>
+      </div>
+      
+      <p>Target: 1.2L water daily (60ml/kg × 20kg)</p>
+      
+      <div class="meter-label">
+        <span>0L</span>
+        <span>0.6L</span>
+        <span>1.2L</span>
+      </div>
+      <div class="meter-container">
+        <div class="meter-fill" style="width: 50%;"></div>
+      </div>
+      
+      <table>
+        <tr>
+          <th>Water Source</th>
+          <th>Amount</th>
+          <th>Add</th>
+        </tr>
+        <tr>
+          <td>Water bowls</td>
+          <td>500ml</td>
+          <td>➕</td>
+        </tr>
+        <tr>
+          <td>Added to food</td>
+          <td>200ml</td>
+          <td>➕</td>
+        </tr>
+        <tr>
+          <td>Wet food content</td>
+          <td>100ml</td>
+          <td>➕</td>
+        </tr>
+      </table>
+      
+      <div class="note">
+        <strong>Hydration Tips:</strong> Place water bowls in multiple locations, refresh water twice daily, consider a pet fountain to encourage drinking.
+      </div>
+    </div>
+    
+    <!-- Diet Management Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Diet Management</h2>
+        <span class="icon">🥗</span>
+      </div>
+      
+      <p><strong>Target Urinary pH:</strong> 6.0-6.5</p>
+      
+      <div class="meter-label">
+        <span>5.5 (Too Acidic)</span>
+        <span>6.5 (Target)</span>
+        <span>7.5 (Too Alkaline)</span>
+      </div>
+      <div class="meter-container">
+        <div class="meter-fill" style="width: 45%;"></div>
+      </div>
+      
+      <h3>Recommended Foods</h3>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="lentils">
+          <div class="task-text">
+            <label for="lentils">Lentils (150g daily - provides methionine for acidification)</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="nutritional-yeast">
+          <div class="task-text">
+            <label for="nutritional-yeast">Nutritional yeast (2 tbsp daily - B vitamins & methionine)</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="cranberries">
+          <div class="task-text">
+            <label for="cranberries">Cranberries/extract (anti-adhesion properties)</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="pumpkin">
+          <div class="task-text">
+            <label for="pumpkin">Cooked, peeled pumpkin (fiber & urinary health)</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="blueberries">
+          <div class="task-text">
+            <label for="blueberries">Blueberries (antioxidant & anti-inflammatory)</label>
+          </div>
+        </li>
+      </ul>
+      
+      <h3>Foods to Limit/Avoid</h3>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="high-phosphorus">
+          <div class="task-text">
+            <label for="high-phosphorus">High-phosphorus ingredients (contributes to struvite formation)</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="excess-salt">
+          <div class="task-text">
+            <label for="excess-salt">Excess salt/sodium (affects mineral concentration)</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="spinach">
+          <div class="task-text">
+            <label for="spinach">Spinach (high oxalate content)</label>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="note">
+        <strong>Note:</strong> Maintain adequate but not excessive calcium. Ensure balance between calcium and phosphorus (1.2:1 ratio).
+      </div>
+    </div>
+    
+    <!-- Supplement Regimen Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Supplement Regimen</h2>
+        <span class="icon">💊</span>
+      </div>
+      
+      <div class="supplement-info">
+        <span><strong>D-Mannose</strong></span>
+        <span>1g daily (split into 2 doses)</span>
+      </div>
+      <div class="meter-container">
+        <div class="meter-fill" style="width: 100%;"></div>
+      </div>
+      
+      <div class="supplement-info">
+        <span><strong>N-Acetyl Glucosamine</strong></span>
+        <span>500mg daily</span>
+      </div>
+      <div class="meter-container">
+        <div class="meter-fill" style="width: 100%;"></div>
+      </div>
+      
+      <div class="supplement-info">
+        <span><strong>Cranberry Extract</strong></span>
+        <span>720mg daily (36mg PACs/kg)</span>
+      </div>
+      <div class="meter-container">
+        <div class="meter-fill" style="width: 100%;"></div>
+      </div>
+      
+      <div class="supplement-info">
+        <span><strong>Vitamin C</strong></span>
+        <span>100mg daily (starter dose)</span>
+      </div>
+      <div class="meter-container">
+        <div class="meter-fill" style="width: 100%;"></div>
+      </div>
+      
+      <h3>Administration Schedule</h3>
+      <table>
+        <tr>
+          <th>Time</th>
+          <th>Supplements</th>
+        </tr>
+        <tr>
+          <td>Morning</td>
+          <td>D-Mannose (500mg), Cranberry Extract (360mg), Vitamin C (50mg)</td>
+        </tr>
+        <tr>
+          <td>Evening</td>
+          <td>D-Mannose (500mg), N-Acetyl Glucosamine (500mg), Cranberry Extract (360mg), Vitamin C (50mg)</td>
+        </tr>
+      </table>
+      
+      <div class="note">
+        <strong>Warning:</strong> Monitor urinary pH when using Vitamin C. Stop if pH drops below 6.0 or if digestive upset occurs.
+      </div>
+    </div>
+    
+    <!-- Monitoring & Testing Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Monitoring & Testing</h2>
+        <span class="icon">📊</span>
+      </div>
+      
+      <div class="progress-circle" style="background: conic-gradient(var(--primary) 75%, #eee 0%);">
+        <div class="progress-circle-inner">75%</div>
+      </div>
+      <p style="text-align: center;">Monitoring Compliance</p>
+      
+      <ul class="checklist">
+        <li class="priority-high">
+          <input type="checkbox" id="ph-test">
+          <div class="task-text">
+            <label for="ph-test">Urinary pH test with strips</label>
+            <span class="frequency">Weekly</span>
+          </div>
+        </li>
+        <li class="priority-high">
+          <input type="checkbox" id="urinalysis">
+          <div class="task-text">
+            <label for="urinalysis">Follow-up urinalysis at vet</label>
+            <span class="frequency">In 3-4 weeks</span>
+          </div>
+        </li>
+        <li class="priority-medium">
+          <input type="checkbox" id="urine-color">
+          <div class="task-text">
+            <label for="urine-color">Monitor urine color/clarity</label>
+            <span class="frequency">Daily</span>
+          </div>
+        </li>
+        <li class="priority-medium">
+          <input type="checkbox" id="urination-pattern">
+          <div class="task-text">
+            <label for="urination-pattern">Track urination frequency/duration</label>
+            <span class="frequency">Daily</span>
+          </div>
+        </li>
+        <li class="priority-low">
+          <input type="checkbox" id="bloodwork">
+          <div class="task-text">
+            <label for="bloodwork">Comprehensive bloodwork</label>
+            <span class="frequency">Every 6 months</span>
+          </div>
+        </li>
+      </ul>
+      
+      <h3>Testing Schedule</h3>
+      <div class="monitoring-row">
+        <span>Urinalysis</span>
+        <span>Every 3 months (first year)</span>
+      </div>
+      <div class="monitoring-row">
+        <span>Blood Chemistry</span>
+        <span>Every 6 months</span>
+      </div>
+      <div class="monitoring-row">
+        <span>Blood Pressure</span>
+        <span>Annually</span>
+      </div>
+      <div class="monitoring-row">
+        <span>Kidney Function Tests</span>
+        <span>Annually</span>
+      </div>
+      
+      <div class="note">
+        <strong>Note:</strong> Keep a log of urinary pH readings to identify trends and adjust diet/supplements as needed.
+      </div>
+    </div>
+    
+    <!-- Warning Signs Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Warning Signs</h2>
+        <span class="icon">⚠️</span>
+      </div>
+      
+      <h3>Contact Veterinarian Immediately If:</h3>
+      <ul class="checklist">
+        <li class="priority-high">
+          <input type="checkbox" id="blood-urine">
+          <div class="task-text">
+            <label for="blood-urine">Blood in urine (pink/red tinge)</label>
+          </div>
+        </li>
+        <li class="priority-high">
+          <input type="checkbox" id="straining">
+          <div class="task-text">
+            <label for="straining">Straining to urinate with little output</label>
+          </div>
+        </li>
+        <li class="priority-high">
+          <input type="checkbox" id="frequent-attempts">
+          <div class="task-text">
+            <label for="frequent-attempts">Very frequent urination attempts</label>
+          </div>
+        </li>
+        <li class="priority-high">
+          <input type="checkbox" id="lethargic">
+          <div class="task-text">
+            <label for="lethargic">Lethargy or decreased appetite</label>
+          </div>
+        </li>
+        <li class="priority-medium">
+          <input type="checkbox" id="cloudy-urine">
+          <div class="task-text">
+            <label for="cloudy-urine">Cloudy urine persisting >24 hours</label>
+          </div>
+        </li>
+        <li class="priority-medium">
+          <input type="checkbox" id="strong-odor">
+          <div class="task-text">
+            <label for="strong-odor">Strong ammonia-like odor to urine</label>
+          </div>
+        </li>
+        <li class="priority-medium">
+          <input type="checkbox" id="increased-water">
+          <div class="task-text">
+            <label for="increased-water">Sudden increase in water consumption</label>
+          </div>
+        </li>
+      </ul>
+      
+      <h3>Early Intervention Protocol</h3>
+      <ol>
+        <li>Increase hydration immediately</li>
+        <li>Perform home urinary pH test</li>
+        <li>Contact veterinarian if symptoms persist for >24 hours</li>
+        <li>Collect fresh urine sample if possible (first morning urine)</li>
+      </ol>
+      
+      <div class="note">
+        <strong>Emergency Contact:</strong> Kasetsart University Veterinary Hospital: +6632909234 or Small Animal Hospital Chiang Mai University: +6653948031
+      </div>
+    </div>
+    
+    <!-- Hygiene & Environmental Management Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Hygiene & Environment</h2>
+        <span class="icon">🧼</span>
+      </div>
+      
+      <h3>Weekly Tasks</h3>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="bedding-wash">
+          <div class="task-text">
+            <label for="bedding-wash">Wash bedding with fragrance-free detergent</label>
+            <span class="frequency">Weekly</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="water-bowls">
+          <div class="task-text">
+            <label for="water-bowls">Clean water bowls with vinegar solution</label>
+            <span class="frequency">Weekly</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="living-area">
+          <div class="task-text">
+            <label for="living-area">Clean Bean's living area/floors</label>
+            <span class="frequency">Weekly</span>
+          </div>
+        </li>
+      </ul>
+      
+      <h3>Monthly Tasks</h3>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="bath">
+          <div class="task-text">
+            <label for="bath">Bathe with mild, pet-safe cleanser</label>
+            <span class="frequency">Monthly</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="trim-fur">
+          <div class="task-text">
+            <label for="trim-fur">Trim fur around urethral opening (if needed)</label>
+            <span class="frequency">Monthly</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="deep-clean">
+          <div class="task-text">
+            <label for="deep-clean">Deep clean all pet areas and accessories</label>
+            <span class="frequency">Monthly</span>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="note">
+        <strong>Hygiene Tips:</strong> Use unscented, pet-safe cleaning products. Consider replacing fabric bedding with washable, waterproof options if incontinence occurs.
+      </div>
+    </div>
+    
+    <!-- Hip Dysplasia Management Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Hip Dysplasia Integration</h2>
+        <span class="icon">🦴</span>
+      </div>
+      
+      <p>Balancing Bean's urinary health with hip dysplasia management</p>
+      
+      <h3>Exercise Recommendations</h3>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="short-walks">
+          <div class="task-text">
+            <label for="short-walks">Short, frequent walks (10-15 minutes)</label>
+            <span class="frequency">2-3× Daily</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="swimming">
+          <div class="task-text">
+            <label for="swimming">Gentle swimming sessions (if available)</label>
+            <span class="frequency">Weekly</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="physical-therapy">
+          <div class="task-text">
+            <label for="physical-therapy">Gentle joint mobilization exercises</label>
+            <span class="frequency">Daily</span>
+          </div>
+        </li>
+      </ul>
+      
+      <h3>Joint Support</h3>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="glucosamine">
+          <div class="task-text">
+            <label for="glucosamine">Glucosamine/Chondroitin (500mg per 10kg)</label>
+            <span class="frequency">Daily</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="omega-3">
+          <div class="task-text">
+            <label for="omega-3">Omega-3 fatty acids (EPA/DHA) from algae</label>
+            <span class="frequency">Daily</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="massage">
+          <div class="task-text">
+            <label for="massage">Gentle massage of hips and legs</label>
+            <span class="frequency">2-3× Weekly</span>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="note">
+        <strong>Important:</strong> Ensure Bean can easily access appropriate urination areas without joint pain. Provide ramps or steps if needed to reduce joint stress.
+      </div>
+    </div>
+    
+    <!-- Seasonal Adjustments Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Seasonal Adjustments</h2>
+        <span class="icon">🌤️</span>
+      </div>
+      
+      <h3>Hot Season (March-May)</h3>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="hot-hydration">
+          <div class="task-text">
+            <label for="hot-hydration">Increase water offerings by 25%</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="hot-exercise">
+          <div class="task-text">
+            <label for="hot-exercise">Exercise in early morning/late evening only</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="cool-surfaces">
+          <div class="task-text">
+            <label for="cool-surfaces">Provide cool resting surfaces</label>
+          </div>
+        </li>
+      </ul>
+      
+      <h3>Rainy Season (June-October)</h3>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="rainy-hygiene">
+          <div class="task-text">
+            <label for="rainy-hygiene">Increase bathing frequency if needed</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="indoor-exercise">
+          <div class="task-text">
+            <label for="indoor-exercise">Plan indoor exercise alternatives</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="mold-check">
+          <div class="task-text">
+            <label for="mold-check">Check bedding frequently for moisture/mold</label>
+          </div>
+        </li>
+      </ul>
+      
+      <h3>Cool Season (November-February)</h3>
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="cool-hydration">
+          <div class="task-text">
+            <label for="cool-hydration">Monitor for decreased water intake</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="cool-exercise">
+          <div class="task-text">
+            <label for="cool-exercise">Adjust exercise to daytime hours</label>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="warm-bedding">
+          <div class="task-text">
+            <label for="warm-bedding">Provide warm, dry bedding</label>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="note">
+        <strong>Note:</strong> In Chiang Mai, air quality can be poor during burning season (February-April). Consider limiting outdoor activities and increasing indoor air filtration during this time.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Basic interactivity for the checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const taskText = this.nextElementSibling;
+        if (this.checked) {
+          taskText.style.textDecoration = 'line-through';
+          taskText.style.color = '#6c757d';
+        } else {
+          taskText.style.textDecoration = 'none';
+          taskText.style.color = '#333';
+        }
+      });
+    });
+  </script>
+
+<script type="module">
+  // Import auto-storage system
+  import autoStorage from '../../../auto-storage.js';
+  
+  // For backward compatibility with any manual SimpleStorage calls
+  window.SimpleStorage = {
+    saveCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    loadCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    save: (key, data) => {
+      localStorage.setItem(key, JSON.stringify(data));
+    },
+    load: (key, defaultValue = null) => {
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : defaultValue;
+    },
+    delete: (key) => {
+      localStorage.removeItem(key);
+    }
+  };
+</script>
+
+</body>
+</html>

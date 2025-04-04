@@ -13,13 +13,25 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
   useEffect(() => {
     const fetchHtml = async () => {
       try {
-        // Construct proper path with base URL if needed
-        const fullPath = import.meta.env.BASE_URL.endsWith('/') && filePath.startsWith('/') 
-          ? `${import.meta.env.BASE_URL}${filePath.substring(1)}`
-          : `${import.meta.env.BASE_URL}${filePath}`;
+        // Get the base URL from Vite's environment
+        const base = import.meta.env.BASE_URL || '/';
+        
+        // Normalize the file path (remove leading slash if base already has it)
+        const normalizedPath = filePath.startsWith('/') ? filePath.substring(1) : filePath;
+        
+        // Construct the full path with proper handling of slashes
+        const fullPath = base.endsWith('/') 
+          ? `${base}${normalizedPath}`
+          : `${base}/${normalizedPath}`;
         
         console.log(`Fetching HTML from: ${fullPath}`);
-        const response = await fetch(fullPath);
+        
+        // Create an AbortController to handle request timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
+        
+        const response = await fetch(fullPath, { signal: controller.signal });
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch HTML: ${response.status} ${response.statusText}`);
@@ -30,7 +42,11 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
         setError(null);
       } catch (error) {
         console.error('Error loading HTML:', error);
-        setError(`Failed to load content: ${error instanceof Error ? error.message : String(error)}`);
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          setError('Request timed out. Please check your network connection and try again.');
+        } else {
+          setError(`Failed to load content: ${error instanceof Error ? error.message : String(error)}`);
+        }
       } finally {
         setLoading(false);
       }

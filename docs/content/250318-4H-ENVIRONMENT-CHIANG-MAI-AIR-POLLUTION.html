@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chiang Mai Air Pollution Knowledge Base</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-bg: #34495e;
+            --text-color: #333;
+            --light-text: #f8f9fa;
+            --border-color: #ddd;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #c0392b;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f9f9f9;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin: 30px 0 20px;
+            color: var(--primary-color);
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin: 25px 0 15px;
+            color: var(--primary-color);
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            margin: 20px 0 10px;
+            color: var(--primary-color);
+        }
+        
+        p {
+            margin-bottom: 20px;
+        }
+        
+        ul, ol {
+            margin: 0 0 20px 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .source-info {
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .tag.health {
+            background-color: var(--success-color);
+        }
+        
+        .tag.home {
+            background-color: var(--warning-color);
+        }
+        
+        .tag.biohacking {
+            background-color: var(--accent-color);
+        }
+        
+        .executive-summary {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .insight-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .collapsible {
+            background-color: var(--light-bg);
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 2px 0;
+            border-radius: 4px;
+            position: relative;
+            transition: 0.3s;
+        }
+        
+        .active, .collapsible:hover {
+            background-color: #e9ecef;
+        }
+        
+        .collapsible:after {
+            content: '\002B';
+            color: var(--secondary-color);
+            font-weight: bold;
+            float: right;
+        }
+        
+        .active:after {
+            content: "\2212";
+        }
+        
+        .content {
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: white;
+            border-radius: 0 0 4px 4px;
+        }
+        
+        .active + .content {
+            padding: 18px;
+            border: 1px solid #e9ecef;
+            border-top: none;
+        }
+        
+        .reference {
+            font-size: 0.8rem;
+            vertical-align: super;
+            color: var(--secondary-color);
+            margin-left: 2px;
+            cursor: pointer;
+        }
+        
+        .reference-list {
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .severity-indicator {
+            display: flex;
+            margin: 20px 0;
+        }
+        
+        .severity-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .severity-dot.low {
+            background-color: #27ae60;
+        }
+        
+        .severity-dot.medium {
+            background-color: #f39c12;
+        }
+        
+        .severity-dot.high {
+            background-color: #e74c3c;
+        }
+        
+        .severity-dot.very-high {
+            background-color: #8e44ad;
+        }
+        
+        .filter-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .filter-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--light-bg);
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .chart-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        
+        .lbs-connection {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .warning-box {
+            background-color: #feecdc;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .quote-box {
+            font-style: italic;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        
+        .definition-box {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0 20px;
+        }
+        
+        .definition-box h4 {
+            color: var(--secondary-color);
+            margin-top: 0;
+        }
+        
+        #toc {
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            /* Removed sticky positioning */
+            position: relative;
+        }
+        
+        #toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        #toc ul ul {
+            padding-left: 20px;
+        }
+        
+        .seasonal-chart {
+            display: flex;
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .season {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .season.burning {
+            background-color: #feecdc;
+        }
+        
+        .season.transition {
+            background-color: #e8f4fd;
+        }
+        
+        .season.rainy {
+            background-color: #d7f5e5;
+        }
+        
+        .season.cool {
+            background-color: #e8f0fe;
+        }
+        
+        .recommendation-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .back-to-top:hover {
+            background-color: #2980b9;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.7rem;
+            }
+            
+            h3 {
+                font-size: 1.3rem;
+            }
+            
+            .seasonal-chart {
+                flex-direction: column;
+            }
+        }
+
+        /* New navigation tabs for improved content access */
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .nav-tabs li {
+            margin: 0;
+        }
+        
+        .nav-tabs a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        
+        .nav-tabs a.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .nav-tabs a:hover:not(.active) {
+            background-color: #e8f4fd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Chiang Mai Air Pollution Analysis</h1>
+        <p>A comprehensive examination of air pollution sources, patterns, health impacts, and mitigation strategies</p>
+        <div>
+            <span class="tag health">4H-ENVIRONMENT</span>
+            <span class="tag home">3P-HOME</span>
+            <span class="tag biohacking">4H-BIOHACKING</span>
+        </div>
+    </header>
+
+    <!-- Navigation tabs for main sections -->
+    <ul class="nav-tabs">
+        <li><a href="#overview" class="active">Overview</a></li>
+        <li><a href="#structured-map">Content Map</a></li>
+        <li><a href="#key-insights">Key Insights</a></li>
+        <li><a href="#detailed-content">Detailed Content</a></li>
+        <li><a href="#knowledge-integration">Integration</a></li>
+        <li><a href="#references">References</a></li>
+    </ul>
+
+    <div id="overview">
+        <div class="source-info">
+            <h3>SOURCE DOCUMENTATION</h3>
+            <p><strong>Original:</strong> Perplexity.ai search results on air pollution in Chiang Mai</p>
+            <p><strong>Type:</strong> Research compilation</p>
+            <p><strong>Created:</strong> March 18, 2025</p>
+            <p><strong>Processed:</strong> March 18, 2025</p>
+            <p><strong>Source Location:</strong> Perplexity.ai search engine</p>
+        </div>
+
+        <div class="executive-summary">
+            <h2>EXECUTIVE OVERVIEW</h2>
+            <p><strong>Core Concept:</strong> Chiang Mai experiences severe seasonal air pollution primarily from biomass burning (51%), with PM2.5 and PM10 levels reaching up to 20 times WHO recommended limits during February-April burning season, requiring comprehensive personal and systemic mitigation approaches.</p>
+            <p><strong>Key Relevance:</strong> This knowledge directly impacts your 4H-ENVIRONMENT goal for "developing a system for identifying, evaluating, and managing personal exposure to harmful substances," your 3P-HOME considerations for Thailand residence, and supports 4H-BIOHACKING goals for optimal health maintenance.</p>
+        </div>
+    </div>
+
+    <div id="toc">
+        <h3>CONTENT MAP</h3>
+        <ul>
+            <li><a href="#structured-map">1. Structured Content Map</a></li>
+            <li><a href="#key-insights">2. Key Insights</a></li>
+            <li><a href="#intellectual-landscape">3. Intellectual Landscape</a></li>
+            <li><a href="#detailed-content">4. Detailed Content</a>
+                <ul>
+                    <li><a href="#pollution-sources">4.1 Pollution Sources</a></li>
+                    <li><a href="#pollutant-types">4.2 Pollutant Types</a></li>
+                    <li><a href="#seasonal-patterns">4.3 Seasonal Patterns</a></li>
+                    <li><a href="#health-impacts">4.4 Health Impacts</a></li>
+                    <li><a href="#mitigation-strategies">4.5 Mitigation Strategies</a></li>
+                </ul>
+            </li>
+            <li><a href="#knowledge-integration">5. Knowledge Integration</a></li>
+            <li><a href="#exploration-options">6. Exploration Options</a></li>
+            <li><a href="#references">7. References</a></li>
+        </ul>
+    </div>
+
+    <div id="structured-map">
+        <h2>STRUCTURED CONTENT MAP</h2>
+        
+        <ol>
+            <li><strong>Pollution Sources in Chiang Mai</strong> [4H-ENVIRONMENT]
+                <ol>
+                    <li>Biomass Burning (51%)
+                        <ol>
+                            <li>Agricultural residue burning</li>
+                            <li>Forest fires</li>
+                            <li>Traditional and cultural burning</li>
+                            <li>Residential waste burning</li>
+                        </ol>
+                    </li>
+                    <li>Long-Range Pollution (23%)</li>
+                    <li>Vehicle Emissions</li>
+                    <li>Urban and Industrial Sources</li>
+                </ol>
+            </li>
+            <li><strong>Pollutant Types and Characteristics</strong> [4H-BIOHACKING]
+                <ol>
+                    <li>Particulate Matter
+                        <ol>
+                            <li>PM10 concentration patterns</li>
+                            <li>PM2.5 concentration patterns</li>
+                            <li>Ultrafine particles (0.65-0.43 μm)</li>
+                        </ol>
+                    </li>
+                    <li>Gaseous Pollutants
+                        <ol>
+                            <li>Carbon Monoxide (CO)</li>
+                            <li>Nitrogen Dioxide (NO2)</li>
+                            <li>Sulfur Dioxide (SO2)</li>
+                            <li>Ozone (O3)</li>
+                        </ol>
+                    </li>
+                    <li>Polycyclic Aromatic Hydrocarbons (PAHs)</li>
+                </ol>
+            </li>
+            <li><strong>Seasonal Patterns and Variations</strong> [3P-HOME]
+                <ol>
+                    <li>Burning Season (February-April)
+                        <ol>
+                            <li>Peak pollution periods</li>
+                            <li>Meteorological conditions</li>
+                            <li>Daily variation patterns</li>
+                        </ol>
+                    </li>
+                    <li>Non-Burning Season
+                        <ol>
+                            <li>Baseline pollution levels</li>
+                            <li>Urban source contributions</li>
+                        </ol>
+                    </li>
+                </ol>
+            </li>
+            <li><strong>Health Impacts of Air Pollution</strong> [4H-BIOHACKING]
+                <ol>
+                    <li>Respiratory Effects
+                        <ol>
+                            <li>Upper respiratory tract impacts</li>
+                            <li>Lower respiratory tract impacts</li>
+                            <li>Hospital admission patterns</li>
+                        </ol>
+                    </li>
+                    <li>Pollutant-Specific Health Associations
+                        <ol>
+                            <li>PM10/PM2.5 health effects</li>
+                            <li>Ozone (O3) health effects</li>
+                            <li>Nitrogen Dioxide (NO2) health effects</li>
+                        </ol>
+                    </li>
+                </ol>
+            </li>
+            <li><strong>Mitigation Strategies</strong> [4H-ENVIRONMENT, 3P-HOME]
+                <ol>
+                    <li>Personal Protection
+                        <ol>
+                            <li>Air purification technologies</li>
+                            <li>Respiratory protection (masks)</li>
+                            <li>Exposure timing management</li>
+                            <li>Indoor air quality optimization</li>
+                        </ol>
+                    </li>
+                    <li>Systemic Approaches
+                        <ol>
+                            <li>Government policy initiatives</li>
+                            <li>Agricultural practice alternatives</li>
+                            <li>Forest fire management</li>
+                            <li>Regional cooperation</li>
+                        </ol>
+                    </li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+
+    <div id="key-insights">
+        <h2>KEY INSIGHTS</h2>
+        
+        <div class="insight-box">
+            <h3>Pollution Source Distribution</h3>
+            <p>Biomass burning accounts for more than 51% of Chiang Mai's haze, with long-range pollution (approximately 23%) likely originating from India forming the second largest contributor. This distribution highlights the regional nature of the air quality challenge beyond local control measures. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+        </div>
+        
+        <div class="insight-box">
+            <h3>Seasonal Health System Impact</h3>
+            <p>The burning season creates predictable healthcare system strain, with Maharaj Nakorn Chiang Mai Hospital treating over 12,600 patients for respiratory problems in a three-month period during the 2023 pollution peak. The 1,400-bed facility reported inability to treat many patients due to overcrowding, demonstrating the severe public health implications. <span class="reference" title="Chiang Mai hospitals overflow with pollution sufferers">[7]</span></p>
+        </div>
+        
+        <div class="insight-box">
+            <h3>Diurnal Pollution Pattern Disruption</h3>
+            <p>While pollution typically accumulates overnight and decreases during daytime, active forest fires can reverse this pattern. In March 2025, contrary to the expected daily cycle, residents observed AQI levels rising from 88 in morning to approximately 180 between 11 AM and 2 PM, highlighting the need for real-time monitoring rather than time-of-day assumptions for exposure management. <span class="reference" title="Pollution spike today">[5]</span></p>
+        </div>
+        
+        <div class="insight-box">
+            <h3>Economic Barriers to Pollution Reduction</h3>
+            <p>The persistence of burning practices is primarily economic rather than cultural or educational. Burning represents the most cost-effective field clearing method, with alternative approaches requiring equipment and labor resources unavailable to many small-scale farmers. Market-based incentives and equipment access programs may prove more effective than education or regulation alone. <span class="reference" title="Burning season just in Chiang Mai or All of Northern Thailand?">[4]</span></p>
+        </div>
+    </div>
+
+    <div id="intellectual-landscape">
+        <h2>INTELLECTUAL LANDSCAPE</h2>
+        
+        <h3>Scholarly Perspectives</h3>
+        <div class="content" style="max-height: none; padding: 18px;">
+            <p>Research on Chiang Mai's air pollution reveals different frameworks for understanding and addressing the issue:</p>
+            
+            <h4>Technical-Environmental Perspective</h4>
+            <p>This perspective focuses on measuring pollutant concentrations, identifying sources through technical analysis, and implementing engineering solutions. Researchers at Chiang Mai University exemplify this approach with their development of the "DIY-PM 2.5 Net" that creates a positive pressure environment for vulnerable individuals, reducing PM2.5 exposure from 78 μg/m³ to just 8 μg/m³ in testing. <span class="reference" title="DIY PM 2.5 Net: clean air for bedridden patients">[8]</span></p>
+            
+            <h4>Socioeconomic Analysis Framework</h4>
+            <p>This framework examines the economic and social drivers behind pollution-creating activities. As researcher Mary Mostafanezhad noted: "If burning is the easiest and most cost-efficient way to grow your crops, or to make a living, until that is not true, it's going to continue to happen." This perspective prioritizes creating economic alternatives to burning rather than focusing on regulation alone. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+            
+            <h4>Public Health Epidemiology Approach</h4>
+            <p>This approach quantifies health impacts through epidemiological studies, such as the comprehensive analysis of approximately 216,000 outpatient visits between 2011 and 2014 that established precise relative risk increases for respiratory conditions associated with specific pollutants. <span class="reference" title="Association between out-patient visits and air pollution in Chiang Mai, Thailand">[6]</span></p>
+        </div>
+        
+        <h3>Methodological Approaches</h3>
+        <div class="content" style="max-height: none; padding: 18px;">
+            <h4>Emission Inventory Methodology</h4>
+            <p>The Air Quality Improvement Program in Thailand (AQIP) has developed an integrated geographical gridded emission inventory covering both greenhouse gases and air pollutants for Chiang Mai Province. This approach allows for identification of high-emission zones, development of targeted reduction measures, and provides input data for air quality modeling. <span class="reference" title="AQIP-Roadmap-Emission-Sources-and-Policies-Report">[4]</span></p>
+            
+            <h4>Time-Series Analysis</h4>
+            <p>Seasonal variation studies employ specialized time-series analysis techniques to distinguish between different temporal patterns in pollution data. These include wavelet analysis for investigating northern Thailand's air pollution and ARIMA (Autoregressive Integrated Moving Average) modeling to predict future pollution levels based on historical patterns. <span class="reference" title="Investigating air pollution in Northern Thailand using wavelet analysis">[9]</span> <span class="reference" title="A Situation and Temporal Behaviors of Air Pollution by ARIMA Model: A Case Study of Chiang Mai">[20]</span></p>
+            
+            <h4>Community-Based Participatory Research</h4>
+            <p>This approach involves local communities in data collection and solution development, recognizing the importance of cultural context and traditional knowledge. The FireD app for controlled burning permits represents an intersection of technology with community participation, acknowledging traditional burning practices while attempting to manage their impact. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+        </div>
+        
+        <h3>Contested Areas</h3>
+        <div class="content" style="max-height: none; padding: 18px;">
+            <h4>Pollution Source Attribution</h4>
+            <p>While research indicates that biomass burning accounts for over 51% of Chiang Mai's haze, there are disagreements about the relative contributions of different types of burning (agricultural vs. forest fires) and the impact of transboundary pollution from neighboring countries versus local sources. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span> <span class="reference" title="What parts of Thailand are affected by burning season?">[3]</span></p>
+            
+            <h4>Effectiveness of Regulatory Approaches</h4>
+            <p>Thailand implemented a national zero-burning directive in 2013, but its effectiveness remains debated. Some researchers argue that the ban simply shifted burning times rather than reducing total burning, effectively prolonging the haze season. Others contend that stronger enforcement would yield better results. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+            
+            <h4>Appropriate Mitigation Priorities</h4>
+            <p>There is significant debate about whether resources should focus on personal protection technologies (like air purifiers and masks), systemic changes to agricultural practices, or forest fire management. The Thai government's initiative to make public transportation free during pollution episodes has been criticized for addressing only a minor source of the problem. <span class="reference" title="PM2.5 in Thailand">[3]</span></p>
+        </div>
+    </div>
+
+    <div id="detailed-content">
+        <h2>DETAILED CONTENT</h2>
+        
+        <h3 id="pollution-sources">1. Pollution Sources in Chiang Mai</h3>
+        
+        <button class="collapsible">1.1 Biomass Burning (51%)</button>
+        <div class="content">
+            <p>Research from Chiang Mai University has identified that more than 51% of the haze in Chiang Mai originates from biomass burning activities. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span> This category encompasses several distinct practices:</p>
+            
+            <h4>1.1.1 Agricultural Burning</h4>
+            <p>Farmers in northern Thailand commonly burn crop residues for field clearing, with corn stubble burning being particularly prevalent. The mountainous terrain makes alternative clearing methods labor-intensive and costly. Two major agricultural practices that contribute significantly to burning season emissions include:</p>
+            <ul>
+                <li><strong>Rice Husk Burning</strong>: Farmers burn rice husks as an efficient way to clear fields for the next planting cycle <span class="reference" title="Chiang Mai has 6x more air pollution than Bangkok right now">[2]</span></li>
+                <li><strong>Sugarcane Processing</strong>: Setting fires to sugarcane fields strips the leaves down to the stalk, reducing labor costs for harvesting <span class="reference" title="Chiang Mai has 6x more air pollution than Bangkok right now">[2]</span></li>
+            </ul>
+            
+            <h4>1.1.2 Forest Fires</h4>
+            <p>Forest fires constitute a major source of pollution starting in mid to late February, creating a distinct burning season. These fires have several causes:</p>
+            <ul>
+                <li><strong>Mushroom Harvesting</strong>: Some fires are deliberately set to promote the growth of valuable wild mushrooms (hed thob) in national parks and protected areas <span class="reference" title="Chiang Mai has 6x more air pollution than Bangkok right now">[2]</span></li>
+                <li><strong>Weather-Related Intensification</strong>: Forest fires typically intensify during daytime hours as temperatures rise <span class="reference" title="Pollution spike today">[5]</span></li>
+                <li><strong>Geographic Concentration</strong>: Recent observations in March 2025 showed major forest fires in specific areas like Lamphun and Khun Tan <span class="reference" title="Pollution spike today">[5]</span></li>
+            </ul>
+            
+            <h4>1.1.3 Cultural and Traditional Burning</h4>
+            <p>Fire is deeply ingrained in the region's culture and traditional practices. This includes burning for forest management purposes and as a form of protest in some cases. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+            
+            <h4>1.1.4 Residential Waste Burning</h4>
+            <p>Throughout rural areas of Thailand, there's a daily ritual at sunset where locals burn various materials including leaves, paper, plastic, and styrofoam containers, despite the availability of community garbage collection services. <span class="reference" title="What parts of Thailand are affected by burning season?">[3]</span></p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-ENVIRONMENT</h4>
+                <p>This detailed breakdown of biomass burning sources directly supports your goal to "develop a system for identifying, evaluating, and managing personal exposure to harmful substances in the environment." Understanding the specific sources and their relative contributions allows for more targeted avoidance strategies and timing.</p>
+            </div>
+        </div>
+        
+        <button class="collapsible">1.2 Long-Range Pollution (23%)</button>
+        <div class="content">
+            <p>Approximately 23% of Chiang Mai's air pollution comes from long-range sources, likely originating from India. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span> This transboundary pollution demonstrates how air quality issues transcend national boundaries and require regional cooperation for effective management.</p>
+            
+            <h4>1.2.1 Regional Influences</h4>
+            <p>Even when practices improve in Thailand, burning in neighboring countries like Laos and Myanmar affects air quality in border regions and beyond. <span class="reference" title="Burning season just in Chiang Mai or All of Northern Thailand?">[4]</span> This creates a complex international policy challenge that exceeds local management capacity.</p>
+            
+            <h4>1.2.2 Meteorological Patterns</h4>
+            <p>Certain weather patterns can transport pollution from distant sources into the Chiang Mai basin. The valley topography surrounding Chiang Mai can trap these imported pollutants, exacerbating local air quality issues even when local emission sources are controlled.</p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 3P-HOME</h4>
+                <p>Understanding the significant contribution of long-range pollution to Chiang Mai's air quality challenges is crucial for your 3P-HOME goals, particularly as you consider Thailand for potential residence. This knowledge underscores the importance of selecting locations with favorable topography and air circulation patterns to minimize exposure.</p>
+            </div>
+        </div>
+        
+        <button class="collapsible">1.3 Vehicle Emissions</button>
+        <div class="content">
+            <p>While less significant than biomass burning during peak pollution periods, vehicle emissions from cars and motorcycles contribute to the overall pollution burden, especially in urban areas. <span class="reference" title="What's going on with pollution?">[2]</span></p>
+            
+            <h4>1.3.1 Urban Concentration</h4>
+            <p>Vehicle emissions are concentrated in Chiang Mai city center and along major transportation corridors. The contribution of vehicle emissions becomes more noticeable during non-burning seasons when they form a higher percentage of the overall pollution mix.</p>
+            
+            <h4>1.3.2 Diesel Particulates</h4>
+            <p>Diesel-powered vehicles, including public transportation and delivery vehicles, emit significant levels of particulate matter. These emissions tend to be consistent year-round, unlike the seasonal patterns of agricultural burning.</p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 3P-HOME</h4>
+                <p>When considering housing locations within Chiang Mai, areas with lower traffic density and away from major transportation corridors may offer better baseline air quality throughout the year. This supports your 3P-HOME goal of creating a "customized minimalist smart home that is disaster-ready."</p>
+            </div>
+        </div>
+        
+        <button class="collapsible">1.4 Meteorological Factors</button>
+        <div class="content">
+            <p>Weather conditions play a crucial role in pollution concentration and dispersion, particularly during the burning season:</p>
+            
+            <h4>1.4.1 Temperature Inversions</h4>
+            <p>During the burning season, temperature inversions (where cooler air is trapped beneath warmer air) prevent vertical mixing and trap pollutants near the ground. These inversions are particularly common during the morning hours in Chiang Mai's valley setting.</p>
+            
+            <h4>1.4.2 Wind Patterns</h4>
+            <p>Applications like Ventusky help residents track pollution levels and wind patterns that influence how smoke moves through the region. <span class="reference" title="Pollution spike today">[5]</span> Local wind patterns can concentrate pollution in specific areas of the city, creating "hotspots" of poor air quality.</p>
+            
+            <h4>1.4.3 Seasonal Low Precipitation</h4>
+            <p>The burning season coincides with the dry period in Chiang Mai, meaning there is little natural cleansing of the atmosphere through rainfall. This allows pollutants to accumulate over extended periods until the monsoon season begins.</p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-ENVIRONMENT</h4>
+                <p>Understanding meteorological influences on pollution dispersion supports your goal to develop a "system for identifying, evaluating, and managing personal exposure to harmful substances." This knowledge allows for more strategic timing of outdoor activities based on weather patterns rather than just calendar dates.</p>
+            </div>
+        </div>
+        
+        <h3 id="pollutant-types">2. Pollutant Types and Characteristics</h3>
+        
+        <button class="collapsible">2.1 Particulate Matter</button>
+        <div class="content">
+            <p>Particulate matter represents the most significant health concern during Chiang Mai's burning season, with several different size fractions monitored:</p>
+            
+            <h4>2.1.1 PM10 (Coarse Particulate Matter)</h4>
+            <p>PM10 refers to particulate matter with a diameter less than 10 micrometers. These particles can penetrate into the lung airways and have been specifically associated with blurred vision symptoms among residents. <span class="reference" title="Acute air pollution-related symptoms among residents in Chiang Mai, Thailand.">[5]</span></p>
+            
+            <div class="definition-box">
+                <h4>PM10</h4>
+                <p>Particulate matter with aerodynamic diameter less than 10 μm, which can penetrate the upper respiratory tract and affect the bronchi.</p>
+            </div>
+            
+            <h4>2.1.2 PM2.5 (Fine Particulate Matter)</h4>
+            <p>PM2.5 refers to particles with diameter less than 2.5 micrometers. These fine particles can penetrate deep into the lungs and even enter the bloodstream. Levels of PM2.5 during March and April can reach approximately 20 times the World Health Organization's recommended limit. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+            
+            <div class="definition-box">
+                <h4>PM2.5</h4>
+                <p>Particulate matter with aerodynamic diameter less than 2.5 μm, which can penetrate deep into the lungs, enter the bloodstream, and cause systemic health effects.</p>
+            </div>
+            
+            <h4>2.1.3 Ultrafine Particles</h4>
+            <p>The highest concentrations of particulate matter in Chiang Mai are found in the finest particle sizes (0.65 μm – 0.43 μm), particularly during periods of intensive open burning in both urban and rural areas. <span class="reference" title="Overview of Aerosol and Air Pollution in South Eastern Asia Countries">[1]</span> These ultrafine particles are particularly concerning as they can penetrate deepest into the respiratory system and enter the bloodstream more readily.</p>
+            
+            <table>
+                <tr>
+                    <th>Particulate Type</th>
+                    <th>Size Range</th>
+                    <th>Peak Concentrations (Burning Season)</th>
+                    <th>Primary Health Concerns</th>
+                </tr>
+                <tr>
+                    <td>PM10</td>
+                    <td>2.5-10 μm</td>
+                    <td>Up to 300 μg/m³</td>
+                    <td>Upper respiratory irritation, eye symptoms</td>
+                </tr>
+                <tr>
+                    <td>PM2.5</td>
+                    <td>0.1-2.5 μm</td>
+                    <td>Up to 200 μg/m³</td>
+                    <td>Deep lung penetration, systemic inflammation</td>
+                </tr>
+                <tr>
+                    <td>Ultrafine</td>
+                    <td>&lt;0.1 μm</td>
+                    <td>Not widely monitored</td>
+                    <td>Blood-brain barrier crossing, cardiovascular effects</td>
+                </tr>
+            </table>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-BIOHACKING</h4>
+                <p>Understanding the different size fractions of particulate matter and their health impacts is crucial for your biohacking goals focused on "end-of-life capabilities" and optimizing health. This knowledge allows for targeted intervention strategies like appropriate mask filtration selection based on particle size.</p>
+            </div>
+        </div>
+        
+        <button class="collapsible">2.2 Gaseous Pollutants</button>
+        <div class="content">
+            <p>Several gaseous pollutants are monitored in Chiang Mai due to their health impacts:</p>
+            
+            <h4>2.2.1 Carbon Monoxide (CO)</h4>
+            <p>This colorless, odorless gas is produced by incomplete combustion of carbon-containing fuels. CO has been positively associated with lower lung and heart symptoms among residents. <span class="reference" title="Acute air pollution-related symptoms among residents in Chiang Mai, Thailand.">[5]</span> During intense burning periods, CO levels can spike significantly above baseline urban levels.</p>
+            
+            <h4>2.2.2 Nitrogen Dioxide (NO2)</h4>
+            <p>NO2 is primarily produced by combustion processes in vehicles and from biomass burning. It has been associated with nosebleed, larynx symptoms, dry cough, and lower lung symptoms in local populations. <span class="reference" title="Acute air pollution-related symptoms among residents in Chiang Mai, Thailand.">[5]</span> The relative risk for upper respiratory tract diseases is 1.110 per 10 ppb increase of NO2. <span class="reference" title="Association between out-patient visits and air pollution in Chiang Mai, Thailand">[6]</span></p>
+            
+            <h4>2.2.3 Ozone (O3)</h4>
+            <p>Ground-level ozone is formed when pollutants from combustion react in the presence of sunlight. Among the gaseous pollutants, ozone showed the strongest association with respiratory issues, with a relative risk of 1.123 for upper respiratory diseases and 1.073 for lower respiratory diseases per 10 ppb increase. <span class="reference" title="Association between out-patient visits and air pollution in Chiang Mai, Thailand">[6]</span></p>
+            
+            <h4>2.2.4 Sulfur Dioxide (SO2)</h4>
+            <p>SO2 is generated by burning fossil fuels containing sulfur and some industrial processes. While less prominent in Chiang Mai than particulate pollution, it contributes to the overall pollution burden and is monitored as a standard criteria air pollutant. <span class="reference" title="Acute air pollution-related symptoms among residents in Chiang Mai, Thailand.">[5]</span></p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-BIOHACKING and 4H-ENVIRONMENT</h4>
+                <p>Knowledge of gaseous pollutants supports both your biohacking goals for health optimization and your environmental management systems. Different filtration and mitigation strategies are required for gaseous pollutants compared to particulate matter, necessitating a comprehensive approach to air quality management in your living environment.</p>
+            </div>
+        </div>
+        
+        <button class="collapsible">2.3 Polycyclic Aromatic Hydrocarbons (PAHs)</button>
+        <div class="content">
+            <p>PAHs represent a serious health concern in Chiang Mai's air, particularly during the burning season:</p>
+            
+            <div class="definition-box">
+                <h4>Polycyclic Aromatic Hydrocarbons (PAHs)</h4>
+                <p>A class of chemicals that occur naturally in coal, crude oil, and gasoline. They are produced when coal, oil, gas, wood, garbage, and tobacco are burned. Many PAHs are known carcinogens.</p>
+            </div>
+            
+            <h4>2.3.1 Concentration Levels</h4>
+            <p>PAH concentrations can reach 5.10 ng m⁻³ in fine particles during intensive burning periods. <span class="reference" title="Overview of Aerosol and Air Pollution in South Eastern Asia Countries">[1]</span> Total PAHs in PM2.5 can reach concentrations of approximately 2.361 μg/m³ during peak pollution events. <span class="reference" title="PM10-bound polycyclic aromatic hydrocarbons in Chiang Mai (Thailand)">[48]</span></p>
+            
+            <h4>2.3.2 Distribution Pattern</h4>
+            <p>Like particulate matter, the highest concentrations of PAHs are found in the finest particle sizes, making them particularly dangerous as they can penetrate deep into the respiratory system. <span class="reference" title="Overview of Aerosol and Air Pollution in South Eastern Asia Countries">[1]</span> This binding to fine particles increases both their persistence in the environment and their ability to reach sensitive lung tissues.</p>
+            
+            <h4>2.3.3 Health Concerns</h4>
+            <p>PAHs are of particular concern because many are known or suspected carcinogens. Their presence in Chiang Mai's air, especially during burning season, represents a long-term health risk beyond the immediate irritation symptoms associated with particulate matter.</p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-BIOHACKING</h4>
+                <p>The presence of carcinogenic PAHs in Chiang Mai's air during burning season is highly relevant to your biohacking goals focused on longevity and maintaining end-of-life capabilities. Understanding this risk allows for proper timing of intense outdoor activities and appropriate filtration technologies for living spaces.</p>
+            </div>
+        </div>
+        
+        <h3 id="seasonal-patterns">3. Seasonal Patterns and Variations</h3>
+        
+        <button class="collapsible">3.1 Annual Pollution Cycle</button>
+        <div class="content">
+            <p>Chiang Mai experiences dramatic seasonal variations in air pollutant levels, following predictable annual patterns that are crucial to understand for effective exposure management:</p>
+            
+            <div class="seasonal-chart">
+                <div class="season burning">
+                    <h4>Burning Season</h4>
+                    <p>February - April</p>
+                    <p>PM2.5: 50-300+ μg/m³</p>
+                    <p>Primary sources: Agricultural burning, forest fires</p>
+                </div>
+                <div class="season transition">
+                    <h4>Transition Period</h4>
+                    <p>May - June</p>
+                    <p>PM2.5: 15-50 μg/m³</p>
+                    <p>Primary sources: Residual fires, urban emissions</p>
+                </div>
+                <div class="season rainy">
+                    <h4>Rainy Season</h4>
+                    <p>July - October</p>
+                    <p>PM2.5: 5-20 μg/m³</p>
+                    <p>Primary sources: Urban emissions</p>
+                </div>
+                <div class="season cool">
+                    <h4>Cool Season</h4>
+                    <p>November - January</p>
+                    <p>PM2.5: 15-50 μg/m³</p>
+                    <p>Primary sources: Urban emissions, early burning</p>
+                </div>
+            </div>
+            
+            <h4>3.1.1 Burning Season (February-April)</h4>
+            <p>The burning season represents the period of highest pollution concentration in Chiang Mai. During this time, PM10 and PM2.5 levels can reach hazardous concentrations, with recent reports showing pollution levels in Chiang Mai reaching up to six times higher than those recorded in Bangkok during the same period. <span class="reference" title="Chiang Mai has 6x more air pollution than Bangkok right now">[2]</span></p>
+            
+            <p>These elevated levels correspond with agricultural burning practices and forest fires that intensify during the dry season. The pollution situation typically peaks in March, when both agricultural burning and forest fires are at their most intense.</p>
+            
+            <h4>3.1.2 Transition Period (May-June)</h4>
+            <p>As the rainy season begins, precipitation helps to clear pollutants from the atmosphere, leading to gradually improving air quality. However, some burning may continue during this period, and urban pollution sources become proportionally more significant contributors to the overall air quality picture.</p>
+            
+            <h4>3.1.3 Rainy Season (July-October)</h4>
+            <p>During the rainy season, air quality typically reaches its best levels of the year. Regular precipitation scrubs pollutants from the air, and the moisture in the ground prevents most burning activities. During this period, Chiang Mai can experience some of the cleanest air in Thailand. <span class="reference" title="Chiang Mai had the best air quality in the world">[21]</span></p>
+            
+            <h4>3.1.4 Cool Season (November-January)</h4>
+            <p>As the rains end and the dry season begins, air quality begins to deteriorate gradually. While not yet at the severe levels seen during the burning season, there may be early agricultural burning and increasing levels of urban pollution, which can be trapped by temperature inversions common during the cooler months.</p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 3P-HOME</h4>
+                <p>This seasonal pattern is crucial for your 3P-HOME planning for Thailand. If considering Chiang Mai as a residence, these patterns suggest potential seasonal migration strategies or investing in robust air filtration systems that can handle the peak pollution periods.</p>
+            </div>
+        </div>
+        
+        <button class="collapsible">3.2 Daily Variation Patterns</button>
+        <div class="content">
+            <p>Within the seasonal trends, air pollution in Chiang Mai typically follows diurnal patterns that can inform daily activity planning:</p>
+            
+            <h4>3.2.1 Standard Diurnal Pattern</h4>
+            <p>Under normal conditions, PM10 and other pollutants in Chiang Mai typically follow a pattern where:</p>
+            <ol>
+                <li>Pollution accumulates during nighttime hours due to temperature inversions trapping pollutants near the ground</li>
+                <li>Peaks in early morning (typically 6-9 AM)</li>
+                <li>Gradually diminishes throughout the day as temperatures rise and air circulates more effectively <span class="reference" title="Pollution spike today">[5]</span></li>
+            </ol>
+            
+            <h4>3.2.2 Pattern Disruptions</h4>
+            <p>However, this typical daily pattern can be disrupted by active forest fires or intensive agricultural burning. In March 2025, contrary to expectations, pollution levels actually increased during midday hours rather than following the typical declining pattern. On March 7, 2025, residents observed the AQI rising dramatically from 88 in the morning to approximately 180 between 11 AM and 2 PM. <span class="reference" title="Pollution spike today">[5]</span></p>
+            
+            <p>This deviation from the expected pattern demonstrates the importance of real-time monitoring rather than relying solely on time-of-day assumptions for exposure management during the burning season.</p>
+            
+            <h4>3.2.3 Monitoring Resources</h4>
+            <p>Several resources are available for tracking these daily patterns:</p>
+            <ul>
+                <li><strong>Real-Time Fire Mapping</strong>: Forest fire maps tracking hotspots throughout the region help identify sources of pollution spikes <span class="reference" title="Pollution spike today">[5]</span></li>
+                <li><strong>Weather Pattern Analysis</strong>: Applications like Ventusky help residents track pollution levels and wind patterns that influence how smoke moves through the region <span class="reference" title="Pollution spike today">[5]</span></li>
+                <li><strong>AQI Monitoring Platforms</strong>: Services like IQAir and government monitoring stations provide real-time data on pollution levels</li>
+            </ul>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-ENVIRONMENT and 4H-BIOHACKING</h4>
+                <p>Understanding daily pollution patterns supports both your environmental management goals and biohacking objectives. This knowledge allows for strategic timing of outdoor activities and exercise to minimize exposure to peak pollution levels, supporting your goals for maintaining optimal health and longevity.</p>
+            </div>
+        </div>
+        
+        <h3 id="health-impacts">4. Health Impacts of Air Pollution</h3>
+        
+        <button class="collapsible">4.1 Respiratory System Effects</button>
+        <div class="content">
+            <p>The various pollutants present in Chiang Mai's air have significant and measurable impacts on respiratory health, as documented by medical facilities and research studies:</p>
+            
+            <h4>4.1.1 Upper and Lower Respiratory Effects</h4>
+            <p>A comprehensive study analyzing approximately 216,000 outpatient visits in Chiang Mai between 2011 and 2014 found strong associations between three major pollutants and respiratory diseases:</p>
+            <ul>
+                <li><strong>PM10</strong>: Associated with both upper and lower respiratory tract diseases, with a relative risk of 1.023 for upper respiratory issues and 1.016 for lower respiratory problems per 10 μg/m³ increase <span class="reference" title="Association between out-patient visits and air pollution in Chiang Mai, Thailand">[6]</span></li>
+                <li><strong>Ozone (O₃)</strong>: Showed the strongest association with respiratory issues, with a relative risk of 1.123 for upper respiratory diseases and 1.073 for lower respiratory diseases per 10 ppb increase <span class="reference" title="Association between out-patient visits and air pollution in Chiang Mai, Thailand">[6]</span></li>
+                <li><strong>Nitrogen Dioxide (NO₂)</strong>: Had a relative risk of 1.110 for upper respiratory tract diseases and 1.046 for lower respiratory tract diseases per 10 ppb increase <span class="reference" title="Association between out-patient visits and air pollution in Chiang Mai, Thailand">[6]</span></li>
+            </ul>
+            
+            <h4>4.1.2 Specific Respiratory Symptoms</h4>
+            <p>Research has documented a range of specific respiratory symptoms associated with air pollution exposure in Chiang Mai:</p>
+            <ul>
+                <li>Dry cough</li>
+                <li>Throat irritation</li>
+                <li>Nasal congestion</li>
+                <li>Shortness of breath</li>
+                <li>Wheezing</li>
+                <li>Asthma exacerbation</li>
+            </ul>
+            
+            <p>These symptoms are particularly pronounced during the burning season when pollutant levels peak.</p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-BIOHACKING</h4>
+                <p>Understanding the specific respiratory impacts of air pollution supports your biohacking goals focused on maintaining optimal health and longevity. This knowledge can inform targeted interventions to strengthen respiratory defenses and mitigate inflammation responses during pollution events.</p>
+            </div>
+        </div>
+        
+        <button class="collapsible">4.2 Hospital Impact During Pollution Season</button>
+        <div class="content">
+            <p>The health impacts of Chiang Mai's air pollution translate into significant strain on healthcare resources, creating predictable patterns of increased healthcare utilization:</p>
+            
+            <h4>4.2.1 Hospital Utilization Patterns</h4>
+            <p>In early 2023, Maharaj Nakorn Chiang Mai Hospital reported treating 12,671 patients for respiratory problems between January 1 and March 31, with many suffering from asthma and inflammation. The hospital noted that its 1,400-bed facility was unable to treat many patients due to overcrowding in its inpatient wing. <span class="reference" title="Chiang Mai hospitals overflow with pollution sufferers">[7]</span></p>
+            
+            <p>This pattern continues annually, with recent pollution spikes in March 2025 likely creating similar healthcare demands, illustrating the recurring nature of this public health crisis.</p>
+            
+            <h4>4.2.2 Vulnerable Populations</h4>
+            <p>Hospital data reveals that certain population groups are disproportionately affected by air pollution:</p>
+            <ul>
+                <li><strong>Elderly</strong>: Increased rates of hospitalization for cardiopulmonary conditions</li>
+                <li><strong>Children</strong>: Higher rates of acute upper respiratory infections and asthma exacerbations</li>
+                <li><strong>Those with pre-existing conditions</strong>: Individuals with asthma, COPD, or cardiovascular disease experience more severe exacerbations during pollution events</li>
+            </ul>
+            
+            <h4>4.2.3 Long-term Health Concerns</h4>
+            <p>Beyond immediate hospital impacts, researchers are increasingly concerned about the long-term health effects of repeated seasonal exposure to high pollution levels. Recent studies have suggested links between Chiang Mai's seasonal air pollution and increased risk of:</p>
+            <ul>
+                <li>Chronic respiratory conditions</li>
+                <li>Cardiovascular disease</li>
+                <li>Lung cancer</li>
+                <li>Neurodevelopmental effects in children</li>
+            </ul>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-BIOHACKING and 3P-HOME</h4>
+                <p>The significant healthcare system strain during pollution peaks has dual relevance to your framework. For biohacking goals, it underscores the importance of preventive approaches rather than relying on medical intervention during pollution crises. For home planning, it highlights the potential need for home-based medical resources and telemedicine options during peak pollution periods when healthcare facilities may be overwhelmed.</p>
+            </div>
+        </div>
+        
+        <h3 id="mitigation-strategies">5. Mitigation Strategies</h3>
+        
+        <button class="collapsible">5.1 Personal Protection Strategies</button>
+        <div class="content">
+            <p>Several approaches have been developed for individual protection against Chiang Mai's air pollution:</p>
+            
+            <h4>5.1.1 Respiratory Protection</h4>
+            <p><strong>Masks</strong>: Wear N95 or N100 masks when outdoors during peak pollution periods to filter out PM2.5 and other fine particles. Standard surgical masks provide minimal protection against the finest particulates, making properly fitted N95 or higher masks essential.</p>
+            
+            <h4>5.1.2 Indoor Air Quality Management</h4>
+            <p><strong>Air Purifiers</strong>: Use HEPA air purifiers indoors to maintain clean air quality, especially in homes and public spaces. For maximum effectiveness during severe pollution events:</p>
+            <ul>
+                <li>Choose purifiers with both HEPA filtration (for particulates) and activated carbon (for gaseous pollutants)</li>
+                <li>Size purifiers appropriately for room dimensions</li>
+                <li>Create a "clean room" with sealed windows and doors running continuous filtration during severe episodes</li>
+                <li>Consider implementing positive pressure systems in bedrooms or main living areas</li>
+            </ul>
+            
+            <p><strong>DIY Solutions</strong>: Researchers at Chiang Mai University have developed a "DIY-PM 2.5 Net" that creates a positive pressure environment for vulnerable individuals, reducing PM2.5 exposure from 78 μg/m³ to just 8 μg/m³ in testing. <span class="reference" title="DIY PM 2.5 Net: clean air for bedridden patients">[8]</span></p>
+            
+            <h4>5.1.3 Behavioral Adaptations</h4>
+            <p><strong>Activity Timing</strong>: Minimize outdoor activities during peak pollution hours, typically late morning to early afternoon when burning is most intense. Schedule necessary outdoor activities for early morning or after rainfall when possible.</p>
+            
+            <p><strong>Exposure Monitoring</strong>: Use AQI monitoring apps to track real-time pollution levels and plan activities accordingly. This allows for data-driven decision-making rather than relying on visual cues alone, which may underestimate ultrafine particle levels.</p>
+            
+            <h4>5.1.4 Temporary Relocation</h4>
+            <p>Many residents choose to either remain indoors with air purifiers or temporarily relocate to areas with better air quality during the worst months. <span class="reference" title="Retiring early in Thailand - any gotchas and things to keep">[3]</span> Popular temporary relocation destinations include:</p>
+            <ul>
+                <li>Southern Thai destinations like Phuket or Koh Samui</li>
+                <li>Bangkok (which typically has better air quality during northern Thailand's burning season)</li>
+                <li>International destinations in Southeast Asia with different seasonal patterns</li>
+            </ul>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-ENVIRONMENT, 3P-HOME, and 4H-BIOHACKING</h4>
+                <p>These personal protection strategies align with multiple aspects of your LBS framework. They support your environmental management goals through systematic approaches to pollution exposure, integrate with home planning considerations for Thailand residence, and complement your biohacking objectives for maintaining optimal health despite environmental challenges.</p>
+            </div>
+        </div>
+        
+        <button class="collapsible">5.2 Systemic Approaches to Pollution Reduction</button>
+        <div class="content">
+            <p>Beyond personal protection, several systemic approaches are being implemented or proposed to address the root causes of Chiang Mai's air pollution:</p>
+            
+            <h4>5.2.1 Government Initiatives</h4>
+            <p><strong>Policy Leadership</strong>: Prime Minister Srettha Thavisin has highlighted Chiang Mai as a "model" for tackling air pollution, making multiple visits and pledging clean air legislation to ensure that access to clean air is recognized as a basic human right. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+            
+            <p><strong>Regulatory Frameworks</strong>: Thailand implemented a national zero-burning directive in 2013, though this had limited success as people adjusted by burning before and after the ban periods, effectively prolonging the haze season. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+            
+            <p><strong>Import Restrictions</strong>: Plans to ban imports of corn grown on cleared land aim to reduce incentives for deforestation and burning practices. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+            
+            <p><strong>Public Transportation Initiatives</strong>: Making public transportation free to encourage people to use it instead of personal vehicles, though critics argue this addresses only a minor source of the problem. <span class="reference" title="PM2.5 in Thailand">[3]</span></p>
+            
+            <h4>5.2.2 Agricultural Practice Alternatives</h4>
+            <p>Farmers and agricultural experts suggest several alternatives to burning:</p>
+            
+            <p><strong>Mechanical Solutions</strong>: Community access to tractors for plowing stubble back into the soil or baling machines for collecting it, which would provide more sustainable alternatives to burning. <span class="reference" title="Burning season just in Chiang Mai or All of Northern Thailand?">[4]</span></p>
+            
+            <p><strong>Soil Enrichment Practices</strong>: Incorporating straw back into the soil enhances organic matter, enriches nutrients, and improves soil structure, offering agricultural benefits beyond pollution reduction. <span class="reference" title="Burning season just in Chiang Mai or All of Northern Thailand?">[4]</span></p>
+            
+            <p><strong>Economic Incentives</strong>: Creating market-based incentives to make alternative practices financially competitive with burning, which remains the most cost-effective option for many farmers. <span class="reference" title="Burning season just in Chiang Mai or All of Northern Thailand?">[4]</span></p>
+            
+            <h4>5.2.3 Controlled Burning Management</h4>
+            <p>Chiang Mai province now permits controlled burns through a permit system managed via the FireD app, which predicts pollution levels using weather and satellite data. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span> While estimates suggest that approximately half of the fires in the province go unregistered, researchers view the app as a positive step toward better fire management.</p>
+            
+            <h4>5.2.4 Corporate Responsibility Measures</h4>
+            <p>Private sector initiatives include CP Foods implementing a tracing system specifically designed to avoid purchasing corn produced on deforested or burned land. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span> This market-based approach attempts to create economic incentives for sustainable farming practices.</p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 4H-ENVIRONMENT</h4>
+                <p>Understanding systemic approaches to pollution reduction supports your environmental management goals by providing context for the broader ecological and policy landscape affecting air quality. This knowledge can inform your personal strategies and help you identify potential advocacy opportunities aligned with your environmental values.</p>
+            </div>
+        </div>
+        
+        <button class="collapsible">5.3 Implementation Challenges</button>
+        <div class="content">
+            <p>Despite the range of mitigation strategies being pursued, significant challenges remain in implementing effective solutions:</p>
+            
+            <h4>5.3.1 Cultural and Economic Realities</h4>
+            <p>For many subsistence farmers, burning remains the most efficient and cost-effective method for clearing fields. Alternatives like biochar production and tilling require significant labor and equipment that many farmers cannot afford. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+            
+            <p>As researcher Mary Mostafanezhad noted: "If burning is the easiest and most cost-efficient way to grow your crops, or to make a living, until that is not true, it's going to continue to happen." <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+            
+            <h4>5.3.2 Bureaucratic Barriers</h4>
+            <p>Many villagers in northern Thailand, particularly those from tribal groups not formally recognized by the Thai government, struggle to navigate the bureaucracy required for legal burns. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span> Language barriers and limited access to education compound these difficulties.</p>
+            
+            <h4>5.3.3 Regional Dynamics</h4>
+            <p>Shifts in corn cultivation to neighboring countries where stubble burning remains common undermine domestic efforts to reduce air pollution. <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span> This highlights the need for regional coordination that extends beyond Thailand's borders.</p>
+            
+            <h4>5.3.4 Climate Change Impacts</h4>
+            <p>Increasing temperatures and changing precipitation patterns due to climate change may exacerbate wildfire risks and extend the burning season in coming years, potentially worsening air quality challenges despite mitigation efforts.</p>
+            
+            <div class="lbs-connection">
+                <h4>LBS Connection: 3P-HOME and 4H-ENVIRONMENT</h4>
+                <p>Understanding implementation challenges is crucial for both your home planning in Thailand and environmental management goals. These challenges suggest that air quality issues in Chiang Mai may persist for the foreseeable future despite mitigation efforts, requiring long-term adaptation strategies rather than expectations of rapid improvement.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="knowledge-integration">
+        <h2>KNOWLEDGE INTEGRATION</h2>
+        
+        <h3>Connections to Existing Knowledge</h3>
+        <div class="lbs-connection">
+            <h4>4H-ENVIRONMENT Integration</h4>
+            <p>The comprehensive analysis of Chiang Mai's air pollution directly supports your goal to "develop a system for identifying, evaluating, and managing personal exposure to harmful substances." This knowledge provides a foundation for creating a personal environmental monitoring and management system that includes:</p>
+            <ul>
+                <li>Seasonal planning based on predictable pollution patterns</li>
+                <li>Technology selection for different pollutant types (particulate vs. gaseous)</li>
+                <li>Risk assessment frameworks for various activities during different pollution levels</li>
+                <li>Integration with other environmental health considerations</li>
+            </ul>
+        </div>
+        
+        <div class="lbs-connection">
+            <h4>3P-HOME Integration</h4>
+            <p>This analysis has significant implications for your "customized minimalist smart home" goal, particularly if considering Thailand as a residence location. Key integration points include:</p>
+            <ul>
+                <li>Home location selection based on regional and local pollution patterns</li>
+                <li>Architectural considerations for pollution management (airlocks, filtration systems)</li>
+                <li>Smart home automation for pollution monitoring and response</li>
+                <li>Disaster readiness planning for severe pollution episodes</li>
+                <li>Seasonal residence strategies that might include temporary relocation during peak pollution periods</li>
+            </ul>
+        </div>
+        
+        <div class="lbs-connection">
+            <h4>4H-BIOHACKING Integration</h4>
+            <p>The health impact information connects directly to your biohacking goal focused on "end-of-life capabilities" by highlighting specific physiological systems requiring protection and enhancement in polluted environments:</p>
+            <ul>
+                <li>Respiratory system defense optimization</li>
+                <li>Cardiovascular protection strategies</li>
+                <li>Detoxification pathway support</li>
+                <li>Inflammatory response management</li>
+                <li>Oxidative stress mitigation through targeted nutrition and supplementation</li>
+            </ul>
+        </div>
+        
+        <h3>Potential Applications</h3>
+        
+        <div class="recommendation-card">
+            <h4>Personal Air Quality Management System</h4>
+            <p>Develop a comprehensive personal air quality management system that integrates:</p>
+            <ul>
+                <li><strong>Monitoring</strong>: Personal air quality monitors, AQI apps with alerts, active fire monitoring</li>
+                <li><strong>Protection</strong>: Properly fitted N95/N100 masks, home filtration systems, positive pressure zones</li>
+                <li><strong>Adaptation</strong>: Activity scheduling based on pollution patterns, indoor exercise alternatives</li>
+                <li><strong>Mitigation</strong>: Support for systemic solutions through advocacy and economic choices</li>
+            </ul>
+        </div>
+        
+        <div class="recommendation-card">
+            <h4>Thailand Residence Strategy</h4>
+            <p>If considering Thailand as a residence location, develop a structured approach based on air quality considerations:</p>
+            <ul>
+                <li><strong>Location Selection</strong>: Prioritize areas with favorable topography and wind patterns</li>
+                <li><strong>Home Design</strong>: Implement advanced filtration, room pressurization, and air quality monitoring</li>
+                <li><strong>Seasonal Planning</strong>: Consider dual-location strategy (e.g., Chiang Mai during clean air months, southern Thailand during burning season)</li>
+                <li><strong>Community Connection</strong>: Engage with local organizations working on pollution solutions</li>
+            </ul>
+        </div>
+        
+        <div class="recommendation-card">
+            <h4>Biohacking Protocol for Pollution Exposure</h4>
+            <p>Develop a targeted biohacking protocol for periods of pollution exposure:</p>
+            <ul>
+                <li><strong>Nutritional Support</strong>: Antioxidant-rich foods, anti-inflammatory compounds</li>
+                <li><strong>Supplementation</strong>: NAC, glutathione precursors, vitamin C, omega-3 fatty acids</li>
+                <li><strong>Respiratory Enhancement</strong>: Breathing exercises, pulmonary rehabilitation techniques</li>
+                <li><strong>Detoxification Support</strong>: Hydration protocols, lymphatic drainage, sauna therapy (when safe)</li>
+                <li><strong>Sleep Optimization</strong>: Enhanced filtration in sleeping areas, air quality monitoring during sleep</li>
+            </ul>
+        </div>
+        
+        <h3>Expert Perspectives</h3>
+        
+        <div class="quote-box">
+            <p>"If burning is the easiest and most cost-efficient way to grow your crops, or to make a living, until that is not true, it's going to continue to happen."</p>
+            <p>- Mary Mostafanezhad, Researcher <span class="reference" title="Chiang Mai faces air pollution crisis due to traditional fire practices">[4]</span></p>
+        </div>
+        
+        <div class="quote-box">
+            <p>"Until legal, financial and administrative conditions are created on the ground that allow communities to farm without burning, it's inevitable that it will continue."</p>
+            <p>- Michael Shafer, Warm Heart Foundation <span class="reference" title="How Chiang Mai became the world's most polluted city">[35]</span></p>
+        </div>
+    </div>
+
+    <div id="exploration-options">
+        <h2>EXPLORATION OPTIONS</h2>
+        
+        <ol>
+            <li><strong>Deep dive into particulate matter filtration technologies</strong> - Explore the latest research on filtration systems specifically designed for PM2.5 and ultrafine particles, including both commercial and DIY options optimized for the Chiang Mai pollution profile.</li>
+            <li><strong>Biohacking protocols for air pollution exposure</strong> - Investigate evidence-based nutritional, supplementation, and lifestyle interventions that can mitigate the health impacts of air pollution exposure.</li>
+            <li><strong>Thailand regional air quality comparison</strong> - Compare air quality patterns across different regions of Thailand to identify optimal locations and seasonal migration strategies.</li>
+            <li><strong>Home design for air quality management</strong> - Examine architectural and engineering approaches to home design specifically focused on maintaining indoor air quality in heavily polluted environments.</li>
+            <li><strong>Long-term health implications of seasonal pollution exposure</strong> - Review research on cumulative health impacts of repeated seasonal exposure to high pollution levels and preventive strategies.</li>
+        </ol>
+    </div>
+
+    <div id="references" class="reference-list">
+        <h2>REFERENCES</h2>
+        
+        <ol>
+            <li>Overview of Aerosol and Air Pollution in South Eastern Asia Countries. <a href="https://www.semanticscholar.org/paper/3aa035e1aa0db8d479cb80b4bf45a3fde6146430" target="_blank">Link</a></li>
+            <li>What's going on with pollution? (Reddit - ThailandTourism). <a href="https://www.reddit.com/r/ThailandTourism/comments/1ia0ih0/whats_going_on_with_pollution/" target="_blank">Link</a></li>
+            <li>What parts of Thailand are affected by burning season? (Reddit - Thailand). <a href="https://www.reddit.com/r/Thailand/comments/1ht8ftr/what_parts_of_thailand_are_affected_by_burning/" target="_blank">Link</a></li>
+            <li>Chiang Mai faces air pollution crisis due to traditional fire practices. <a href="https://internationalfireandsafetyjournal.com/chiang-mai-faces-air-pollution-crisis-due-to-traditional-fire-practices/" target="_blank">Link</a></li>
+            <li>Pollution spike today. (Reddit - Thailand). <a href="https://www.reddit.com/r/Thailand/comments/1j5lzpr/pollution_spike_today/" target="_blank">Link</a></li>
+            <li>Association between out-patient visits and air pollution in Chiang Mai, Thailand: Lessons from a unique situation involving a large data set showing high seasonal levels of air pollution. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9387779/" target="_blank">Link</a></li>
+            <li>Chiang Mai hospitals overflow with pollution sufferers. (Bangkok Post). <a href="https://www.bangkokpost.com/thailand/general/2541069/chiang-mai-hospitals-overflow-with-pollution-sufferers" target="_blank">Link</a></li>
+            <li>DIY PM 2.5 Net: clean air for bedridden patients. (Chiang Mai University). <a href="https://cmu.ac.th/en/article/2814f0cb-ab7d-445c-8f2a-beef5a75417f" target="_blank">Link</a></li>
+            <li>Investigating air pollution in Northern Thailand using wavelet analysis. <a href="https://www.semanticscholar.org/paper/632e253bda3b85353f4839dd459022cbd565df07" target="_blank">Link</a></li>
+            <li>PM10 and Its Chemical Composition: A Case Study in Chiang Mai, Thailand. <a href="https://www.semanticscholar.org/paper/2ef1f68cca61cba194d5bd058f62609deddcadb2" target="_blank">Link</a></li>
+            <li>PM 10 and Its Chemical Composition: A Case Study in Chiang Mai. <a href="https://www.semanticscholar.org/paper/7b677673f426d7a913d3e781dc296a1689bb6c15" target="_blank">Link</a></li>
+            <li>Biomass Burning Greatly Enhances the Concentration of Fine Carbonaceous Aerosols at an Urban Area in Upper Northern Thailand. <a href="https://www.semanticscholar.org/paper/3721911d691ec7a90cee96f621eb32b5df0cf308" target="_blank">Link</a></li>
+            <li>25% of the lung cancer in Chang Mai comes from the smoke. (Reddit - Thailand). <a href="https://www.reddit.com/r/Thailand/comments/1bs3pr1/25_of_the_lung_cancer_in_chang_mai_comes_from_the/" target="_blank">Link</a></li>
+            <li>Chiang Mai has 6x more air pollution than Bangkok right now. (Reddit - Thailand). <a href="https://www.reddit.com/r/Thailand/comments/fidkom/chiang_mai_has_6x_more_air_pollution_than_bangkok/" target="_blank">Link</a></li>
+            <li>How BAD is Chiang Mai Air Pollution Really? (Chiang Mai Buddy). <a href="https://chiangmaibuddy.com/welcome-to-chiang-mai/how-bad-is-chiang-mai-air-pollution-really/" target="_blank">Link</a></li>
+            <li>Acute air pollution-related symptoms among residents in Chiang Mai, Thailand. <a href="https://pubmed.ncbi.nlm.nih.gov/24645417/" target="_blank">Link</a></li>
+            <li>Generation of Volatile Organic Compounds (VOCs), Oxides of Nitrogen (NOx), and Ozone (O3) during Smog Case Study: Chiang Rai Province. <a href="https://www.semanticscholar.org/paper/c7e637f04295621b13357e8781efe7e88eaf6569" target="_blank">Link</a></li>
+            <li>Atmospheric Polycyclic Aromatic Hydrocarbons and Nitropolycyclic Aromatic Hydrocarbons in Thailand. <a href="https://www.semanticscholar.org/paper/d86e291baeab5c9f143b1506a35602a7d8d7ce6b" target="_blank">Link</a></li>
+            <li>A Situation and Temporal Behaviors of Air Pollution by ARIMA Model: A Case Study of Chiang Mai. <a href="https://www.semanticscholar.org/paper/2c2f1e8b070606ae48c21e68dd5919b8f52321f1" target="_blank">Link</a></li>
+            <li>Chiang Mai had the best air quality in the world. (Reddit - chiangmai). <a href="https://www.reddit.com/r/chiangmai/comments/1d32hhj/chiang_mai_had_the_best_air_quality_in_the_world/" target="_blank">Link</a></li>
+            <li>Burning season megathread 2024. (Reddit - chiangmai). <a href="https://www.reddit.com/r/chiangmai/comments/1apwv59/burning_season_megathread_2024/" target="_blank">Link</a></li>
+            <li>Air pollution in Thailand, what are the reasons and possible solutions? (Reddit - Thailand). <a href="https://www.reddit.com/r/Thailand/comments/ky97yr/air_pollution_in_thailand_what_are_the_reasons/" target="_blank">Link</a></li>
+            <li>Burning season megathread 2025. (Reddit - chiangmai). <a href="https://www.reddit.com/r/chiangmai/comments/1i45fh6/burning_season_megathread_2025/" target="_blank">Link</a></li>
+            <li>PM2.5 in Thailand. (Reddit - Thailand). <a href="https://www.reddit.com/r/Thailand/comments/1idaw2a/pm25_in_thailand/" target="_blank">Link</a></li>
+            <li>Burning season just in Chiang Mai or All of Northern Thailand? (Reddit - ThailandTourism). <a href="https://www.reddit.com/r/ThailandTourism/comments/10az2zd/burning_season_just_in_chiang_mai_or_all_of/" target="_blank">Link</a></li>
+            <li>Current air quality in Thai cities reaches hazardous levels. (Reddit - Thailand). <a href="https://www.reddit.com/r/Thailand/comments/1i70201/current_air_quality_in_thai_cities_reaches/" target="_blank">Link</a></li>
+            <li>Has burning season started there yet? How is it? (Reddit - chiangmai). <a href="https://www.reddit.com/r/chiangmai/comments/1huwdie/has_burning_season_started_there_yet_how_is_it/" target="_blank">Link</a></li>
+            <li>Chiang Rai Air pollution right now. (Reddit - Thailand). <a href="https://www.reddit.com/r/Thailand/comments/1jcgv1d/chiang_rai_air_pollution_right_now/" target="_blank">Link</a></li>
+            <li>How Chiang Mai became the world's most polluted city. (Al Jazeera). <a href="https://www.aljazeera.com/news/2023/4/12/how-chiang-mai-became-the-worlds-most-polluted-city" target="_blank">Link</a></li>
+            <li>Chiang Mai Air Pollution Action Plan. (AQMx). <a href="https://aqmx.org/sites/default/files/resources/ESCAP-2023-WP-Chiang-Mai-Air-Pollution-Action-Plan_EN.pdf" target="_blank">Link</a></li>
+            <li>Chiang Mai burning season - FAQ. (Dr Artima Medical Clinic). <a href="https://www.chiangmaidoctor.com/about-3" target="_blank">Link</a></li>
+            <li>Solving Air Pollution with Sustainable Innovations. (Chiang Mai University). <a href="https://sdgs.cmu.ac.th/en/ArticleDetail/fb233801-27c4-4170-85fe-f0684f11ff4b/f1d05c91-44b0-4c64-a5d9-2f87f300088b" target="_blank">Link</a></li>
+            <li>Chiang Mai Air Quality Index (AQI) and Thailand Air Pollution. (IQAir). <a href="https://www.iqair.com/th-en/thailand/chiang-mai" target="_blank">Link</a></li>
+            <li>New data exposes Thailand's 2021 "burning season". (IQAir). <a href="https://www.iqair.com/th-en/newsroom/thailand-2021-burning-season" target="_blank">Link</a></li>
+            <li>Chiang Mai Air Pollution: Real-time Air Quality Index. (Beijing AQI). <a href="https://aqicn.org/city/chiang-mai/" target="_blank">Link</a></li>
+            <li>Air Pollution-Related Respiratory Diseases and Associated Environmental Factors in Chiang Mai, Thailand, in 2011–2020. (PMC). <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9696662/" target="_blank">Link</a></li>
+            <li>PM10-bound polycyclic aromatic hydrocarbons in Chiang Mai (Thailand): Seasonal variations, source identification, health risk assessment and their relationship to air-mass movement. <a href="https://www.semanticscholar.org/paper/9cd6ae7b6291d25072b39b480774699af5d4a1e3" target="_blank">Link</a></li>
+            <li>Retiring early in Thailand - any gotchas and things to keep in mind? (Reddit - ExpatFIRE). <a href="https://www.reddit.com/r/ExpatFIRE/comments/1gc4j33/retiring_early_in_thailand_any_gotchas_and_things/" target="_blank">Link</a></li>
+            <li>AQIP-Roadmap-Emission-Sources-and-Policies-Report. (Citepa). <a href="https://www.citepa.org/wp-content/uploads/2025/03/AQIP-Roadmap-Emission-Sources-and-Policies-Report_Rev00.pdf" target="_blank">Link</a></li>
+        </ol>
+    </div>
+
+    <!-- Back to top button -->
+    <button id="backToTop" class="back-to-top" title="Go to top">↑</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize collapsible sections
+            var coll = document.getElementsByClassName("collapsible");
+            for (var i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    var content = this.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        content.style.padding = "0 18px";
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 40 + "px";
+                        content.style.padding = "18px";
+                    }
+                });
+            }
+            
+            // Initialize references as tooltips
+            var refs = document.getElementsByClassName("reference");
+            for (var i = 0; i < refs.length; i++) {
+                refs[i].addEventListener("click", function() {
+                    var refNum = this.textContent.replace("[", "").replace("]", "");
+                    document.getElementById("references").scrollIntoView({ behavior: "smooth" });
+                    // Highlight the reference briefly
+                    var refElement = document.getElementById("references").getElementsByTagName("li")[refNum-1];
+                    if (refElement) {
+                        refElement.style.backgroundColor = "#e8f4fd";
+                        setTimeout(function() {
+                            refElement.style.backgroundColor = "";
+                        }, 2000);
+                    }
+                });
+            }
+            
+            // Initialize back to top button
+            var backToTopButton = document.getElementById("backToTop");
+            
+            window.onscroll = function() {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    backToTopButton.style.display = "block";
+                } else {
+                    backToTopButton.style.display = "none";
+                }
+            };
+            
+            backToTopButton.addEventListener("click", function() {
+                document.body.scrollTop = 0; // For Safari
+                document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+            });
+            
+            // Navigation tabs functionality
+            var navTabs = document.querySelectorAll('.nav-tabs a');
+            navTabs.forEach(function(tab) {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs
+                    navTabs.forEach(function(t) {
+                        t.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Scroll to the section
+                    var targetId = this.getAttribute('href').substring(1);
+                    var targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+
+<script type="module">
+  // Import auto-storage system
+  import autoStorage from '../../../auto-storage.js';
+  
+  // For backward compatibility with any manual SimpleStorage calls
+  window.SimpleStorage = {
+    saveCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    loadCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    save: (key, data) => {
+      localStorage.setItem(key, JSON.stringify(data));
+    },
+    load: (key, defaultValue = null) => {
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : defaultValue;
+    },
+    delete: (key) => {
+      localStorage.removeItem(key);
+    }
+  };
+</script>
+
+</body>
+</html>

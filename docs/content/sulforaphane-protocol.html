@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sulforaphane Optimization Protocol</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .checklist-container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2a6a3c;
+            text-align: center;
+        }
+        h2 {
+            color: #2a6a3c;
+            border-bottom: 2px solid #2a6a3c;
+            padding-bottom: 5px;
+            margin-top: 25px;
+        }
+        .phase {
+            margin-bottom: 20px;
+        }
+        .phase-header {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border-left: 4px solid transparent;
+        }
+        .item:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+        .item.critical {
+            border-left-color: #c62828;
+        }
+        .item.high {
+            border-left-color: #ff8f00;
+        }
+        .item.medium {
+            border-left-color: #388e3c;
+        }
+        .item.low {
+            border-left-color: #1565c0;
+        }
+        .checkbox {
+            margin-right: 15px;
+            margin-top: 3px;
+            transform: scale(1.2);
+        }
+        .content {
+            flex-grow: 1;
+        }
+        .importance {
+            font-size: 0.8em;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        .critical {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        .high {
+            background-color: #ffecb3;
+            color: #ff8f00;
+        }
+        .medium {
+            background-color: #c8e6c9;
+            color: #388e3c;
+        }
+        .low {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        .tools {
+            font-size: 0.85em;
+            font-style: italic;
+            color: #555;
+            margin-top: 5px;
+        }
+        .note {
+            font-size: 0.85em;
+            color: #555;
+            margin-top: 5px;
+            padding-left: 15px;
+            border-left: 3px solid #ddd;
+        }
+        .gaps {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .gaps h2 {
+            color: #555;
+            border-bottom: 2px solid #999;
+        }
+        .tip {
+            background-color: #e1f5fe;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #03a9f4;
+        }
+        .tip-header {
+            font-weight: bold;
+            color: #0277bd;
+            margin-bottom: 5px;
+        }
+        .timeline {
+            margin: 30px 0;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            width: 80%;
+            height: 4px;
+            background: #2a6a3c;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        .timeline-point {
+            position: relative;
+            display: inline-block;
+            width: 20%;
+            text-align: center;
+            padding-top: 40px;
+        }
+        .timeline-point:before {
+            content: '';
+            position: absolute;
+            top: 23px;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            background: #2a6a3c;
+            border-radius: 50%;
+            transform: translateX(-50%);
+        }
+        .timeline-label {
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .timeline-event {
+            font-size: 0.8em;
+            color: #555;
+            margin-top: 5px;
+        }
+        .highlight-event {
+            color: #c62828;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sulforaphane Optimization Protocol<br>for Broccoli Rabe Sprouts</h1>
+    
+    <div class="tip">
+        <div class="tip-header">Optimization Goal:</div>
+        Maximize sulforaphane content by strategically timing harvest (day 5) and post-harvest storage (4 days refrigerated), followed by proper preparation before consumption.
+    </div>
+    
+    <div class="timeline">
+        <div class="timeline-point">
+            <div class="timeline-label">DAY 0</div>
+            <div class="timeline-event">Preparation<br>& Soaking</div>
+        </div>
+        <div class="timeline-point">
+            <div class="timeline-label">DAY 5</div>
+            <div class="timeline-event highlight-event">Optimal<br>Harvest</div>
+        </div>
+        <div class="timeline-point">
+            <div class="timeline-label">DAY 9</div>
+            <div class="timeline-event highlight-event">Peak<br>Sulforaphane</div>
+        </div>
+        <div class="timeline-point">
+            <div class="timeline-label">DAY 12</div>
+            <div class="timeline-event">Last Day for<br>Consumption</div>
+        </div>
+    </div>
+    
+    <div class="checklist-container">
+        <div class="phase">
+            <div class="phase-header">A. PREPARATION PHASE</div>
+            
+            <div class="item critical">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Sanitize seeds with 3% food-grade hydrogen peroxide for 10 minutes</span>
+                    <span class="importance high">HIGH</span>
+                    <div class="tools">🧰 Tools: Bowl, measuring spoon, timer, food-grade hydrogen peroxide</div>
+                    <div class="note">Removes potential contaminants while preserving seed viability</div>
+                </div>
+            </div>
+            
+            <div class="item critical">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Rinse thoroughly with filtered water</span>
+                    <span class="importance critical">CRITICAL</span>
+                    <div class="tools">🧰 Tools: Fine mesh strainer, filtered water</div>
+                    <div class="note">Ensures complete removal of sanitizing solution</div>
+                </div>
+            </div>
+            
+            <div class="item medium">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Pre-soak seeds for 8-12 hours in filtered water</span>
+                    <span class="importance medium">MEDIUM</span>
+                    <div class="tools">🧰 Tools: Bowl or jar, filtered water, timer</div>
+                    <div class="note">Initiates germination process and improves sprouting rate</div>
+                </div>
+            </div>
+            
+            <div class="item high">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Sanitize mason jars and equipment</span>
+                    <span class="importance high">HIGH</span>
+                    <div class="tools">🧰 Tools: Dish soap, white vinegar, clean towels</div>
+                    <div class="note">Prevents contamination during sprouting process</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="phase">
+            <div class="phase-header">B. CULTIVATION PHASE</div>
+            
+            <div class="item medium">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Add 2-3 tablespoons of seeds per jar (500g capacity jar)</span>
+                    <span class="importance medium">MEDIUM</span>
+                    <div class="tools">🧰 Tools: Measuring tablespoon</div>
+                    <div class="note">Prevents overcrowding and allows proper air circulation</div>
+                </div>
+            </div>
+            
+            <div class="item critical">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Rinse 3 times daily (morning, midday, evening)</span>
+                    <span class="importance critical">CRITICAL</span>
+                    <div class="tools">🧰 Tools: Filtered water, timer/reminder</div>
+                    <div class="note">Critical for preventing mold and maintaining optimal moisture</div>
+                </div>
+            </div>
+            
+            <div class="item critical">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Ensure thorough drainage after each rinse</span>
+                    <span class="importance critical">CRITICAL</span>
+                    <div class="tools">🧰 Tools: Sprouting jar stands/tilt supports</div>
+                    <div class="note">Standing water significantly increases risk of mold/bacterial growth</div>
+                </div>
+            </div>
+            
+            <div class="item high">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Days 1-2: Keep sprouts in darker area</span>
+                    <span class="importance high">HIGH</span>
+                    <div class="tools">🧰 Tools: Dark kitchen cabinet or cover with cloth</div>
+                    <div class="note">Mimics soil conditions and promotes initial root development</div>
+                </div>
+            </div>
+            
+            <div class="item high">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Days 3-5: Move to indirect light</span>
+                    <span class="importance high">HIGH</span>
+                    <div class="tools">🧰 Tools: Location with indirect sunlight</div>
+                    <div class="note">Allows chlorophyll development and optimal nutrient production</div>
+                </div>
+            </div>
+            
+            <div class="item critical">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Monitor for mold or unusual odors daily</span>
+                    <span class="importance critical">CRITICAL</span>
+                    <div class="tools">🧰 Tools: None (visual inspection)</div>
+                    <div class="note">Safety check - discard batch if any signs of contamination appear</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="phase">
+            <div class="phase-header">C. HARVEST & POST-HARVEST PHASE (Sulforaphane Maximization)</div>
+            
+            <div class="item critical">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Harvest precisely on day 5 of growth</span>
+                    <span class="importance critical">CRITICAL</span>
+                    <div class="tools">🧰 Tools: Calendar/timer</div>
+                    <div class="note">Research indicates peak glucoraphanin content on day 5</div>
+                </div>
+            </div>
+            
+            <div class="item high">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Final rinse with cool filtered water</span>
+                    <span class="importance high">HIGH</span>
+                    <div class="tools">🧰 Tools: Filtered water</div>
+                    <div class="note">Removes any debris or loose seed hulls</div>
+                </div>
+            </div>
+            
+            <div class="item high">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Allow to drain thoroughly for 1-2 hours</span>
+                    <span class="importance high">HIGH</span>
+                    <div class="tools">🧰 Tools: Colander or sprouting jar at angle</div>
+                    <div class="note">Excess moisture can accelerate spoilage during storage</div>
+                </div>
+            </div>
+            
+            <div class="item medium">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Transfer to storage container with paper towel liner</span>
+                    <span class="importance medium">MEDIUM</span>
+                    <div class="tools">🧰 Tools: Glass container with lid, paper towels</div>
+                    <div class="note">Paper towel absorbs excess moisture while maintaining humidity</div>
+                </div>
+            </div>
+            
+            <div class="item critical">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Store in refrigerator for exactly 4 days</span>
+                    <span class="importance critical">CRITICAL</span>
+                    <div class="tools">🧰 Tools: Refrigerator (35-40°F/1-4°C), timer/reminder</div>
+                    <div class="note">Research shows maximum sulforaphane formation on day 4 of storage</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="phase">
+            <div class="phase-header">D. CONSUMPTION PHASE</div>
+            
+            <div class="item critical">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Chop or lightly crush sprouts before consumption</span>
+                    <span class="importance critical">CRITICAL</span>
+                    <div class="tools">🧰 Tools: Knife, fork, or food processor</div>
+                    <div class="note">Mechanical disruption activates enzyme (myrosinase) that produces sulforaphane</div>
+                </div>
+            </div>
+            
+            <div class="item high">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Allow to sit for 10-15 minutes after chopping</span>
+                    <span class="importance high">HIGH</span>
+                    <div class="tools">🧰 Tools: Timer</div>
+                    <div class="note">Provides time for enzymatic conversion to complete</div>
+                </div>
+            </div>
+            
+            <div class="item medium">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Add 1/4 tsp mustard powder if using in cooked dishes</span>
+                    <span class="importance medium">MEDIUM</span>
+                    <div class="tools">🧰 Tools: Measuring spoon, mustard powder</div>
+                    <div class="note">Mustard powder contains myrosinase that replaces heat-inactivated enzymes</div>
+                </div>
+            </div>
+            
+            <div class="item high">
+                <input type="checkbox" class="checkbox">
+                <div class="content">
+                    <span>Consume within 7 days of initial harvest</span>
+                    <span class="importance high">HIGH</span>
+                    <div class="tools">🧰 Tools: Calendar/reminder</div>
+                    <div class="note">Quality and sulforaphane potential diminish after 7 days total</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="gaps">
+        <h2>Research & Knowledge Gaps</h2>
+        <ol>
+            <li><strong>Species-Specific Data:</strong> Most research is on broccoli (Brassica oleracea) sprouts, not broccoli rabe (Brassica rapa). Sulforaphane optimization might differ between species.</li>
+            <li><strong>Home Storage Conditions:</strong> Precise home refrigeration parameters (temperature, humidity) for optimal sulforaphane formation not well defined.</li>
+            <li><strong>Practical Enzymatic Optimization:</strong> Laboratory conditions for maximum conversion (65°C, specific pH, etc.) are difficult to implement in home settings.</li>
+            <li><strong>Varietal Differences:</strong> Lack of accessible testing methods for consumers to determine glucoraphanin content in different seed varieties.</li>
+            <li><strong>Combined Enhancement Strategies:</strong> Limited research on how various enhancement methods interact (harvest timing + storage + processing).</li>
+        </ol>
+    </div>
+    
+    <div class="tip">
+        <div class="tip-header">Scientific Insight:</div>
+        Sulforaphane isn't directly present in intact sprouts but forms when the enzyme myrosinase converts glucoraphanin during cell disruption. This two-step process explains why both growing conditions and post-harvest handling significantly impact final sulforaphane content.
+    </div>
+
+<script type="module">
+  // Import auto-storage system
+  import autoStorage from '../../../auto-storage.js';
+  
+  // For backward compatibility with any manual SimpleStorage calls
+  window.SimpleStorage = {
+    saveCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    loadCheckboxes: (dashboardId) => {
+      // Auto-storage will handle this automatically
+      console.log('Using autoStorage instead of SimpleStorage');
+    },
+    save: (key, data) => {
+      localStorage.setItem(key, JSON.stringify(data));
+    },
+    load: (key, defaultValue = null) => {
+      const saved = localStorage.getItem(key);
+      return saved ? JSON.parse(saved) : defaultValue;
+    },
+    delete: (key) => {
+      localStorage.removeItem(key);
+    }
+  };
+</script>
+
+</body>
+</html>
