@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
+  LineChart, Line, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+  TooltipProps // Import TooltipProps
 } from 'recharts';
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent'; // Import necessary sub-types for TooltipProps
 import { Info, Clock, AlertTriangle, Activity, Users, Award } from 'lucide-react';
 
 const ThaiMassageDashboard = () => {
@@ -156,7 +158,8 @@ const ThaiMassageDashboard = () => {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
   
   // Custom tooltip for the bar charts
-  const CustomTooltip = ({ active, payload, label }) => {
+  // Explicitly type the props using TooltipProps
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => { 
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-4 border rounded shadow-md max-w-xs">
@@ -172,12 +175,14 @@ const ThaiMassageDashboard = () => {
   };
   
   // Comparison chart tooltip
-  const ComparisonTooltip = ({ active, payload, label }) => {
+  // Explicitly type the props using TooltipProps
+  const ComparisonTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => { 
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-4 border rounded shadow-md max-w-xs">
           <p className="font-bold">{label}</p>
-          {payload.map((entry, index) => (
+          {/* Add explicit 'any' type for entry to resolve implicit any */}
+          {payload.map((entry: any, index: number) => ( 
             <p key={`item-${index}`} className="text-sm" style={{ color: entry.color }}>
               {`${entry.name}: ${entry.value}%`}
             </p>
@@ -192,7 +197,8 @@ const ThaiMassageDashboard = () => {
   };
 
   // Risk tooltip
-  const RiskTooltip = ({ active, payload, label }) => {
+  // Explicitly type the props using TooltipProps
+  const RiskTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => { 
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-4 border rounded shadow-md max-w-xs">
@@ -208,7 +214,8 @@ const ThaiMassageDashboard = () => {
   };
 
   // Radar chart tooltip
-  const RadarTooltip = ({ active, payload, label }) => {
+  // Explicitly type the props using TooltipProps
+  const RadarTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => { 
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-4 border rounded shadow-md max-w-xs">
@@ -268,11 +275,11 @@ const ThaiMassageDashboard = () => {
               onChange={(e) => setTimeframe(e.target.value)}
             >
               <option value="all">All Timeframes</option>
-              <option value="short">Short-term (0-72h)</option>
-              <option value="medium">Medium-term (1wk-3mo)</option>
-              <option value="long">Long-term (>3mo)</option>
-            </select>
-          </div>
+                <option value="short">Short-term (0-72h)</option>
+                <option value="medium">Medium-term (1wk-3mo)</option>
+                <option value="long">Long-term {'>'}3mo)</option>
+              </select>
+            </div>
         )}
         
         {activeTab === 'risks' && (
@@ -367,7 +374,7 @@ const ThaiMassageDashboard = () => {
               <div className="bg-purple-50 p-4 rounded-lg">
                 <h3 className="font-semibold text-purple-800 mb-2 flex items-center">
                   <Clock className="w-4 h-4 mr-2" />
-                  Long-term (>3 months)
+                  Long-term {'>'}3 months)
                 </h3>
                 <ul className="text-sm space-y-2">
                   <li>• 15-20% greater active hip flexion range</li>

@@ -1,3 +1,4 @@
 import ThaiMassageBenefitsRisksDashboard from "../content/4H-HEALTH/thai-massage-benefits-risks-dashboard";
+import ChiangMaiAirPollutionDashboard from "../content/4H-ENVIRONMENT/chiang-mai-air-pollution-dashboard";
 import MediaPreferenceDashboard from "../content/9E-MEDIA/media-preference-dashboard";
 import ThaiImportCalculator from "../content/3P-FINANCE/thai-import-calculator";

@@ -33,6 +33,7 @@ export const contentManifest = {
     "env-dashboard",
     "environmental-dashboard",
     "plants-co2-analysis",
+    "chiang-mai-air-pollution-dashboard",
   ],
   "6I-INTELLECTUAL": [
     "reading-dashboard",

@@ -1,5 +1,7 @@
 case "thai-massage-benefits-risks-dashboard":
   return <ThaiMassageBenefitsRisksDashboard />;
+case "chiang-mai-air-pollution-dashboard":
+  return <ChiangMaiAirPollutionDashboard />;
 case "korijeninakorculi":
   return <KorijeniNaKorculi />;
 case "media-preference-dashboard":

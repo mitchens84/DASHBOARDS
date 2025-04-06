@@ -9,6 +9,9 @@ import BikeMaintenanceDashboard from "../content/0A-PREP/bike-maintenance-dashbo
 // 3P-POSSESSIONS imports
 import BackpackDashboard from "../content/3P-POSSESSIONS/240205-comprehensive-backpack-dashboard";
 
+// 3P-FINANCE imports
+import ThaiImportCalculator from "../content/3P-FINANCE/thai-import-calculator";
+
 // 4H-BIOHACKING imports
 import HolisticProtectionDashboard from "../content/4H-BIOHACKING/holistic-protection-dashboard";
 import SunscreenProtectionCalculator from "../content/4H-BIOHACKING/sunscreen-protection-calculator";
@@ -19,6 +22,7 @@ import EnvDashboard from "../content/4H-ENVIRONMENT/env-dashboard";
 import EnvironmentalDashboard from "../content/4H-ENVIRONMENT/environmental-dashboard";
 import PlantsCO2Analysis from "../content/4H-ENVIRONMENT/plants-co2-analysis";
 import MicroplasticsMonitoring from "../content/4H-ENVIRONMENT/microplastics-monitoring-dashboard";
+import ChiangMaiAirPollutionDashboard from "../content/4H-ENVIRONMENT/chiang-mai-air-pollution-dashboard";
 
 // 4H-MEDICAL imports
 import DistalBicepsDashboard from "../content/4H-MEDICAL/distal-biceps-tendinopathy-dashboard";
@@ -33,6 +37,7 @@ import EmfSafetyDashboard from "../content/4H-HEALTH/emf-safety-dashboard";
 import GeneticDashboard from "../content/4H-HEALTH/genetic-dashboard-complete";
 import NeuteringEffects from "../content/4H-HEALTH/neutering-effects";
 import VaccinationTimeline from "../content/4H-HEALTH/vaccination-timeline-analysis";
+import ThaiMassageBenefitsRisksDashboard from "../content/4H-HEALTH/thai-massage-benefits-risks-dashboard";
 
 // 4H-NUTRITION imports
 import SportsNutrition from "../content/4H-NUTRITION/241118-sports-nutrition-dashboard";
@@ -66,6 +71,7 @@ import HighlightDetectiveGame from "../content/9E-MEDIA/highlight_detective_game
 import MusicDashboardR1 from "../content/9E-MEDIA/music-dashboard-r1";
 import MusicDashboard from "../content/9E-MEDIA/music-dashboard";
 import SoundTherapy from "../content/9E-MEDIA/sound-therapy-guide";
+import MediaPreferenceDashboard from "../content/9E-MEDIA/media-preference-dashboard";
 
 function App() {
   const location = useLocation();
@@ -80,6 +86,10 @@ function App() {
     { id: "possessions", title: "3P-POSSESSIONS", level: 0 },
     { id: "backpack-dashboard", title: "Backpack Analysis", level: 1 },
     { id: "comprehensive-backpack-dashboard", title: "Comprehensive Backpack Dashboard", level: 1 },
+
+    // 3P-FINANCE Section
+    { id: "finance", title: "3P-FINANCE", level: 0 },
+    { id: "thai-import-calculator", title: "Thai Import Calculator", level: 1 },
     
     // 4H-BIOHACKING Section
     { id: "skin-biohacking", title: "4H-BIOHACKING-SKIN", level: 0 },
@@ -98,6 +108,7 @@ function App() {
     { id: "microplastics-monitoring", title: "Microplastics Monitoring", level: 1 },
     { id: "microplastics-monitoring-dashboard", title: "Microplastics Monitoring Dashboard", level: 1 },
     { id: "plants-co2-analysis", title: "Plants Co2 Analysis", level: 1 },
+    { id: "chiang-mai-air-pollution-dashboard", title: "Chiang Mai Air Pollution Dashboard", level: 1 },
     
     // Health Section
     { id: "medical", title: "4H-MEDICAL", level: 0 },
@@ -122,6 +133,7 @@ function App() {
     { id: "vaccination-timeline-analysis", title: "Vaccination Timeline Analysis", level: 1 },
     { id: "vollagen-dashboard", title: "Vollagen Dashboard", level: 1 },
     { id: "sulforaphane-protocol", title: "Sulforaphane Protocol", level: 1 },
+    { id: "thai-massage-benefits-risks-dashboard", title: "Thai Massage Benefits Risks Dashboard", level: 1 },
     
     // Nutrition Section
     { id: "nutrition", title: "4H-NUTRITION", level: 0 },
@@ -176,6 +188,7 @@ function App() {
     { id: "sound-therapy", title: "Sound Therapy Guide", level: 1 },
     { id: "korijeni-na-korculi", title: "Korijeni Na Korculi", level: 1 },
     { id: "sound-therapy-guide", title: "Sound Therapy Guide", level: 1 },
+    { id: "media-preference-dashboard", title: "Media Preference Dashboard", level: 1 },
     
     // Travel Section
     { id: "travel", title: "9E-TRAVEL", level: 0 },
@@ -228,6 +241,8 @@ function App() {
       case "microplastics-monitoring":
       case "microplastics-monitoring-dashboard":
         return <MicroplasticsMonitoring />;
+      case "chiang-mai-air-pollution-dashboard":
+        return <ChiangMaiAirPollutionDashboard />;
 
       // 4H-MEDICAL
       case "distal-biceps":
@@ -260,6 +275,8 @@ function App() {
       case "emf-safety":
       case "emf-safety-dashboard":
         return <EmfSafetyDashboard />;
+      case "thai-massage-benefits-risks-dashboard":
+        return <ThaiMassageBenefitsRisksDashboard />;
 
       // 4H-NUTRITION
       case "sports-nutrition":
@@ -335,6 +352,12 @@ function App() {
         return <SoundTherapy />;
       case "korijeni-na-korculi":
         return <KorijeniNaKorculi />;
+      case "media-preference-dashboard":
+        return <MediaPreferenceDashboard />;
+
+      // 3P-FINANCE
+      case "thai-import-calculator":
+        return <ThaiImportCalculator />;
 
       // 9E-TRAVEL
       case "chiang-mai-air-pollution":
