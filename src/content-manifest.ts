@@ -2,6 +2,7 @@ export const contentManifest = {
   "4H-MEDICAL": [
     "distal-biceps-tendinopathy-dashboard",
     "dengue-risk-visualization",
+    "23andMe-Privacy-Analysis",
   ],
   "3P-POSSESSIONS": [
     "240205-comprehensive-backpack-dashboard",

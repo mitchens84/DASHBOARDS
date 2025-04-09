@@ -116,6 +116,7 @@ function App() {
     { id: "dengue-risk", title: "Dengue Risk Assessment", level: 1 },
     { id: "distal-biceps-tendinopathy-dashboard", title: "Distal Biceps Tendinopathy Dashboard", level: 1 },
     { id: "dengue-risk-visualization", title: "Dengue Risk Visualization", level: 1 },
+    { id: "23andme-privacy-analysis", title: "23andMe Privacy Analysis", level: 1 },
     
     // 4H-HEALTH Section
     { id: "health-reference", title: "4H-HEALTH", level: 0 },
@@ -368,6 +369,10 @@ function App() {
         return <HtmlContent filePath="content/sulforaphane-protocol.html" />;
       case "thailand-malaysia-journey":
         return <HtmlContent filePath="content/thailand-malaysia-interactive-journey-planner.html" />;
+      
+      // 4H-MEDICAL HTML Content
+      case "23andme-privacy-analysis":
+        return <HtmlContent filePath="content/4H-MEDICAL/23andMe-Privacy-Analysis.html" />;
 
       default:
         return null;
