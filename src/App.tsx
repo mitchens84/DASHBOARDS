@@ -69,6 +69,9 @@ import KorijeniNaKorculi from "../content/9E-MEDIA/korijeni_na_korculi";
 import HikingPlaylist from "../content/9E-MEDIA/hiking-playlist";
 import HighlightDetectiveGame from "../content/9E-MEDIA/highlight_detective_game";
 import MusicDashboardR1 from "../content/9E-MEDIA/music-dashboard-r1";
+
+// 5R-RELATIONSHIPS imports
+import MedicalLabDashboard from "../content/5R-RELATIONSHIPS/medical-lab-dashboard.html";
 import MusicDashboard from "../content/9E-MEDIA/music-dashboard";
 import SoundTherapy from "../content/9E-MEDIA/sound-therapy-guide";
 import MediaPreferenceDashboard from "../content/9E-MEDIA/media-preference-dashboard";
@@ -173,6 +176,10 @@ function App() {
     { id: "bean-sodium-intake-dashboard", title: "Bean Sodium Intake Dashboard", level: 1 },
     { id: "beans-infection-diet-plan", title: "Beans Infection Diet Plan", level: 1 },
     { id: "bean-uti-prevention", title: "Bean UTI Prevention", level: 1 },
+    
+    // Relationships Section
+    { id: "relationships", title: "5R-RELATIONSHIPS", level: 0 },
+    { id: "medical-lab-dashboard", title: "Medical Lab Dashboard", level: 1 },
     
     // Intellectual Section
     { id: "intellectual", title: "6I-INTELLECTUAL", level: 0 },
@@ -369,6 +376,10 @@ function App() {
         return <HtmlContent filePath="content/sulforaphane-protocol.html" />;
       case "thailand-malaysia-journey":
         return <HtmlContent filePath="content/thailand-malaysia-interactive-journey-planner.html" />;
+      
+      // 5R-RELATIONSHIPS
+      case "medical-lab-dashboard":
+        return <HtmlContent filePath="content/5R-RELATIONSHIPS/medical-lab-dashboard.html" />;
       
       // 4H-MEDICAL HTML Content
       case "23andme-privacy-analysis":

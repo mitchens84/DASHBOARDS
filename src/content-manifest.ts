@@ -59,6 +59,9 @@ export const contentManifest = {
     "bean-sodium-intake-dashboard",
     "beans-infection-diet-plan",
   ],
+  "5R-RELATIONSHIPS": [
+    "medical-lab-dashboard",
+  ],
   "0A-PREP": [
     "bike-maintenance-dashboard",
   ],
