@@ -5,50 +5,50 @@ interface HtmlContentProps {
 }
 
 const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
-  const [html, setHtml] = useState<string>('');
+  const [iframeUrl, setIframeUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const [iframeHeight, setIframeHeight] = useState<string>('calc(100vh - 120px)');
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    const fetchHtml = async () => {
-      try {
-        // Get the base URL from Vite's environment
-        const base = import.meta.env.BASE_URL || '/';
-        
-        // Normalize the file path (remove leading slash if base already has it)
-        const normalizedPath = filePath.startsWith('/') ? filePath.substring(1) : filePath;
-        
-        // Construct the full path with proper handling of slashes
-        const fullPath = base.endsWith('/') 
-          ? `${base}${normalizedPath}`
-          : `${base}/${normalizedPath}`;
-        
-        console.log(`Fetching HTML from: ${fullPath}`);
-        
-        // Create an AbortController to handle request timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
-        
-        const response = await fetch(fullPath, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch HTML: ${response.status} ${response.statusText}`);
+    try {
+      // Get the base URL from Vite's environment
+      const base = import.meta.env.BASE_URL || '/';
+      
+      // Normalize the file path (remove leading slash if base already has it)
+      const normalizedPath = filePath.startsWith('/') ? filePath.substring(1) : filePath;
+      
+      // Construct the full path with proper handling of slashes
+      const fullPath = base.endsWith('/') 
+        ? `${base}${normalizedPath}`
+        : `${base}/${normalizedPath}`;
+      
+      console.log(`Loading HTML via iframe from: ${fullPath}`);
+      
+      // Set the URL for the iframe
+      setIframeUrl(fullPath);
+      setError(null);
+      
+      // Set up message listener for potential height adjustments from iframe content
+      const handleMessage = (event: MessageEvent) => {
+        // Check if message is from our iframe and contains height information
+        if (event.data && event.data.type === 'iframe-height') {
+          setIframeHeight(`${event.data.height}px`);
         }
-        
-        const text = await response.text();
-        setHtml(text);
-        setError(null);
-      } catch (error) {
-        console.error('Error loading HTML:', error);
-        if (error instanceof DOMException && error.name === 'AbortError') {
-          setError('Request timed out. Please check your network connection and try again.');
-        } else {
-          setError(`Failed to load content: ${error instanceof Error ? error.message : String(error)}`);
-        }
-      } finally {
-        setLoading(false);
+      };
+      
+      window.addEventListener('message', handleMessage);
+      
+      // Cleanup event listener on unmount
+      return () => {
+        window.removeEventListener('message', handleMessage);
+      };
+    } catch (error) {
+      console.error('Error setting up iframe:', error);
+      setError(`Failed to load content: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setLoading(false);
       }
     };
 

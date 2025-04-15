@@ -2,6 +2,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
 import HtmlContent from './components/HtmlContent';
+import HtmlContentIframe from './components/HtmlContentIframe';
 
 // 0A-PREP imports
 import BikeMaintenanceDashboard from "../content/0A-PREP/bike-maintenance-dashboard";
@@ -71,7 +72,6 @@ import HighlightDetectiveGame from "../content/9E-MEDIA/highlight_detective_game
 import MusicDashboardR1 from "../content/9E-MEDIA/music-dashboard-r1";
 
 // 5R-RELATIONSHIPS imports
-import MedicalLabDashboard from "../content/5R-RELATIONSHIPS/medical-lab-dashboard.html";
 import MusicDashboard from "../content/9E-MEDIA/music-dashboard";
 import SoundTherapy from "../content/9E-MEDIA/sound-therapy-guide";
 import MediaPreferenceDashboard from "../content/9E-MEDIA/media-preference-dashboard";
@@ -379,7 +379,7 @@ function App() {
       
       // 5R-RELATIONSHIPS
       case "medical-lab-dashboard":
-        return <HtmlContent filePath="content/5R-RELATIONSHIPS/medical-lab-dashboard.html" />;
+        return <HtmlContentIframe filePath="content/5R-RELATIONSHIPS/medical-lab-dashboard.html" />;
       
       // 4H-MEDICAL HTML Content
       case "23andme-privacy-analysis":
