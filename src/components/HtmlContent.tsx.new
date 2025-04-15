@@ -4,52 +4,52 @@ interface HtmlContentProps {
   filePath: string;
 }
 
+/**
+ * Component to display HTML content via fetch and innerHTML approach.
+ * Note: This approach has limitations for complex HTML with JavaScript.
+ * Consider using HtmlContentIframe for content with JavaScript dependencies.
+ */
 const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
-  const [iframeUrl, setIframeUrl] = useState<string>('');
+  const [html, setHtml] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [iframeHeight, setIframeHeight] = useState<string>('calc(100vh - 120px)');
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    try {
-      // Get the base URL from Vite's environment
-      const base = import.meta.env.BASE_URL || '/';
-      
-      // Normalize the file path (remove leading slash if base already has it)
-      const normalizedPath = filePath.startsWith('/') ? filePath.substring(1) : filePath;
-      
-      // Construct the full path with proper handling of slashes
-      const fullPath = base.endsWith('/') 
-        ? `${base}${normalizedPath}`
-        : `${base}/${normalizedPath}`;
-      
-      console.log(`Loading HTML via iframe from: ${fullPath}`);
-      
-      // Set the URL for the iframe
-      setIframeUrl(fullPath);
-      setError(null);
-      
-      // Set up message listener for potential height adjustments from iframe content
-      const handleMessage = (event: MessageEvent) => {
-        // Check if message is from our iframe and contains height information
-        if (event.data && event.data.type === 'iframe-height') {
-          setIframeHeight(`${event.data.height}px`);
+    const fetchHtml = async () => {
+      try {
+        // Get the base URL from Vite's environment
+        const base = import.meta.env.BASE_URL || '/';
+        
+        // Normalize the file path (remove leading slash if base already has it)
+        const normalizedPath = filePath.startsWith('/') ? filePath.substring(1) : filePath;
+        
+        // Construct the full path with proper handling of slashes
+        const fullPath = base.endsWith('/') 
+          ? `${base}${normalizedPath}`
+          : `${base}/${normalizedPath}`;
+        
+        console.log(`Loading HTML content from: ${fullPath}`);
+        
+        // Fetch the HTML content
+        const response = await fetch(fullPath);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to load content: ${response.status} ${response.statusText}`);
         }
-      };
-      
-      window.addEventListener('message', handleMessage);
-      
-      // Cleanup event listener on unmount
-      return () => {
-        window.removeEventListener('message', handleMessage);
-      };
-    } catch (error) {
-      console.error('Error setting up iframe:', error);
-      setError(`Failed to load content: ${error instanceof Error ? error.message : String(error)}`);
-    } finally {
-      setLoading(false);
-    }
+        
+        const htmlContent = await response.text();
+        setHtml(htmlContent);
+        setError(null);
+      } catch (error) {
+        console.error('Error fetching HTML:', error);
+        setError(`Failed to load content: ${error instanceof Error ? error.message : String(error)}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchHtml();
   }, [filePath]);
 
   // Special hook to handle interactive elements
@@ -57,12 +57,14 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
     if (!html || !contentRef.current) return;
     
     const executeScripts = () => {
+      if (!contentRef.current) return;
+      
       // Find all script tags in the content and execute them
-      const scriptTags = contentRef.current!.querySelectorAll('script');
-      scriptTags.forEach(oldScript => {
+      const scriptTags = contentRef.current.querySelectorAll('script');
+      scriptTags.forEach((oldScript: HTMLScriptElement) => {
         const newScript = document.createElement('script');
         
-        Array.from(oldScript.attributes).forEach(attr => {
+        Array.from(oldScript.attributes).forEach((attr: Attr) => {
           newScript.setAttribute(attr.name, attr.value);
         });
         
@@ -77,41 +79,34 @@ const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
         oldScript.parentNode?.replaceChild(newScript, oldScript);
       });
       
-      // Fix any Bootstrap/jQuery interactive elements that need initialization
+      // Initialize any Bootstrap/jQuery components if the libraries are present
       if (typeof window !== 'undefined') {
+        // Cast window to any to avoid TypeScript errors with Bootstrap and jQuery
+        const win = window as any;
+        
         // Wait a moment for scripts to load
         setTimeout(() => {
+          if (!contentRef.current) return;
+          
           // Activate any Bootstrap tabs
-          const tabEls = contentRef.current?.querySelectorAll('[data-bs-toggle="tab"], [data-toggle="tab"]');
-          if (tabEls) {
-            tabEls.forEach(el => {
-              if (window.bootstrap && window.bootstrap.Tab) {
-                new window.bootstrap.Tab(el);
+          const tabEls = contentRef.current.querySelectorAll('[data-bs-toggle="tab"], [data-toggle="tab"]');
+          if (tabEls.length > 0) {
+            tabEls.forEach((el: Element) => {
+              // Handle Bootstrap 5+
+              if (win.bootstrap && win.bootstrap.Tab) {
+                new win.bootstrap.Tab(el);
               }
               
               // For older Bootstrap versions using jQuery
-              if (window.$ || window.jQuery) {
+              if (win.$ || win.jQuery) {
                 try {
-                  const $ = window.$ || window.jQuery;
+                  const $ = win.$ || win.jQuery;
                   $(el).tab();
                 } catch (e) {
                   console.warn('Error initializing tab with jQuery:', e);
                 }
               }
             });
-          }
-          
-          // Initialize any other interactive elements if needed
-          if (window.$ || window.jQuery) {
-            const $ = window.$ || window.jQuery;
-            try {
-              $('[data-toggle="tooltip"]').tooltip();
-              $('[data-toggle="popover"]').popover();
-              $('.collapse').collapse();
-              $('.dropdown-toggle').dropdown();
-            } catch (e) {
-              console.warn('Error initializing Bootstrap components:', e);
-            }
           }
         }, 500);
       }
