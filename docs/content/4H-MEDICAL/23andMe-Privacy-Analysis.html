@@ -27,7 +27,8 @@
             background-color: var(--light);
             color: var(--dark);
             line-height: 1.6;
-            max-width: 1200px;
+            /* max-width: 1200px; */ /* Removed max-width */
+            font-size: 16px; /* Slightly increased base font size */
             margin: 0 auto;
             padding: 20px;
         }
@@ -50,9 +51,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M50 0 L100 50 L50 100 L0 50 Z" fill="rgba(255,255,255,0.05)"/></svg>');
-            background-size: 30px;
-            opacity: 0.5;
+            /* Added a subtle pattern */
+            background-image: 
+                linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05)),
+                linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05));
+            background-size: 20px 20px;
+            opacity: 0.3;
         }
         
         h1 {
@@ -92,68 +96,97 @@
             padding: 30px;
             margin-bottom: 30px;
         }
-        
+
+        /* Horizontal Timeline Styles */
         .timeline {
-            position: relative;
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 20px;
+            display: flex;
+            overflow-x: auto; /* Allow horizontal scrolling if needed */
+            padding: 40px 0 60px; /* Increased padding for content above/below */
+            margin: 30px 0;
             background-color: var(--timeline-bg);
             border-radius: 10px;
+            position: relative;
+            min-height: 250px; /* Ensure space for items */
         }
-        
-        .timeline::after {
+
+        .timeline::before { /* Horizontal line */
             content: '';
             position: absolute;
-            width: 6px;
+            left: 0;
+            right: 0;
+            top: 50%; /* Position line in the middle */
+            height: 4px;
             background-color: var(--primary);
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -3px;
-            border-radius: 10px;
+            border-radius: 2px;
+            transform: translateY(-50%);
         }
-        
+
         .timeline-item {
-            padding: 10px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             position: relative;
-            width: 50%;
+            flex: 0 0 200px; /* Fixed width for each item, adjust as needed */
+            padding: 0 15px;
             box-sizing: border-box;
         }
-        
-        .timeline-item::after {
+
+        .timeline-item::after { /* Node on the line */
             content: '';
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             background-color: white;
             border: 4px solid var(--primary);
             border-radius: 50%;
-            top: 15px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center the node */
             z-index: 1;
         }
-        
-        .left {
-            left: 0;
+
+        /* Alternate content above and below */
+        .timeline-item:nth-child(odd) .timeline-content {
+            order: 1; /* Place content below the node */
+            margin-top: 50px; /* Further increased space between node and content */
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            order: -1; /* Place content above the node */
+            margin-bottom: 50px; /* Further increased space between node and content */
         }
         
-        .right {
+        /* Arrow pointing from node to content */
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            content: '';
+            position: absolute;
+            bottom: 100%; /* Position arrow above content */
             left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px;
+            border-style: solid;
+            border-color: transparent transparent white transparent; /* Pointing up */
         }
-        
-        .left::after {
-            right: -10px;
+
+        .timeline-item:nth-child(even) .timeline-content::after {
+            content: '';
+            position: absolute;
+            top: 100%; /* Position arrow below content */
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px;
+            border-style: solid;
+            border-color: white transparent transparent transparent; /* Pointing down */
         }
-        
-        .right::after {
-            left: -10px;
-        }
-        
+
         .timeline-content {
-            padding: 20px;
+            padding: 45px 15px; /* Increased top/bottom padding again */
             background-color: white;
             border-radius: 6px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            width: 100%; /* Make content take full width of item */
+            text-align: center;
+            position: relative; /* Needed for arrow pseudo-elements */
         }
         
         .date {
@@ -288,43 +321,53 @@
         .pros li, .cons li {
             margin-bottom: 5px;
         }
-        
-        .collapsible {
+
+        /* Styles for <details> and <summary> */
+        details.collapsible-container {
             background-color: var(--neutral);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd; /* Add subtle border */
+        }
+
+        summary.collapsible-summary {
+            background-color: var(--neutral); /* Keep background consistent */
             color: var(--dark);
             cursor: pointer;
             padding: 18px;
             width: 100%;
-            border: none;
             text-align: left;
             outline: none;
             font-size: 1rem;
             font-weight: bold;
-            border-radius: 5px;
-            margin-bottom: 10px;
+            border-radius: 5px; /* Apply radius here */
             position: relative;
+            list-style: none; /* Hide default marker */
         }
-        
-        .collapsible:after {
-            content: '\\002B';
+
+        summary.collapsible-summary::-webkit-details-marker {
+            display: none; /* Hide default marker for Chrome/Safari */
+        }
+
+        summary.collapsible-summary::after { /* Custom marker */
+            content: '\\002B'; /* Plus sign */
             color: var(--primary);
             font-weight: bold;
             float: right;
+            transition: transform 0.2s ease-out;
+        }
+
+        details[open] > summary.collapsible-summary::after {
+            content: "\\2212"; /* Minus sign */
+            transform: rotate(180deg);
         }
         
-        .active:after {
-            content: "\\2212";
-        }
-        
-        .content {
-            padding: 0 18px;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.2s ease-out;
-            background-color: white;
+        .content-panel { /* Renamed from .content */
+            padding: 10px 18px 18px 18px; /* Adjust padding */
+            /* Removed max-height, overflow, transition */
+            background-color: white; /* Keep background white */
+            border-top: 1px solid #ddd; /* Separator line */
             border-radius: 0 0 5px 5px;
-            margin-top: -10px;
-            margin-bottom: 10px;
         }
         
         .references {
@@ -399,28 +442,44 @@
         }
         
         @media screen and (max-width: 768px) {
-            .timeline::after {
-                left: 31px;
+            /* Revert to vertical timeline on smaller screens */
+            .timeline {
+                display: block; /* Revert from flex */
+                padding: 20px;
+                overflow-x: hidden;
+                min-height: auto;
             }
-            
+            .timeline::before { /* Vertical line */
+                left: 31px;
+                top: 0;
+                bottom: 0;
+                height: auto; /* Reset height */
+                width: 4px;
+                transform: none; /* Reset transform */
+            }
             .timeline-item {
                 width: 100%;
                 padding-left: 70px;
                 padding-right: 25px;
+                margin-bottom: 30px; /* Add space between vertical items */
+                flex: none; /* Reset flex property */
             }
-            
-            .timeline-item::after {
+            .timeline-item::after { /* Node position */
                 left: 21px;
+                top: 15px;
+                transform: none; /* Reset transform */
             }
-            
-            .left::after, .right::after {
-                left: 21px;
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                order: initial; /* Reset order */
+                margin: 0; /* Reset margins */
+                text-align: left;
             }
-            
-            .right {
-                left: 0%;
-            }
-            
+             .timeline-item:nth-child(odd) .timeline-content::before,
+             .timeline-item:nth-child(even) .timeline-content::after {
+                 content: none; /* Remove arrows */
+             }
+
             .options {
                 flex-direction: column;
             }
@@ -444,40 +503,39 @@
         <p>The core issue revolves around whether your genetic information could be sold as a company asset during bankruptcy proceedings. According to court documents, a judge has granted 23andMe permission to include customer genetic data as an asset in the bankruptcy sale process, though no specific buyer has been confirmed yet.</p>
         
         <div class="timeline">
-            <h3 style="text-align: center; margin-bottom: 20px; position: relative; z-index: 2; background-color: var(--timeline-bg);">Key Timeline of Events</h3>
-            
-            <div class="timeline-item left">
+            <!-- Removed the H3 title from here, it's better placed outside the timeline container -->
+            <div class="timeline-item"> <!-- Removed left/right classes -->
                 <div class="timeline-content">
                     <div class="date">March 23, 2025</div>
-                    <p>23andMe files for Chapter 11 bankruptcy protection in the Eastern District of Missouri</p>
+                    <p>23andMe files for Chapter 11 bankruptcy protection</p>
                 </div>
             </div>
             
-            <div class="timeline-item right">
+            <div class="timeline-item">
                 <div class="timeline-content">
                     <div class="date">Late March 2025</div>
-                    <p>U.S. Trustee's office proposes appointment of a Consumer Privacy Ombudsman to protect customer data</p>
+                    <p>Consumer Privacy Ombudsman proposed</p>
                 </div>
             </div>
             
-            <div class="timeline-item left">
+            <div class="timeline-item">
                 <div class="timeline-content">
                     <div class="date">March 24-28, 2025</div>
-                    <p>Multiple state attorneys general issue advisories urging customers to consider deleting their genetic data</p>
+                    <p>State AGs issue data deletion advisories</p>
                 </div>
             </div>
             
-            <div class="timeline-item right">
+            <div class="timeline-item">
                 <div class="timeline-content">
                     <div class="date">May 7, 2025</div>
-                    <p>Deadline for bids on 23andMe assets, including potential genetic data</p>
+                    <p>Deadline for bids on 23andMe assets</p>
                 </div>
             </div>
             
-            <div class="timeline-item left">
+            <div class="timeline-item">
                 <div class="timeline-content">
                     <div class="date">June 2025</div>
-                    <p>Final hearing scheduled for sale approval</p>
+                    <p>Final hearing for sale approval</p>
                 </div>
             </div>
         </div>
@@ -486,33 +544,39 @@
     <div class="container">
         <h2>Privacy Implications and Legal Framework</h2>
         
-        <button class="collapsible">Legal Status of Your Genetic Data</button>
-        <div class="content">
-            <p>Under Section 363(b) of the Bankruptcy Code, the company's privacy policy at the time of bankruptcy declaration largely determines whether customer data can be transferred or sold. 23andMe's Privacy Policy specifically states that the company may sell or transfer consumer personal information in the event of a bankruptcy, and users technically consented to these terms during registration.</p>
-            
-            <p>The Federal Trade Commission (FTC) has weighed in on the 23andMe bankruptcy case. FTC Chairman Andrew Ferguson sent a letter to the bankruptcy court, interpreting 23andMe's privacy policy as promising that its protections "shall apply continuously to their personal information, even if the data is sold or transferred in a bankruptcy proceeding." On this basis, Ferguson argues that any purchaser should be bound by 23andMe's privacy policies and applicable law, including any future changes to those policies.</p>
-        </div>
+        <details class="collapsible-container">
+            <summary class="collapsible-summary">Legal Status of Your Genetic Data</summary>
+            <div class="content-panel">
+                <p>Under Section 363(b) of the Bankruptcy Code, the company's privacy policy at the time of bankruptcy declaration largely determines whether customer data can be transferred or sold. 23andMe's Privacy Policy specifically states that the company may sell or transfer consumer personal information in the event of a bankruptcy, and users technically consented to these terms during registration.</p>
+                
+                <p>The Federal Trade Commission (FTC) has weighed in on the 23andMe bankruptcy case. FTC Chairman Andrew Ferguson sent a letter to the bankruptcy court, interpreting 23andMe's privacy policy as promising that its protections "shall apply continuously to their personal information, even if the data is sold or transferred in a bankruptcy proceeding." On this basis, Ferguson argues that any purchaser should be bound by 23andMe's privacy policies and applicable law, including any future changes to those policies.</p>
+            </div>
+        </details>
         
-        <button class="collapsible">State-Specific Protections</button>
-        <div class="content">
-            <p>Protection varies significantly by state:</p>
-            <ul>
-                <li><strong>California</strong>: Offers the strongest safeguards through the Genetic Information Privacy Act (GIPA), which requires explicit consent for genetic data collection, use, and sharing.</li>
+        <details class="collapsible-container">
+            <summary class="collapsible-summary">State-Specific Protections</summary>
+            <div class="content-panel">
+                <p>Protection varies significantly by state:</p>
+                <ul>
+                    <li><strong>California</strong>: Offers the strongest safeguards through the Genetic Information Privacy Act (GIPA), which requires explicit consent for genetic data collection, use, and sharing.</li>
                 <li><strong>New York, Oregon, Virginia</strong>: Have adopted genetic privacy laws requiring specific express consent before disclosing genetic samples or information to third parties.</li>
-                <li><strong>Most states</strong>: Exempt bankruptcy proceedings from their definition of a "data sale," meaning genetic information can be transferred during bankruptcy without triggering normal data sale rules.</li>
-            </ul>
-            <p>However, it remains unclear whether a purchaser via bankruptcy would qualify as a "third party" under these state statutes, creating significant legal uncertainty.</p>
-        </div>
+                    <li><strong>Most states</strong>: Exempt bankruptcy proceedings from their definition of a "data sale," meaning genetic information can be transferred during bankruptcy without triggering normal data sale rules.</li>
+                </ul>
+                <p>However, it remains unclear whether a purchaser via bankruptcy would qualify as a "third party" under these state statutes, creating significant legal uncertainty.</p>
+            </div>
+        </details>
         
-        <button class="collapsible">Federal Privacy Laws and Their Limitations</button>
-        <div class="content">
-            <p>Surprisingly, many federal privacy protections have significant limitations when applied to direct-to-consumer genetic testing companies:</p>
-            <ul>
-                <li><strong>HIPAA</strong>: May not apply to much of the genetic data collected by 23andMe, as the company likely did not act as a HIPAA covered entity or business associate for many consumers who submitted samples for genetic testing.</li>
-                <li><strong>Genetic Information Privacy Act (GINA)</strong>: Provides protection only if genetic information is used in a discriminatory fashion, such as to deny employment, but doesn't broadly restrict data transfers.</li>
-            </ul>
-            <p>This creates a significant regulatory gap where sensitive genetic information lacks comprehensive federal protection.</p>
-        </div>
+        <details class="collapsible-container">
+            <summary class="collapsible-summary">Federal Privacy Laws and Their Limitations</summary>
+            <div class="content-panel">
+                <p>Surprisingly, many federal privacy protections have significant limitations when applied to direct-to-consumer genetic testing companies:</p>
+                <ul>
+                    <li><strong>HIPAA</strong>: May not apply to much of the genetic data collected by 23andMe, as the company likely did not act as a HIPAA covered entity or business associate for many consumers who submitted samples for genetic testing.</li>
+                    <li><strong>Genetic Information Privacy Act (GINA)</strong>: Provides protection only if genetic information is used in a discriminatory fashion, such as to deny employment, but doesn't broadly restrict data transfers.</li>
+                </ul>
+                <p>This creates a significant regulatory gap where sensitive genetic information lacks comprehensive federal protection.</p>
+            </div>
+        </details>
         
         <h3>Risk Assessment</h3>
         <div class="card">
@@ -680,24 +744,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Collapsible sections
-            var coll = document.getElementsByClassName("collapsible");
-            for (var i = 0; i < coll.length; i++) {
-                coll[i].addEventListener("click", function() {
-                    this.classList.toggle("active");
-                    var content = this.nextElementSibling;
-                    if (content.style.maxHeight) {
-                        content.style.maxHeight = null;
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
-                    }
-                });
-            }
-            
-            // Auto-expand first collapsible for better initial UX
-            if (coll.length > 0) {
-                coll[0].click();
-            }
+            // Removed the JavaScript code for collapsible sections as it's now handled by <details>/<summary>
             
             // Add timeline animation effects
             const timelineItems = document.querySelectorAll('.timeline-item');

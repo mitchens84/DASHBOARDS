@@ -18,6 +18,9 @@ import HolisticProtectionDashboard from "../content/4H-BIOHACKING/holistic-prote
 import SunscreenProtectionCalculator from "../content/4H-BIOHACKING/sunscreen-protection-calculator";
 import SunscreenBOJ from "../content/4H-BIOHACKING/4H-BIOHACKING-SKIN-SUNSCREEN-BOJ";
 
+// 7A-CAREER imports
+import AIWorkflowProposal from "../content/7A-CAREER/proposal";
+
 // 4H-ENVIRONMENT imports
 import EnvDashboard from "../content/4H-ENVIRONMENT/env-dashboard";
 import EnvironmentalDashboard from "../content/4H-ENVIRONMENT/environmental-dashboard";
@@ -196,6 +199,10 @@ function App() {
     { id: "sound-therapy", title: "Sound Therapy Guide", level: 1 },
     { id: "korijeni-na-korculi", title: "Korijeni Na Korculi", level: 1 },
     { id: "sound-therapy-guide", title: "Sound Therapy Guide", level: 1 },
+    
+    // Career Section
+    { id: "career", title: "7A-CAREER", level: 0 },
+    { id: "proposal", title: "AI Workflow Proposal", level: 1 },
     { id: "media-preference-dashboard", title: "Media Preference Dashboard", level: 1 },
     
     // Travel Section
@@ -362,6 +369,10 @@ function App() {
         return <KorijeniNaKorculi />;
       case "media-preference-dashboard":
         return <MediaPreferenceDashboard />;
+        
+      // 7A-CAREER
+      case "proposal":
+        return <AIWorkflowProposal />;
 
       // 3P-FINANCE
       case "thai-import-calculator":

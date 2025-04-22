@@ -73,6 +73,9 @@ export const contentManifest = {
     "holistic-protection-dashboard",
     "sunscreen-protection-calculator",
   ],
+  "7A-CAREER": [
+    "proposal",
+  ],
 };
 
 export const getContentPath = (file: string) => {

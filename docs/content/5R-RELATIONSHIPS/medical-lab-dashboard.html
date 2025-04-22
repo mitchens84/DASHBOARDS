@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Laboratory Dashboard</title>
+    <link rel="stylesheet" href="medical-lab-dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <header class="dashboard-header">
+            <div id="patient-info">
+                <h1 id="patient-name"></h1>
+                <div id="patient-details">
+                    <p>Patient ID: <span id="patient-id"></span></p>
+                    <p>Date of Birth: <span id="patient-dob"></span></p>
+                    <p>Test Date: <span id="test-date"></span></p>
+                </div>
+            </div>
+            <div class="logo-container">
+                <h2>Medical Laboratory Report</h2>
+                <p id="report-date"></p>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Navigation Sidebar -->
+            <aside class="sidebar">
+                <h3>Test Categories</h3>
+                <nav id="test-navigation">
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-category="Complete Blood Count">Complete Blood Count</a></li>
+                        <li><a href="#" class="nav-link" data-category="Differential Blood Count">Differential Blood Count</a></li>
+                        <li><a href="#" class="nav-link" data-category="Complete Urine Analysis">Complete Urine Analysis</a></li>
+                        <li><a href="#" class="nav-link" data-category="Biochemical Tests">Biochemical Tests</a></li>
+                    </ul>
+                </nav>
+                <div class="lab-info">
+                    <h4>Laboratory Information</h4>
+                    <p id="lab-name"></p>
+                    <p id="lab-specialist"></p>
+                </div>
+            </aside>
+
+            <!-- Main Results Area -->
+            <main class="results-area">
+                <div class="summary-panel">
+                    <h3>Health Summary</h3>
+                    <div id="alerts-container">
+                        <h4>Attention Required</h4>
+                        <ul id="alerts-list">
+                            <!-- Will be populated by JavaScript -->
+                        </ul>
+                    </div>
+                    <div id="key-metrics">
+                        <h4>Key Metrics Overview</h4>
+                        <div class="gauge-container">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-table-container">
+                    <h3 id="current-category">Complete Blood Count</h3>
+                    <div class="table-container">
+                        <table id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Test Name</th>
+                                    <th>Result</th>
+                                    <th>Unit</th>
+                                    <th>Reference Range</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Detailed Information Panel -->
+            <aside class="detail-panel">
+                <div class="detail-header">
+                    <h3>Test Details</h3>
+                </div>
+                <div id="test-detail-content">
+                    <p>Select a test result for detailed information</p>
+                </div>
+                <div id="chart-container">
+                    <canvas id="result-chart"></canvas>
+                </div>
+                <div id="recommendations">
+                    <h4>Health Insights</h4>
+                    <ul id="insight-list">
+                        <!-- Will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer Section -->
+        <footer class="dashboard-footer">
+            <p>This dashboard is for informational purposes only. Consult with healthcare professionals for medical advice.</p>
+        </footer>
+    </div>
+
+    <script src="medical-lab-dashboard.js"></script>
+    
+    <!-- Add Storage System Scripts -->
+    <script src="../../js/dashboardStorage.js"></script> 
+    <script src="../../js/auto-storage.js"></script>
+</body>
+</html>
