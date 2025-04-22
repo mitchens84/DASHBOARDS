@@ -190,23 +190,23 @@ const AIWorkflowProposal = () => {
 
   // References list
   const references = [
-    { id: 1, citation: "Anthropic. (2025). \"Introducing the next generation of Claude.\" Anthropic." },
-    { id: 2, citation: "Geeky Gadgets. (2025). \"Claude 3.7 Review: Advanced AI for Coding and Creative Writing.\" Geeky Gadgets." },
-    { id: 3, citation: "OpenAI. (2025). \"Hello GPT-4o.\" OpenAI." },
-    { id: 4, citation: "Research team. (2024). \"GPT-ImgEval: A Comprehensive Benchmark for Diagnosing GPT-4o.\" arXiv." },
-    { id: 5, citation: "Writesonic Blog. (2025). \"GPT-4.5 vs GPT-4o: Testing The AI Models Using Seven Prompts.\" Writesonic." },
-    { id: 6, citation: "Swiftask AI. (2025). \"Gemini 2.5 Pro: Google's ultimate intelligence.\" Swiftask AI." },
-    { id: 7, citation: "Yan, Chris. (2025). \"Revolutionizing Data Processing with Gemini: Table Inputs and Structured Outputs.\" Medium." },
-    { id: 8, citation: "Yazidi, Mouez. (2025). \"Gemini 2.5 Pro vs LLaMA 4: Benchmarking AI Models for Invoice Data Extraction.\" Level Up Coding." },
-    { id: 9, citation: "Auner, Nelson et al. (2025). \"Which LLM is right for you? The answer is clear: it depends.\" Proxet." },
-    { id: 10, citation: "r/LLMDevs. (2025). \"GPT-4o Mini Fine-Tuning Notebook to Boost Classification Accuracy.\" Reddit." },
-    { id: 11, citation: "Vellum AI. (2025). \"Best Model for Text Classification: Gemini Pro, GPT-4 or Claude2?\" Vellum AI." },
-    { id: 12, citation: "Research team. (2024). \"Explainable Benchmark for Retrieval-Augmented Generation Systems.\" arXiv." },
-    { id: 13, citation: "Research team. (2024). \"Unanswerability Evaluation for Retrieval Augmented Generation.\" arXiv." },
-    { id: 14, citation: "Tweag. (2025). \"Evaluating the evaluators: know your RAG metrics.\" Tweag." },
-    { id: 15, citation: "Medium. (2025). \"Securing LLM Applications: Where Content Safeguards Meet LLMs as Judges.\" Medium." },
-    { id: 16, citation: "Evolution AI. (2025). \"Claude vs. GPT-4.5 vs. Gemini: A Comprehensive Comparison.\" Evolution AI." },
-    { id: 17, citation: "Writesonic Blog. (2025). \"Claude vs. ChatGPT: A Detailed Comparison.\" Writesonic." }
+    { id: 1, citation: "Anthropic. \"Introducing the next generation of Claude.\" Anthropic." },
+    { id: 2, citation: "Geeky Gadgets. \"Claude 3.7 Review: Advanced AI for Coding and Creative Writing.\" Geeky Gadgets." },
+    { id: 3, citation: "OpenAI. \"Hello GPT-4o.\" OpenAI." },
+    { id: 4, citation: "Research team. \"GPT-ImgEval: A Comprehensive Benchmark for Diagnosing GPT-4o.\" arXiv." },
+    { id: 5, citation: "Writesonic Blog. \"GPT-4.5 vs GPT-4o: Testing The AI Models Using Seven Prompts.\" Writesonic." },
+    { id: 6, citation: "Swiftask AI. \"Gemini 2.5 Pro: Google's ultimate intelligence.\" Swiftask AI." },
+    { id: 7, citation: "Yan, Chris. \"Revolutionizing Data Processing with Gemini: Table Inputs and Structured Outputs.\" Medium." },
+    { id: 8, citation: "Yazidi, Mouez. \"Gemini 2.5 Pro vs LLaMA 4: Benchmarking AI Models for Invoice Data Extraction.\" Level Up Coding." },
+    { id: 9, citation: "Auner, Nelson et al. \"Which LLM is right for you? The answer is clear: it depends.\" Proxet." },
+    { id: 10, citation: "r/LLMDevs. \"GPT-4o Mini Fine-Tuning Notebook to Boost Classification Accuracy.\" Reddit." },
+    { id: 11, citation: "Vellum AI. \"Best Model for Text Classification: Gemini Pro, GPT-4 or Claude2?\" Vellum AI." },
+    { id: 12, citation: "Research team. \"Explainable Benchmark for Retrieval-Augmented Generation Systems.\" arXiv." },
+    { id: 13, citation: "Research team. \"Unanswerability Evaluation for Retrieval Augmented Generation.\" arXiv." },
+    { id: 14, citation: "Tweag. \"Evaluating the evaluators: know your RAG metrics.\" Tweag." },
+    { id: 15, citation: "Medium. \"Securing LLM Applications: Where Content Safeguards Meet LLMs as Judges.\" Medium." },
+    { id: 16, citation: "Evolution AI. \"Claude vs. GPT-4.5 vs. Gemini: A Comprehensive Comparison.\" Evolution AI." },
+    { id: 17, citation: "Writesonic Blog. \"Claude vs. ChatGPT: A Detailed Comparison.\" Writesonic." }
   ];
 
   // Workflow statistics for executive summary
@@ -651,8 +651,8 @@ const AIWorkflowProposal = () => {
       <header ref={headerRef} className={`transition-all duration-300 ${isScrolled ? 'bg-indigo-900 py-2 shadow-lg' : 'bg-gradient-to-r from-indigo-900 to-purple-900 py-4'} text-white fixed top-0 left-0 right-0 z-30`}>
         <div className="container mx-auto px-4 flex justify-between items-center">
           {/* Title on the left */}
-          <h1 className="text-lg font-bold flex items-center"> {/* Adjusted text size slightly */}
-            <Workflow size={20} className="mr-2" /> {/* Adjusted icon size */}
+          <h1 className="text-sm font-bold flex items-center whitespace-nowrap"> {/* Reduced text size to sm */}
+            <Workflow size={16} className="mr-2" /> {/* Reduced icon size */}
             AI-ENHANCED WORKFLOW PROPOSAL FOR SITRUNA
           </h1>
 
@@ -1132,7 +1132,7 @@ const AIWorkflowProposal = () => {
                   Efficiency Calculation Methodology
                 </h4>
                 <p className="text-sm text-gray-600">
-                  Efficiency metrics represent the combined impact of time savings, error reduction, and output quality improvement. Values were derived from benchmark testing andcapability assessment of each module's AI components, validated by industry research findings⁶ ⁹.
+                  Efficiency metrics represent the combined impact of time savings, error reduction, and output quality improvement. Values were derived from benchmark testing andcapability assessment ofeach module's AI components, validated by industry research findings⁶ ⁹.
                 </p>
               </div>
             </div>
