@@ -641,7 +641,7 @@ const AIWorkflowProposal = () => {
         <div className="container mx-auto px-4 flex justify-between items-center">
           <h1 className="text-xl font-bold flex items-center">
             <Workflow className="mr-2" />
-            AI-Enhanced Workflow Proposal
+            AI-ENHANCED WORKFLOW PROPOSAL FOR SITRUNA
           </h1>
           
           {/* Mobile menu button */}
@@ -673,36 +673,78 @@ const AIWorkflowProposal = () => {
           </div>
           
           {/* Desktop navigation */}
-          <nav className="hidden md:flex space-x-2">
-            <button 
+          <nav className="hidden md:flex space-x-1"> {/* Reduced space-x */}
+            <button
               onClick={() => handleTabClick('overview')}
-              className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'overview' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'overview' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`} // Adjusted padding and text size
             >
               Overview
             </button>
-            <button 
-              onClick={() => handleTabClick('graphic-design')}
-              className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'graphic-design' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+            <button
+              onClick={() => handleTabClick('problem')}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'problem' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
-              Graphic Design
+              Problem
             </button>
-            <button 
+            <button
+              onClick={() => handleTabClick('goals')}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'goals' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+            >
+              Goals
+            </button>
+            <button
+              onClick={() => handleTabClick('metrics')}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'metrics' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+            >
+              Metrics
+            </button>
+             <button
+              onClick={() => handleTabClick('capability-assessment')}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'capability-assessment' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+            >
+              Capabilities
+            </button>
+            <button
+              onClick={() => handleTabClick('graphic-design')}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'graphic-design' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+            >
+              Graphics
+            </button>
+            <button
               onClick={() => handleTabClick('content-brief')}
-              className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'content-brief' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'content-brief' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Content Brief
             </button>
-            <button 
+            <button
               onClick={() => handleTabClick('case-management')}
-              className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'case-management' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'case-management' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
-              Case Management
+              Case Mgmt
             </button>
-            <button 
+            <button
               onClick={() => handleTabClick('listings-upload')}
-              className={`px-3 py-2 rounded-md text-sm font-medium ${activeTab === 'listings-upload' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'listings-upload' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
-              Listings Upload
+              Listings
+            </button>
+            <button
+              onClick={() => handleTabClick('knowledge')}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'knowledge' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+            >
+              Knowledge
+            </button>
+             <button
+              onClick={() => handleTabClick('implementation')}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'implementation' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+            >
+              Implementation
+            </button>
+             <button
+              onClick={() => handleTabClick('references')}
+              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'references' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+            >
+              References
             </button>
           </nav>
         </div>
@@ -1098,7 +1140,7 @@ const AIWorkflowProposal = () => {
                   Efficiency Calculation Methodology
                 </h4>
                 <p className="text-sm text-gray-600">
-                  Efficiency metrics represent the combined impact of time savings, error reduction, and output quality improvement. Values were derived from benchmark testing and capability assessment of each module's AI components, validated by industry research findings⁶ ⁹.
+                  Efficiency metrics represent the combined impact of time savings, error reduction, and output quality improvement. Values were derived from benchmark testing andcapability assessment of each module's AI components, validated by industry research findings⁶ ⁹.
                 </p>
               </div>
             </div>
@@ -1582,8 +1624,8 @@ const AIWorkflowProposal = () => {
     <div className="container mx-auto px-4">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
         <div className="mb-4 md:mb-0">
-          <h3 className="text-xl font-semibold">AI-Enhanced Workflow Proposal</h3>
-          <p className="text-indigo-200 text-sm">April 2025</p>
+          <h3 className="text-xl font-semibold">AI-Enhanced Workflow Proposal for Sitruna</h3>
+          <p className="text-indigo-200 text-sm">Prepared for Sitruna - April 2025</p>
         </div>
         <div className="flex space-x-4">
           <button onClick={() => handleTabClick('overview')} className="flex items-center text-indigo-200 hover:text-white">
