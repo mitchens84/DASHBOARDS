@@ -142,7 +142,7 @@ const AIWorkflowProposal = () => {
     { 
       capability: 'Classification & Categorization', 
       maturity: 'High', 
-      evidence: 'All proposed models demonstrate strong classification performance (65-72% base accuracy)⁹, with potential for &gt;90% accuracy after fine-tuning¹⁰. This capability is well-established and reliable for the case management workflows.',
+      evidence: 'All proposed models demonstrate strong classification performance (65-72% base accuracy)⁹, with potential for greater than 90% accuracy after fine-tuning¹⁰. This capability is well-established and reliable for the case management workflows.',
       implementation: 'Begin implementation immediately, with domain-specific fine-tuning to boost accuracy further'
     },
     { 
@@ -1139,12 +1139,12 @@ const AIWorkflowProposal = () => {
                 {renderTable('capability-assessment')}
                 
                 <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 mb-2 flex items-center">
-                    <Lightbulb size={18} className="mr-2" />
+                  <h4 className="font-semibold flex items-center mb-2 text-blue-800">
+                    <Lightbulb size={18} className="mr-2                    <Lightbulb size={18} className="mr-2" />
                     Assessment Summary
                   </h4>
                   <p className="text-blue-900 text-sm">
-                    The core AI capabilities required for this proposal are largely supported by current research, with most achieving &gt;70% accuracy on relevant benchmarks. However, performance varies significantly by domain and task specificity. For optimal results, we recommend a phased implementation approach starting with the most mature capabilities.
+                    The core AI capabilities required for this proposal are largely supported by current research, with most achieving greater than 70% accuracy on relevant benchmarks. However, performance varies significantly by domain and task specificity.
                   </p>
                 </div>
               </div>
@@ -1343,16 +1343,17 @@ const AIWorkflowProposal = () => {
               {renderTable('case-management', !!filterTerm)}
               
               <div className="bg-green-50 p-4 rounded-lg mt-8">
-<h4 className="font-semibold flex items-center mb-2 text-green-800">
-<Info size={16} className="mr-2" />
-Implementation Notes
-</h4>  <p className="text-green-900 text-sm">
-  Classification & Categorization shows a base accuracy of 65-72% on case intake⁹, with potential for &gt;90% accuracy via domain-specific fine-tuning¹⁰. This makes Case Management one of the most immediately implementable AI-enhanced workflows.
-  </p>
-</div>
-</div>
-)}
-</section>
+                <h4 className="font-semibold flex items-center mb-2 text-green-800">
+                  <Info size={16} className="mr-2" />
+                  Implementation Notes
+                </h4>
+                <p className="text-green-900 text-sm">
+                  Classification & Categorization shows a base accuracy of 65-72% on case intake⁹, with potential for greater than 90% accuracy via domain-specific fine-tuning¹⁰. This makes Case Management one of the most immediately implementable AI-enhanced workflows.
+                </p>
+              </div>
+            </div>
+          )}
+        </section>
     {/* Listings Upload Section */}
     <section id="listings-upload" 
       className="mb-8"
