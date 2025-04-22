@@ -1094,7 +1094,7 @@ const AIWorkflowProposal = () => {
               
               <div className="bg-gray-50 p-4 rounded-lg mt-6">
                 <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
-                  <Info size={16} className="mr-2 text-indigo-600" />
+                  <Info size={16} className="mr-2" />
                   Efficiency Calculation Methodology
                 </h4>
                 <p className="text-sm text-gray-600">
@@ -1140,8 +1140,8 @@ const AIWorkflowProposal = () => {
                 
                 <div className="mt-6 bg-blue-50 p-4 rounded-lg">
                   <h4 className="font-semibold flex items-center mb-2 text-blue-800">
-                    <Lightbulb size={18} className="mr-2                    <Lightbulb size={18} className="mr-2" />
-                    Assessment Summary
+                    <Lightbulb size={18} className="mr-2" />
+                    AssessmentSummary
                   </h4>
                   <p className="text-blue-900 text-sm">
                     The core AI capabilities required for this proposal are largely supported by current research, with most achieving greater than 70% accuracy on relevant benchmarks. However, performance varies significantly by domain and task specificity.
