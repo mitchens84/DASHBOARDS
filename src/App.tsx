@@ -1,3 +1,4 @@
+// filepath: /Users/mitchens/Local/6I-CYBORG-AGENTS/DASHBOARDS/src/App.tsx
 import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
@@ -404,14 +405,10 @@ function App() {
   // With HashRouter, we need to handle the hash portion of the URL
   const currentPath = location.pathname.replace(/^\//, '') || 'dashboard-overview';
 
+  // Pass null for tableOfContents to hide it
   return (
     <Layout
-      tableOfContents={
-        <TableOfContents
-          items={tocItems}
-          activeItem={currentPath}
-        />
-      }
+      tableOfContents={null}
     >
       <Routes>
         <Route path="/" element={
