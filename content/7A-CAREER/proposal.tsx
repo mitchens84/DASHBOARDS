@@ -25,6 +25,7 @@ const AIWorkflowProposal = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   
   const sectionRefs = useRef({});
+  const headerRef = useRef(null); // Ref for the header
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,8 +54,18 @@ const AIWorkflowProposal = () => {
       [tab]: true
     });
     
-    // Scroll to the section
-    if (sectionRefs.current[tab]) {
+    // Scroll to the section, accounting for fixed header
+    if (sectionRefs.current[tab] && headerRef.current) {
+      const headerHeight = headerRef.current.offsetHeight;
+      const sectionTop = sectionRefs.current[tab].offsetTop;
+      const scrollPosition = sectionTop - headerHeight - 16; // Subtract header height and add a small 16px buffer
+
+      window.scrollTo({
+        top: scrollPosition,
+        behavior: 'smooth'
+      });
+    } else if (sectionRefs.current[tab]) {
+      // Fallback if headerRef isn't ready (shouldn't happen often)
       sectionRefs.current[tab].scrollIntoView({ behavior: 'smooth' });
     }
   };
@@ -637,116 +648,97 @@ const AIWorkflowProposal = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Header */}
-      <header className={`transition-all duration-300 ${isScrolled ? 'bg-indigo-900 py-2 shadow-lg' : 'bg-gradient-to-r from-indigo-900 to-purple-900 py-6'} text-white fixed top-0 left-0 right-0 z-30`}>
+      <header ref={headerRef} className={`transition-all duration-300 ${isScrolled ? 'bg-indigo-900 py-2 shadow-lg' : 'bg-gradient-to-r from-indigo-900 to-purple-900 py-4'} text-white fixed top-0 left-0 right-0 z-30`}>
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold flex items-center">
-            <Workflow className="mr-2" />
+          {/* Title on the left */}
+          <h1 className="text-lg font-bold flex items-center"> {/* Adjusted text size slightly */}
+            <Workflow size={20} className="mr-2" /> {/* Adjusted icon size */}
             AI-ENHANCED WORKFLOW PROPOSAL FOR SITRUNA
           </h1>
-          
-          {/* Mobile menu button */}
-          <button 
-            className="md:hidden text-white focus:outline-none"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-          
-          {/* Desktop Search */}
-          <div className="hidden md:flex items-center bg-white bg-opacity-20 rounded-lg px-3 py-1">
-            <Search size={16} className="text-white opacity-70" />
-            <input 
-              type="text"
-              placeholder="Filter workflows..."
-              className="bg-transparent border-none text-white placeholder-white placeholder-opacity-70 focus:outline-none ml-2 w-48"
-              value={filterTerm}
-              onChange={(e) => setFilterTerm(e.target.value)}
-            />
-            {filterTerm && (
-              <button 
-                onClick={() => setFilterTerm('')}
-                className="text-white opacity-70 hover:opacity-100"
-              >
-                <X size={16} />
-              </button>
-            )}
-          </div>
-          
-          {/* Desktop navigation */}
-          <nav className="hidden md:flex space-x-1"> {/* Reduced space-x */}
-            <button
+
+          {/* Desktop navigation on the right */}
+          <nav className="hidden md:flex items-center space-x-1"> {/* Navigation moved here */}
+             <button
               onClick={() => handleTabClick('overview')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'overview' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`} // Adjusted padding and text size
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'overview' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`} // Adjusted padding
             >
               Overview
             </button>
             <button
               onClick={() => handleTabClick('problem')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'problem' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'problem' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Problem
             </button>
             <button
               onClick={() => handleTabClick('goals')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'goals' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'goals' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Goals
             </button>
             <button
               onClick={() => handleTabClick('metrics')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'metrics' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'metrics' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Metrics
             </button>
              <button
               onClick={() => handleTabClick('capability-assessment')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'capability-assessment' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'capability-assessment' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Capabilities
             </button>
             <button
               onClick={() => handleTabClick('graphic-design')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'graphic-design' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'graphic-design' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Graphics
             </button>
             <button
               onClick={() => handleTabClick('content-brief')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'content-brief' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'content-brief' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Content Brief
             </button>
             <button
               onClick={() => handleTabClick('case-management')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'case-management' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'case-management' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Case Mgmt
             </button>
             <button
               onClick={() => handleTabClick('listings-upload')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'listings-upload' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'listings-upload' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Listings
             </button>
             <button
               onClick={() => handleTabClick('knowledge')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'knowledge' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'knowledge' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Knowledge
             </button>
              <button
               onClick={() => handleTabClick('implementation')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'implementation' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'implementation' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
             >
               Implementation
             </button>
              <button
               onClick={() => handleTabClick('references')}
-              className={`px-2 py-2 rounded-md text-xs font-medium ${activeTab === 'references' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium ${activeTab === 'references' ? 'bg-white text-indigo-900' : 'hover:bg-indigo-800'}`} // Adjusted padding
             >
               References
             </button>
           </nav>
+
+          {/* Mobile menu button remains on the far right */}
+          <button
+            className="md:hidden text-white focus:outline-none"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </header>
       
