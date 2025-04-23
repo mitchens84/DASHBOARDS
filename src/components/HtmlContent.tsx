@@ -5,11 +5,13 @@ interface HtmlContentProps {
 }
 
 const HtmlContent: React.FC<HtmlContentProps> = ({ filePath }) => {
+  const [html, setHtml] = useState<string>('');
   const [iframeUrl, setIframeUrl] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [iframeHeight, setIframeHeight] = useState<string>('calc(100vh - 120px)');
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
