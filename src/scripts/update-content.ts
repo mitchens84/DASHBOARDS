@@ -46,6 +46,65 @@ function getContentStructure() {
   return structure;
 }
 
+// Validate content files for potential rendering issues
+function validateContentFiles(structure: Record<string, string[]>) {
+  console.log('Validating content files for potential issues...');
+  let issues = 0;
+  
+  Object.keys(structure).forEach(category => {
+    structure[category].forEach(file => {
+      const filePath = path.join(CONTENT_DIR, category, file);
+      const extension = path.extname(file).toLowerCase();
+      
+      try {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        
+        // Check for unencoded < > symbols in string literals that could cause HTML issues
+        if (extension === '.tsx' || extension === '.jsx') {
+          const stringLiterals = content.match(/(['"`])(?:(?!\1)[^\\]|\\.)*?\1/g) || [];
+          const problematicSymbols = ['<', '>', '{', '}'];
+          
+          stringLiterals.forEach(literal => {
+            problematicSymbols.forEach(symbol => {
+              if (literal.includes(symbol)) {
+                // Skip if the symbol appears to be part of JSX or a template literal
+                const isProbablyJSX = literal.startsWith('`') && (literal.includes('${') || literal.includes('<div'));
+                if (!isProbablyJSX) {
+                  console.warn(`WARNING: Potentially problematic symbol '${symbol}' found in string literal in ${category}/${file}`);
+                  issues++;
+                }
+              }
+            });
+          });
+        }
+        
+        // Check HTML files for potentially invalid HTML content that might cause rendering issues
+        if (extension === '.html') {
+          // Simple check for unencoded angle brackets in content (outside of tags)
+          const textNodes = content.split(/<[^>]+>/g).filter(text => text.trim());
+          textNodes.forEach(text => {
+            if (text.includes('<') || text.includes('>')) {
+              console.warn(`WARNING: Potentially unencoded < or > symbol in HTML content in ${category}/${file}`);
+              issues++;
+            }
+          });
+        }
+      } catch (error) {
+        console.error(`Error reading file ${filePath}:`, error);
+      }
+    });
+  });
+  
+  if (issues > 0) {
+    console.warn(`Found ${issues} potential content issues that might cause rendering problems.`);
+    console.warn('Consider escaping < and > symbols in string literals or using proper JSX syntax.');
+  } else {
+    console.log('No content issues found.');
+  }
+  
+  return issues;
+}
+
 // Generate TOC items for App.tsx
 function generateTocItems(structure: Record<string, string[]>) {
   let tocItems = '[\n';
@@ -200,6 +259,7 @@ function updateAppTsx(structure: Record<string, string[]>) {
 
 // Main execution
 const contentStructure = getContentStructure();
+validateContentFiles(contentStructure); // Run validation but don't block updates
 updateAppTsx(contentStructure);
 
 console.log('Content structure update complete!');

@@ -1,5 +1,7 @@
 case "23andme-privacy-analysis":
   return <Component23andMePrivacyAnalysis />;
+case "brocollisproutgrowingguide":
+  return <BrocolliSproutGrowingGuide />;
 case "korijeninakorculi":
   return <KorijeniNaKorculi />;
 case "bean-risk-assessment-v2revised":

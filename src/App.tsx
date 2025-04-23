@@ -1,4 +1,3 @@
-// filepath: /Users/mitchens/Local/6I-CYBORG-AGENTS/DASHBOARDS/src/App.tsx
 import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import TableOfContents from "./components/TableOfContents";
@@ -161,6 +160,7 @@ function App() {
     { id: "functional-foods-network", title: "Functional Foods Network", level: 1 },
     { id: "therapeutic-spice-blend", title: "Therapeutic Spice Blend", level: 1 },
     { id: "tvp-dashboard", title: "TVP Dashboard", level: 1 },
+    { id: "broccoli-sprout-guide", title: "Broccoli Sprout Growing Guide", level: 1 },
     
     // 4H-PSYCHOLOGY Section (new)
     { id: "psychology", title: "4H-PSYCHOLOGY", level: 0 },
@@ -321,6 +321,8 @@ function App() {
         return <TherapeuticSpiceBlend />;
       case "tvp-dashboard":
         return <TvpDashboard />;
+      case "broccoli-sprout-guide":
+        return <HtmlContent filePath="content/4H-NUTRITION/brocolli_sprout_growing_guide.html" />;
 
       // 4H-PSYCHOLOGY
       case "psychometric-dashboard":

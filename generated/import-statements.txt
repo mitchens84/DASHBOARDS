@@ -1,2 +1,3 @@
 import Component23andMePrivacyAnalysis from "../content/4H-MEDICAL/23andMe-Privacy-Analysis";
+import BrocolliSproutGrowingGuide from "../content/4H-NUTRITION/brocolli_sprout_growing_guide";
 import MedicalLabDashboard from "../content/5R-RELATIONSHIPS/medical-lab-dashboard";

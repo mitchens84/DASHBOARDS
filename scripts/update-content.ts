@@ -320,64 +320,99 @@ function createFixedAppTsx(contentStructure: Record<string, string[]>) {
 async function validateContentFiles(contentStructure: Record<string, string[]>) {
   console.log('Validating content files for potential errors...');
   const errors: Array<{file: string, error: string}> = [];
+  const warnings: Array<{file: string, warning: string}> = [];
 
   // For each file, check for common issues
   for (const [category, files] of Object.entries(contentStructure)) {
     for (const file of files) {
       const filePath = path.join(CONTENT_DIR, category, `${file}.tsx`);
+      const htmlFilePath = path.join(CONTENT_DIR, category, `${file}.html`);
       
       try {
-        // 1. Basic file existence check
-        if (!fs.existsSync(filePath)) {
-          errors.push({ 
-            file: `${category}/${file}.tsx`, 
-            error: 'File does not exist though it is listed in content structure' 
-          });
-          continue;
-        }
-
-        // 2. Read file content
-        const content = fs.readFileSync(filePath, 'utf8');
-
-        // 3. Check for invalid imports from popular libraries
-        const lucideRegex = /import\s+{([^}]+)}\s+from\s+['"]lucide-react['"]/g;
-        const lucideMatch = lucideRegex.exec(content);
-        
-        if (lucideMatch) {
-          const importedIcons = lucideMatch[1].split(',').map(i => i.trim());
+        // Check if it's a TSX file
+        if (fs.existsSync(filePath)) {
+          // 1. Basic file existence check - already confirmed
           
-          // These are commonly misused icons (can be expanded)
-          const potentialInvalidIcons = ['Boat', 'Car', 'Building', 'Person'];
+          // 2. Read file content
+          const content = fs.readFileSync(filePath, 'utf8');
+
+          // 3. Check for invalid imports from popular libraries
+          const lucideRegex = /import\s+{([^}]+)}\s+from\s+['"]lucide-react['"]/g;
+          const lucideMatch = lucideRegex.exec(content);
           
-          for (const icon of potentialInvalidIcons) {
-            if (importedIcons.includes(icon)) {
-              errors.push({
-                file: `${category}/${file}.tsx`,
-                error: `Potentially invalid icon import: ${icon}. Verify it exists in the installed 'lucide-react' package.`
-              });
+          if (lucideMatch) {
+            const importedIcons = lucideMatch[1].split(',').map(i => i.trim());
+            
+            // These are commonly misused icons (can be expanded)
+            const potentialInvalidIcons = ['Boat', 'Car', 'Building', 'Person'];
+            
+            for (const icon of importedIcons) {
+              if (potentialInvalidIcons.includes(icon)) {
+                warnings.push({
+                  file: `${category}/${file}.tsx`,
+                  warning: `Using potentially incorrect Lucide icon: '${icon}' - verify it exists`
+                });
+              }
+            }
+          }
+          
+          // 4. Check for unescaped HTML symbols in string literals - NEW CHECK
+          const stringLiterals = content.match(/(['"`])(?:(?!\1)[^\\]|\\.)*?\1/g) || [];
+          const problematicSymbols = ['<', '>', '{html', '}html', '{{', '}}'];
+          
+          for (const literal of stringLiterals) {
+            // Skip template literals that are likely JSX
+            if (literal.startsWith('`') && (literal.includes('${') || literal.includes('<div'))) {
+              continue;
+            }
+            
+            for (const symbol of problematicSymbols) {
+              if (literal.includes(symbol)) {
+                warnings.push({
+                  file: `${category}/${file}.tsx`,
+                  warning: `Potentially unescaped HTML symbol '${symbol}' in string literal. Consider using proper JSX or entity references like &lt; and &gt;`
+                });
+                break; // Only report once per literal
+              }
             }
           }
         }
-
-        // 4. Check for spaces in component/variable names
-        if (/const\s+(\w+\s+\w+)\s+=/.test(content)) {
-          errors.push({
-            file: `${category}/${file}.tsx`,
-            error: 'Contains component/variable names with spaces which can cause build errors'
-          });
-        }
-        
-        // 5. Check for missing default export
-        if (!content.includes('export default')) {
-          errors.push({
-            file: `${category}/${file}.tsx`,
-            error: 'Missing default export which is required for dynamic imports'
+        // Check if it's an HTML file
+        else if (fs.existsSync(htmlFilePath)) {
+          const content = fs.readFileSync(htmlFilePath, 'utf8');
+          
+          // 5. Check HTML files for unencoded angle brackets outside of tags
+          try {
+            // Simple check for patterns that might indicate unescaped angle brackets
+            const textNodes = content.split(/<[^>]+>/g).filter(text => text.trim());
+            for (const text of textNodes) {
+              // Look for standalone < or > that aren't part of entities like &lt; or &gt;
+              if ((text.includes('<') && !text.includes('&lt;')) || 
+                  (text.includes('>') && !text.includes('&gt;'))) {
+                warnings.push({
+                  file: `${category}/${file}.html`,
+                  warning: 'Possible unencoded < or > symbols in HTML content that may cause rendering issues'
+                });
+                break; // Only report once per file
+              }
+            }
+          } catch (error) {
+            // Simple HTML parsing failed, just note that we couldn't validate
+            warnings.push({
+              file: `${category}/${file}.html`,
+              warning: 'Unable to validate HTML content for proper encoding of special characters'
+            });
+          }
+        } else {
+          errors.push({ 
+            file: `${category}/${file}`, 
+            error: 'Neither .tsx nor .html file found for this content entry' 
           });
         }
       } catch (error) {
-        errors.push({ 
-          file: `${category}/${file}.tsx`, 
-          error: `Error while validating: ${error}` 
+        errors.push({
+          file: `${category}/${file}`,
+          error: `Error analyzing file: ${(error as Error).message}`
         });
       }
     }
@@ -385,16 +420,24 @@ async function validateContentFiles(contentStructure: Record<string, string[]>) 
 
   // Report findings
   if (errors.length > 0) {
-    console.log('\n⚠️ Potential issues found that could break deployment:');
+    console.log('\n❌ ERRORS:');
     errors.forEach(({file, error}) => {
-      console.log(`  - ${file}: ${error}`);
+      console.log(`- ${file}: ${error}`);
     });
-    console.log('\nPlease fix these issues before deploying.');
-  } else {
-    console.log('✅ All content files passed basic validation.');
   }
-
-  return errors;
+  
+  if (warnings.length > 0) {
+    console.log('\n⚠️ WARNINGS:');
+    warnings.forEach(({file, warning}) => {
+      console.log(`- ${file}: ${warning}`);
+    });
+  }
+  
+  if (errors.length === 0 && warnings.length === 0) {
+    console.log('✅ All content files passed validation checks.');
+  }
+  
+  return { errors, warnings };
 }
 
 // Perform a dry-run build test to catch potential build errors

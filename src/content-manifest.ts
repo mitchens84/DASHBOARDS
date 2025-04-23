@@ -19,6 +19,7 @@ export const contentManifest = {
     "thai-massage-benefits-risks-dashboard",
   ],
   "4H-NUTRITION": [
+    "brocolli_sprout_growing_guide",
     "life-smoothie-visual",
     "241230-legumes cooking guide",
     "241118-sports-nutrition-dashboard",
