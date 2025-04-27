@@ -2,6 +2,8 @@ case "23andme-privacy-analysis":
   return <Component23andMePrivacyAnalysis />;
 case "brocollisproutgrowingguide":
   return <BrocolliSproutGrowingGuide />;
+case "airesearchtoolsunifieddashboard":
+  return <AIResearchToolsUnifiedDashboard />;
 case "korijeninakorculi":
   return <KorijeniNaKorculi />;
 case "bean-risk-assessment-v2revised":
@@ -10,3 +12,7 @@ case "bean-sodium-intake-dashboard":
   return <BeanSodiumIntakeDashboard />;
 case "medical-lab-dashboard":
   return <MedicalLabDashboard />;
+case "airesearchtoolsunifieddashboard":
+  return <AIResearchToolsUnifiedDashboard />;
+case "ai-research-tools-dashboard":
+  return <AiResearchToolsDashboard />;

@@ -1,1 +1,0 @@
-This file is used to test path accessibility for the HTML content system.
