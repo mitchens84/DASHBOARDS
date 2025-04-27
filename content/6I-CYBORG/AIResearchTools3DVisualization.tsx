@@ -4,7 +4,6 @@ import { OrbitControls, Text, Box, Sphere, Cylinder, Html } from '@react-three/d
 import * as THREE from 'three';
 
 // Import color and data constants
-// NOTE: If you move data to a shared file, update these imports
 const BRAND_COLORS = {
   gemini: { primary: '#4285F4', light: 'rgba(66, 133, 244, 0.1)' },
   openai: { primary: '#10a37f', light: 'rgba(16, 163, 127, 0.1)' },
@@ -71,7 +70,6 @@ const AnimatedBar = ({ position, maxHeight, color, label, score, delay = 0 }) =>
         color={color}
         anchorX="center"
         anchorY="middle"
-        font="/fonts/Inter-Bold.woff"
         maxWidth={2}
         textAlign="center"
       >
@@ -85,7 +83,6 @@ const AnimatedBar = ({ position, maxHeight, color, label, score, delay = 0 }) =>
         color={color}
         anchorX="center"
         anchorY="middle"
-        font="/fonts/Inter-Bold.woff"
       >
         {score}%
       </Text>
@@ -160,13 +157,10 @@ const RadarMesh = ({ toolKey, toolColor, points, position = [0, 0, 0], hoveredTo
         onPointerOver={() => setHoveredTool(toolKey)}
         onPointerOut={() => setHoveredTool(null)}
       >
-        <geometry>
-          {/* Create a custom geometry for the radar filled area */}
+        <bufferGeometry>
           {(() => {
             const shape = new THREE.Shape();
-            // Starting at center
             shape.moveTo(position[0], position[2]);
-            // Add points around
             points.forEach((point, i) => {
               const angle = (Math.PI * 2 * i) / points.length;
               const radius = point * 0.05;
@@ -177,13 +171,12 @@ const RadarMesh = ({ toolKey, toolColor, points, position = [0, 0, 0], hoveredTo
             });
             shape.closePath();
             
-            const geometry = new THREE.ShapeGeometry(shape);
-            // Rotate it to lay flat on the xz plane
-            geometry.rotateX(-Math.PI / 2);
+            const shapeGeometry = new THREE.ShapeGeometry(shape);
+            shapeGeometry.rotateX(-Math.PI / 2);
             
-            return geometry;
+            return shapeGeometry;
           })()}
-        </geometry>
+        </bufferGeometry>
         <meshStandardMaterial 
           color={toolColor} 
           transparent 
@@ -540,15 +533,15 @@ const AIResearchTools3DVisualization = () => {
                 const x = radius * Math.sin(angle);
                 const z = -radius * Math.cos(angle) + radius;
                 
-                // Height based on HLE score
-                const height = item.value / 10;
+                // Height based on HLE score - make sure it's a positive number
+                const itemHeight = Math.max(item.value / 10, 0.5);
                 
                 // Different shapes for different tools
                 const shapes = [
                   // Gemini - Cylinder
-                  <group key="gemini" position={[x, height, z]}>
+                  <group key="gemini" position={[x, itemHeight, z]}>
                     <Cylinder 
-                      args={[1, 1.3, height * 2, 32]} 
+                      args={[1, 1.3, itemHeight * 2, 32]} 
                       position={[0, 0, 0]}
                       castShadow
                     >
@@ -563,9 +556,9 @@ const AIResearchTools3DVisualization = () => {
                   </group>,
                   
                   // OpenAI - Box with rounded edges
-                  <group key="openai" position={[x, height, z]}>
+                  <group key="openai" position={[x, itemHeight, z]}>
                     <Box
-                      args={[2, height * 2, 2]}
+                      args={[2, itemHeight * 2, 2]}
                       radius={0.2}
                       castShadow
                     >
@@ -580,7 +573,7 @@ const AIResearchTools3DVisualization = () => {
                   </group>,
                   
                   // Perplexity - Sphere
-                  <group key="perplexity" position={[x, height + 1, z]}>
+                  <group key="perplexity" position={[x, itemHeight + 1, z]}>
                     <Sphere
                       args={[1.2, 32, 32]}
                       castShadow
@@ -596,9 +589,9 @@ const AIResearchTools3DVisualization = () => {
                   </group>,
                   
                   // Claude - Compound shape (cylinder + sphere)
-                  <group key="claude" position={[x, height, z]}>
+                  <group key="claude" position={[x, itemHeight, z]}>
                     <Cylinder
-                      args={[0.7, 0.7, height * 2, 32]}
+                      args={[0.7, 0.7, itemHeight * 2, 32]}
                       position={[0, 0, 0]}
                       castShadow
                     >
@@ -612,7 +605,7 @@ const AIResearchTools3DVisualization = () => {
                     </Cylinder>
                     <Sphere
                       args={[0.9, 32, 32]}
-                      position={[0, height, 0]}
+                      position={[0, itemHeight, 0]}
                       castShadow
                     >
                       <meshStandardMaterial 
@@ -626,9 +619,9 @@ const AIResearchTools3DVisualization = () => {
                   </group>,
                   
                   // X AI - Torus (using Box for now)
-                  <group key="xai" position={[x, height, z]}>
+                  <group key="xai" position={[x, itemHeight, z]}>
                     <Box
-                      args={[2, height * 2, 0.5]}
+                      args={[2, itemHeight * 2, 0.5]}
                       castShadow
                     >
                       <meshStandardMaterial 
@@ -640,7 +633,7 @@ const AIResearchTools3DVisualization = () => {
                       />
                     </Box>
                     <Box
-                      args={[0.5, height * 2, 2]}
+                      args={[0.5, itemHeight * 2, 2]}
                       castShadow
                       position={[0, 0, 0]}
                     >
@@ -662,7 +655,7 @@ const AIResearchTools3DVisualization = () => {
                     
                     {/* Tool name */}
                     <Text
-                      position={[x, height * 2 + 1.5, z]}
+                      position={[x, itemHeight * 2 + 1.5, z]}
                       fontSize={0.5}
                       color={item.color}
                       anchorX="center"
@@ -674,7 +667,7 @@ const AIResearchTools3DVisualization = () => {
                     
                     {/* HLE score */}
                     <Text
-                      position={[x, height * 2 + 0.8, z]}
+                      position={[x, itemHeight * 2 + 0.8, z]}
                       fontSize={0.6}
                       color={item.color}
                       anchorX="center"
@@ -685,8 +678,8 @@ const AIResearchTools3DVisualization = () => {
                     
                     {/* Connection to ground */}
                     <Cylinder
-                      args={[0.1, 0.1, height * 2, 8]}
-                      position={[x, height, z]}
+                      args={[0.1, 0.1, itemHeight * 2, 8]}
+                      position={[x, itemHeight, z]}
                       castShadow
                     >
                       <meshStandardMaterial color="#cbd5e1" />
@@ -695,7 +688,7 @@ const AIResearchTools3DVisualization = () => {
                     {/* Base platform */}
                     <Cylinder
                       args={[1.5, 1.5, 0.2, 32]}
-                      position={[x, -height, z]}
+                      position={[x, -0.1, z]}
                       castShadow
                     >
                       <meshStandardMaterial 
@@ -709,13 +702,13 @@ const AIResearchTools3DVisualization = () => {
               })}
               
               {/* Floor with shadow catcher */}
-              <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -height - 0.11, 0]}>
+              <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.2, 0]}>
                 <planeGeometry args={[30, 30]} />
                 <shadowMaterial transparent opacity={0.2} />
               </mesh>
               
               {/* Decorative grid on floor */}
-              <gridHelper args={[30, 30, '#e2e8f0', '#e2e8f0']} position={[0, -height - 0.1, 0]} />
+              <gridHelper args={[30, 30, '#e2e8f0', '#e2e8f0']} position={[0, -0.15, 0]} />
             </>
           )}
         </Canvas>
