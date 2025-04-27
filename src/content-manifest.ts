@@ -42,6 +42,7 @@ export const contentManifest = {
     "murder-mystery-dinner-party",
     "murder-mystery-dinner-party-r1",
     "AIResearchToolsUnifiedDashboard",
+    "AIResearchTools3DVisualization",
   ],
   "9E-MEDIA": [
     "music-dashboard-r1",
@@ -81,6 +82,7 @@ export const contentManifest = {
   "6I-CYBORG": [
     "AIResearchToolsUnifiedDashboard",
     "ai-research-tools-dashboard",
+    "AIResearchTools3DVisualization",
   ],
 };
 

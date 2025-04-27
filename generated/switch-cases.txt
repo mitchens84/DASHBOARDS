@@ -4,6 +4,8 @@ case "brocollisproutgrowingguide":
   return <BrocolliSproutGrowingGuide />;
 case "airesearchtoolsunifieddashboard":
   return <AIResearchToolsUnifiedDashboard />;
+case "airesearchtools3dvisualization":
+  return <AIResearchTools3DVisualization />;
 case "korijeninakorculi":
   return <KorijeniNaKorculi />;
 case "bean-risk-assessment-v2revised":
@@ -16,3 +18,5 @@ case "airesearchtoolsunifieddashboard":
   return <AIResearchToolsUnifiedDashboard />;
 case "ai-research-tools-dashboard":
   return <AiResearchToolsDashboard />;
+case "airesearchtools3dvisualization":
+  return <AIResearchTools3DVisualization />;

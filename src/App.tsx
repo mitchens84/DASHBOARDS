@@ -68,6 +68,7 @@ import ReadingDashboard from "../content/6I-INTELLECTUAL/reading-dashboard";
 import MurderMysteryDinnerParty from "../content/6I-INTELLECTUAL/murder-mystery-dinner-party";
 import MurderMysteryDinnerPartyR1 from "../content/6I-INTELLECTUAL/murder-mystery-dinner-party-r1";
 import AIResearchToolsUnifiedDashboard from "../content/6I-CYBORG/AIResearchToolsUnifiedDashboard";
+import AIResearchTools3DVisualization from "../content/6I-CYBORG/AIResearchTools3DVisualization";
 
 // 9E-MEDIA imports
 import KorijeniNaKorculi from "../content/9E-MEDIA/korijeni_na_korculi";
@@ -192,6 +193,7 @@ function App() {
     { id: "murder-mystery-dinner-party", title: "Murder Mystery Dinner Party", level: 1 },
     { id: "murder-mystery-dinner-party-r1", title: "Murder Mystery Dinner Party (Enhanced)", level: 1 },
     { id: "ai-research-tools-unified", title: "AI Research Tools Comparison", level: 1 },
+    { id: "ai-research-tools-3d", title: "AI Research Tools 3D Viz", level: 1 },
     
     // Media Section
     { id: "media", title: "9E-MEDIA", level: 0 },
@@ -359,6 +361,8 @@ function App() {
         return <MurderMysteryDinnerPartyR1 />;
       case "ai-research-tools-unified":
         return <AIResearchToolsUnifiedDashboard />;
+      case "ai-research-tools-3d":
+        return <AIResearchTools3DVisualization />;
 
       // 9E-MEDIA
       case "hiking-playlist":
