@@ -1,6 +1,19 @@
-import React, { useState, useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text, Box, Sphere, Cylinder, Html } from '@react-three/drei';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { 
+  OrbitControls, 
+  Text, 
+  Box, 
+  Sphere, 
+  Cylinder, 
+  Html, 
+  Billboard, 
+  useHelper, 
+  PerspectiveCamera, 
+  Environment,
+  useTexture,
+  MeshDistortMaterial
+} from '@react-three/drei';
 import * as THREE from 'three';
 
 // Import color and data constants
