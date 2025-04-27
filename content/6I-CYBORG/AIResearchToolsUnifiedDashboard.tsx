@@ -28,11 +28,11 @@ const radarData = [
 // Benchmark data for HLE scores - updated based on latest research findings
 const benchmarkData = [
   { name: 'Gemini 2.5 Pro DR', value: 18.8, color: BRAND_COLORS.gemini.primary }, // Estimated based on comparative analysis
-  { name: 'OpenAI DR', value: 26.6, color: BRAND_COLORS.openai.primary }, // Confirmed in official OpenAI documentation <sup>[1]</sup>
-  { name: 'Perplexity DR', value: 21.1, color: BRAND_COLORS.perplexity.primary }, // Confirmed in Perplexity blog <sup>[2]</sup>
-  { name: 'Claude Research', value: 4.3, color: BRAND_COLORS.claude.primary }, // Based on Claude 3.5 Sonnet HLE score <sup>[3]</sup>
-  { name: 'X AI Grok', value: 3.8, color: BRAND_COLORS.xai.primary } // Based on Grok-2 HLE benchmarks <sup>[4]</sup>
-};
+  { name: 'OpenAI DR', value: 26.6, color: BRAND_COLORS.openai.primary }, // Confirmed in official OpenAI documentation
+  { name: 'Perplexity DR', value: 21.1, color: BRAND_COLORS.perplexity.primary }, // Confirmed in Perplexity blog
+  { name: 'Claude Research', value: 4.3, color: BRAND_COLORS.claude.primary }, // Based on Claude 3.5 Sonnet HLE score
+  { name: 'X AI Grok', value: 3.8, color: BRAND_COLORS.xai.primary } // Based on Grok-2 HLE benchmarks
+];
 
 // References Data - Research-backed information sources
 const referencesData = [
