@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text, Box, Sphere, Cylinder, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -34,7 +34,21 @@ const radarData = [
 ];
 
 // Component for animated 3D bar
-const AnimatedBar = ({ position, maxHeight, color, label, score, delay = 0 }) => {
+const AnimatedBar = ({ 
+  position, 
+  maxHeight, 
+  color, 
+  label, 
+  score, 
+  delay = 0 
+}: { 
+  position: number[]; 
+  maxHeight: number; 
+  color: string; 
+  label: string; 
+  score: number; 
+  delay?: number;
+}) => {
   const [height, setHeight] = useState(0.1);
   const [hovered, setHovered] = useState(false);
   
@@ -46,7 +60,7 @@ const AnimatedBar = ({ position, maxHeight, color, label, score, delay = 0 }) =>
 
   return (
     <group 
-      position={position} 
+      position={[position[0], position[1], position[2]]} 
       onPointerOver={() => setHovered(true)} 
       onPointerOut={() => setHovered(false)}
     >
@@ -103,93 +117,159 @@ const AnimatedBar = ({ position, maxHeight, color, label, score, delay = 0 }) =>
   );
 };
 
+// Data point for rendering radar visualizations
+interface RadarPoint {
+  x: number;
+  y: number;
+  z: number;
+}
+
 // Component for 3D radar visualization
-const RadarMesh = ({ toolKey, toolColor, points, position = [0, 0, 0], hoveredTool, setHoveredTool }) => {
+const RadarMesh = ({ 
+  toolKey, 
+  toolColor, 
+  points, 
+  position = [0, 0, 0], 
+  hoveredTool, 
+  setHoveredTool 
+}: { 
+  toolKey: string; 
+  toolColor: string; 
+  points: number[]; 
+  position?: [number, number, number]; 
+  hoveredTool: string | null; 
+  setHoveredTool: (key: string | null) => void; 
+}) => {
   const isHovered = hoveredTool === toolKey;
   
-  // Create vertices for each radar point with height
-  const vertices = points.map((point, i) => {
-    const angle = (Math.PI * 2 * i) / points.length;
-    const radius = point * 0.05; // Scale down the values
-    return new THREE.Vector3(
-      radius * Math.sin(angle) + position[0],
-      position[1],
-      radius * Math.cos(angle) + position[2]
-    );
-  });
-
-  // Close the shape by repeating the first point
-  vertices.push(vertices[0].clone());
+  // Generate point coordinates for the radar
+  const radarPoints = useMemo(() => {
+    const result: RadarPoint[] = [];
+    
+    for (let i = 0; i < points.length; i++) {
+      const angle = (Math.PI * 2 * i) / points.length;
+      const radius = points[i] * 0.05; // Scale down the values
+      result.push({
+        x: radius * Math.sin(angle) + position[0],
+        y: position[1],
+        z: radius * Math.cos(angle) + position[2]
+      });
+    }
+    
+    // Close the loop
+    if (result.length > 0) {
+      result.push({ ...result[0] });
+    }
+    
+    return result;
+  }, [points, position]);
   
-  // Create the line geometry
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints(vertices);
+  // Create buffer for line segments
+  const lineBuffer = useMemo(() => {
+    if (radarPoints.length < 2) return null;
+    
+    const positions: number[] = [];
+    
+    // Create line segments
+    for (let i = 0; i < radarPoints.length - 1; i++) {
+      const p1 = radarPoints[i];
+      const p2 = radarPoints[i + 1];
+      
+      positions.push(p1.x, p1.y, p1.z);
+      positions.push(p2.x, p2.y, p2.z);
+    }
+    
+    return new THREE.BufferAttribute(new Float32Array(positions), 3);
+  }, [radarPoints]);
+  
+  // Create vertices and faces for the filled area
+  const shapeBuffer = useMemo(() => {
+    if (radarPoints.length < 2) return null;
+    
+    // Create a shape based on the points
+    const shape = new THREE.Shape();
+    
+    // Start shape at center
+    shape.moveTo(position[0], position[2]);
+    
+    // Add each point except the closing duplicate
+    for (let i = 0; i < radarPoints.length - 1; i++) {
+      shape.lineTo(radarPoints[i].x, radarPoints[i].z);
+    }
+    
+    shape.closePath();
+    
+    // Create geometry from shape
+    const geometry = new THREE.ShapeGeometry(shape);
+    
+    // Rotate to horizontal
+    geometry.rotateX(-Math.PI / 2);
+    
+    return geometry;
+  }, [radarPoints, position]);
   
   return (
-    <>
-      {/* Radar line */}
-      <line geometry={lineGeometry}>
-        <lineBasicMaterial 
-          attach="material" 
-          color={toolColor} 
-          linewidth={2} 
-          opacity={isHovered ? 1 : 0.8} 
-          transparent 
-        />
-      </line>
+    <group>
+      {/* Radar outline */}
+      {lineBuffer && (
+        <lineSegments>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              {...lineBuffer}
+            />
+          </bufferGeometry>
+          <lineBasicMaterial
+            color={toolColor}
+            linewidth={2}
+            opacity={isHovered ? 1 : 0.8}
+            transparent
+          />
+        </lineSegments>
+      )}
       
-      {/* Radar points */}
-      {vertices.slice(0, -1).map((vertex, i) => (
-        <Sphere 
-          key={i} 
-          args={[0.1, 16, 16]} 
-          position={vertex}
+      {/* Points at vertices */}
+      {radarPoints.slice(0, -1).map((point, idx) => (
+        <Sphere
+          key={`point-${idx}`}
+          args={[0.1, 16, 16]}
+          position={[point.x, point.y, point.z]}
         >
-          <meshStandardMaterial 
-            color={toolColor} 
+          <meshStandardMaterial
+            color={toolColor}
             emissive={isHovered ? toolColor : "#000000"}
             emissiveIntensity={isHovered ? 0.5 : 0}
           />
         </Sphere>
       ))}
       
-      {/* Radar filled area (semi-transparent) */}
-      <mesh
-        onPointerOver={() => setHoveredTool(toolKey)}
-        onPointerOut={() => setHoveredTool(null)}
-      >
-        <bufferGeometry>
-          {(() => {
-            const shape = new THREE.Shape();
-            shape.moveTo(position[0], position[2]);
-            points.forEach((point, i) => {
-              const angle = (Math.PI * 2 * i) / points.length;
-              const radius = point * 0.05;
-              shape.lineTo(
-                radius * Math.sin(angle) + position[0],
-                radius * Math.cos(angle) + position[2]
-              );
-            });
-            shape.closePath();
-            
-            const shapeGeometry = new THREE.ShapeGeometry(shape);
-            shapeGeometry.rotateX(-Math.PI / 2);
-            
-            return shapeGeometry;
-          })()}
-        </bufferGeometry>
-        <meshStandardMaterial 
-          color={toolColor} 
-          transparent 
-          opacity={isHovered ? 0.4 : 0.2}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-    </>
+      {/* Filled area */}
+      {shapeBuffer && (
+        <mesh
+          geometry={shapeBuffer}
+          onPointerOver={() => setHoveredTool(toolKey)}
+          onPointerOut={() => setHoveredTool(null)}
+        >
+          <meshStandardMaterial
+            color={toolColor}
+            transparent
+            opacity={isHovered ? 0.4 : 0.2}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      )}
+    </group>
   );
 };
 
 // Component for axis labels in the radar chart
-const RadarAxes = ({ position = [0, 0, 0], radius }) => {
+const RadarAxes = ({ 
+  position = [0, 0, 0], 
+  radius 
+}: { 
+  position?: [number, number, number]; 
+  radius: number 
+}) => {
   const subjects = radarData.map(item => item.subject);
 
   return (
@@ -220,16 +300,19 @@ const RadarAxes = ({ position = [0, 0, 0], radius }) => {
 
 // Main 3D visualization component with tabs for different views
 const AIResearchTools3DVisualization = () => {
-  const [activeView, setActiveView] = useState('bars');
-  const [hoveredTool, setHoveredTool] = useState(null);
+  const [activeView, setActiveView] = useState<'bars' | 'radar' | 'scene'>('bars');
+  const [hoveredTool, setHoveredTool] = useState<string | null>(null);
   
   // Space between bars
   const spacing = 2.5; 
   const maxBarHeight = 8;
   
   // Calculate points for each tool in radar chart
-  const getToolRadarPoints = (toolKey) => {
-    return radarData.map(item => item[toolKey]);
+  const getToolRadarPoints = (toolKey: string): number[] => {
+    return radarData.map(item => {
+      const value = item[toolKey as keyof typeof item];
+      return typeof value === 'number' ? value : 0;
+    });
   };
 
   return (
@@ -414,15 +497,12 @@ const AIResearchTools3DVisualization = () => {
                 const z = 6 * Math.cos(angle);
                 
                 return (
-                  <line key={i}>
-                    <bufferGeometry
-                      attach="geometry"
-                      setFromPoints={[
-                        new THREE.Vector3(0, 0, 0), 
-                        new THREE.Vector3(x, 0, z)
-                      ]}
-                    />
-                    <lineBasicMaterial attach="material" color="#cbd5e1" linewidth={1} />
+                  <line key={`axis-${i}`}>
+                    <bufferGeometry attach="geometry" setFromPoints={[
+                      new THREE.Vector3(0, 0, 0), 
+                      new THREE.Vector3(x, 0, z)
+                    ]} />
+                    <lineBasicMaterial attach="material" color="#cbd5e1" />
                   </line>
                 );
               })}
@@ -430,7 +510,7 @@ const AIResearchTools3DVisualization = () => {
               {/* Radar circles */}
               {[20, 40, 60, 80, 100].map((percent) => {
                 const radius = percent * 0.05;
-                const points = [];
+                const points: THREE.Vector3[] = [];
                 const segments = 64;
                 
                 for (let i = 0; i <= segments; i++) {
@@ -445,7 +525,7 @@ const AIResearchTools3DVisualization = () => {
                 }
                 
                 return (
-                  <group key={percent}>
+                  <group key={`circle-${percent}`}>
                     {/* Circle line */}
                     <line>
                       <bufferGeometry attach="geometry" setFromPoints={points} />
@@ -490,7 +570,7 @@ const AIResearchTools3DVisualization = () => {
               <group position={[0, 0.5, 0]}>
                 {benchmarkData.map((item, i) => (
                   <group 
-                    key={item.key} 
+                    key={`legend-${item.key}`} 
                     position={[0, (benchmarkData.length - 1 - i) * 0.8, 0]} 
                     onPointerOver={() => setHoveredTool(item.key)}
                     onPointerOut={() => setHoveredTool(null)}
@@ -537,125 +617,134 @@ const AIResearchTools3DVisualization = () => {
                 const itemHeight = Math.max(item.value / 10, 0.5);
                 
                 // Different shapes for different tools
-                const shapes = [
-                  // Gemini - Cylinder
-                  <group key="gemini" position={[x, itemHeight, z]}>
-                    <Cylinder 
-                      args={[1, 1.3, itemHeight * 2, 32]} 
-                      position={[0, 0, 0]}
-                      castShadow
-                    >
-                      <meshStandardMaterial 
-                        color={item.color} 
-                        metalness={0.5}
-                        roughness={0.3}
-                        emissive={item.color}
-                        emissiveIntensity={0.2}
-                      />
-                    </Cylinder>
-                  </group>,
-                  
-                  // OpenAI - Box with rounded edges
-                  <group key="openai" position={[x, itemHeight, z]}>
-                    <Box
-                      args={[2, itemHeight * 2, 2]}
-                      radius={0.2}
-                      castShadow
-                    >
-                      <meshStandardMaterial 
-                        color={item.color} 
-                        metalness={0.6}
-                        roughness={0.2}
-                        emissive={item.color}
-                        emissiveIntensity={0.2}
-                      />
-                    </Box>
-                  </group>,
-                  
-                  // Perplexity - Sphere
-                  <group key="perplexity" position={[x, itemHeight + 1, z]}>
-                    <Sphere
-                      args={[1.2, 32, 32]}
-                      castShadow
-                    >
-                      <meshStandardMaterial 
-                        color={item.color} 
-                        metalness={0.4}
-                        roughness={0.4}
-                        emissive={item.color}
-                        emissiveIntensity={0.2}
-                      />
-                    </Sphere>
-                  </group>,
-                  
-                  // Claude - Compound shape (cylinder + sphere)
-                  <group key="claude" position={[x, itemHeight, z]}>
-                    <Cylinder
-                      args={[0.7, 0.7, itemHeight * 2, 32]}
-                      position={[0, 0, 0]}
-                      castShadow
-                    >
-                      <meshStandardMaterial 
-                        color={item.color}
-                        metalness={0.3}
-                        roughness={0.6}
-                        emissive={item.color}
-                        emissiveIntensity={0.2}
-                      />
-                    </Cylinder>
-                    <Sphere
-                      args={[0.9, 32, 32]}
-                      position={[0, itemHeight, 0]}
-                      castShadow
-                    >
-                      <meshStandardMaterial 
-                        color={item.color}
-                        metalness={0.3}
-                        roughness={0.6}
-                        emissive={item.color}
-                        emissiveIntensity={0.2}
-                      />
-                    </Sphere>
-                  </group>,
-                  
-                  // X AI - Torus (using Box for now)
-                  <group key="xai" position={[x, itemHeight, z]}>
-                    <Box
-                      args={[2, itemHeight * 2, 0.5]}
-                      castShadow
-                    >
-                      <meshStandardMaterial 
-                        color={item.color}
-                        metalness={0.7}
-                        roughness={0.2}
-                        emissive={item.color}
-                        emissiveIntensity={0.2}
-                      />
-                    </Box>
-                    <Box
-                      args={[0.5, itemHeight * 2, 2]}
-                      castShadow
-                      position={[0, 0, 0]}
-                    >
-                      <meshStandardMaterial 
-                        color={item.color}
-                        metalness={0.7}
-                        roughness={0.2}
-                        emissive={item.color}
-                        emissiveIntensity={0.2}
-                      />
-                    </Box>
-                  </group>
-                ];
+                let shape;
+                
+                switch(index % 5) {
+                  case 0: // Gemini - Cylinder
+                    shape = (
+                      <Cylinder 
+                        args={[1, 1.3, itemHeight * 2, 32]} 
+                        position={[0, 0, 0]}
+                        castShadow
+                      >
+                        <meshStandardMaterial 
+                          color={item.color} 
+                          metalness={0.5}
+                          roughness={0.3}
+                          emissive={item.color}
+                          emissiveIntensity={0.2}
+                        />
+                      </Cylinder>
+                    );
+                    break;
+                    
+                  case 1: // OpenAI - Box
+                    shape = (
+                      <Box
+                        args={[2, itemHeight * 2, 2]}
+                        castShadow
+                      >
+                        <meshStandardMaterial 
+                          color={item.color} 
+                          metalness={0.6}
+                          roughness={0.2}
+                          emissive={item.color}
+                          emissiveIntensity={0.2}
+                        />
+                      </Box>
+                    );
+                    break;
+                    
+                  case 2: // Perplexity - Sphere
+                    shape = (
+                      <Sphere
+                        args={[1.2, 32, 32]}
+                        castShadow
+                      >
+                        <meshStandardMaterial 
+                          color={item.color} 
+                          metalness={0.4}
+                          roughness={0.4}
+                          emissive={item.color}
+                          emissiveIntensity={0.2}
+                        />
+                      </Sphere>
+                    );
+                    break;
+                    
+                  case 3: // Claude - Compound shape (cylinder + sphere)
+                    shape = (
+                      <>
+                        <Cylinder
+                          args={[0.7, 0.7, itemHeight * 2, 32]}
+                          position={[0, 0, 0]}
+                          castShadow
+                        >
+                          <meshStandardMaterial 
+                            color={item.color}
+                            metalness={0.3}
+                            roughness={0.6}
+                            emissive={item.color}
+                            emissiveIntensity={0.2}
+                          />
+                        </Cylinder>
+                        <Sphere
+                          args={[0.9, 32, 32]}
+                          position={[0, itemHeight, 0]}
+                          castShadow
+                        >
+                          <meshStandardMaterial 
+                            color={item.color}
+                            metalness={0.3}
+                            roughness={0.6}
+                            emissive={item.color}
+                            emissiveIntensity={0.2}
+                          />
+                        </Sphere>
+                      </>
+                    );
+                    break;
+                    
+                  case 4: // X AI - Cross of boxes
+                    shape = (
+                      <>
+                        <Box
+                          args={[2, itemHeight * 2, 0.5]}
+                          castShadow
+                        >
+                          <meshStandardMaterial 
+                            color={item.color}
+                            metalness={0.7}
+                            roughness={0.2}
+                            emissive={item.color}
+                            emissiveIntensity={0.2}
+                          />
+                        </Box>
+                        <Box
+                          args={[0.5, itemHeight * 2, 2]}
+                          castShadow
+                        >
+                          <meshStandardMaterial 
+                            color={item.color}
+                            metalness={0.7}
+                            roughness={0.2}
+                            emissive={item.color}
+                            emissiveIntensity={0.2}
+                          />
+                        </Box>
+                      </>
+                    );
+                    break;
+                }
 
                 return (
-                  <group key={item.key}>
+                  <group key={`abstract-${item.key}`} position={[x, itemHeight, z]}>
                     {/* Shape */}
-                    {shapes[index]}
+                    {shape}
                     
                     {/* Tool name */}
                     <Text
-                      position={[x, itemHeight * 2 + 1.5, z]}
+                      position={[0, itemHeight * 2 + 1.5, 0]}
                       fontSize={0.5}
                       color={item.color}
                       anchorX="center"
@@ -667,7 +756,7 @@ const AIResearchTools3DVisualization = () => {
                     
                     {/* HLE score */}
                     <Text
-                      position={[x, itemHeight * 2 + 0.8, z]}
+                      position={[0, itemHeight * 2 + 0.8, 0]}
                       fontSize={0.6}
                       color={item.color}
                       anchorX="center"
@@ -679,7 +768,7 @@ const AIResearchTools3DVisualization = () => {
                     {/* Connection to ground */}
                     <Cylinder
                       args={[0.1, 0.1, itemHeight * 2, 8]}
-                      position={[x, itemHeight, z]}
+                      position={[0, 0, 0]}
                       castShadow
                     >
                       <meshStandardMaterial color="#cbd5e1" />
@@ -688,7 +777,7 @@ const AIResearchTools3DVisualization = () => {
                     {/* Base platform */}
                     <Cylinder
                       args={[1.5, 1.5, 0.2, 32]}
-                      position={[x, -0.1, z]}
+                      position={[0, -itemHeight - 0.1, 0]}
                       castShadow
                     >
                       <meshStandardMaterial 
