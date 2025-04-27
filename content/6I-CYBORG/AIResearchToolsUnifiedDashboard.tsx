@@ -4,7 +4,7 @@ import {
   PolarRadiusAxis, Radar, Legend, BarChart, Bar, XAxis, YAxis, 
   CartesianGrid, Tooltip, LabelList, Cell
 } from 'recharts';
-import { Info, ExternalLink, BarChart2, PieChart, Cpu, BookOpen, Users, Zap } from 'lucide-react';
+import { Info, ExternalLink, BarChart2, PieChart, Cpu, BookOpen, Users, Zap, Link as LinkIcon } from 'lucide-react'; // Added LinkIcon
 
 // Brand colors for consistent visual identity
 const BRAND_COLORS = {
@@ -29,41 +29,41 @@ const radarData = [
 
 // Benchmark data for HLE scores
 const benchmarkData = [
-  { name: 'Gemini 2.5 Pro DR', value: 18.8, color: BRAND_COLORS.gemini.primary },
-  { name: 'OpenAI DR', value: 14.0, color: BRAND_COLORS.openai.primary },
-  { name: 'Perplexity DR', value: 21.1, color: BRAND_COLORS.perplexity.primary },
-  { name: 'Claude Research', value: 8.9, color: BRAND_COLORS.claude.primary },
-  { name: 'X AI Grok', value: 16.5, color: BRAND_COLORS.xai.primary } // Estimated HLE score
+  { name: 'Gemini 2.5 Pro DR', value: 18.8, color: BRAND_COLORS.gemini.primary }, // Add ref like <sup>[1]</sup>
+  { name: 'OpenAI DR', value: 14.0, color: BRAND_COLORS.openai.primary }, // Add ref like <sup>[1]</sup>
+  { name: 'Perplexity DR', value: 21.1, color: BRAND_COLORS.perplexity.primary }, // Add ref like <sup>[1]</sup>
+  { name: 'Claude Research', value: 8.9, color: BRAND_COLORS.claude.primary }, // Add ref like <sup>[1]</sup>
+  { name: 'X AI Grok', value: 16.5, color: BRAND_COLORS.xai.primary } // Add ref like <sup>[1, 2]</sup> (estimated)
 ];
 
-// Feature comparison data
+// Feature comparison data (Add refs where appropriate)
 const featureData = [
   { 
     category: 'Release Date',
-    gemini: 'April 2025',
-    openai: 'February 2025',
-    perplexity: 'February 2025',
-    claude: 'Not specifically dated',
-    xai: 'March 2025' // Estimated
+    gemini: 'April 2025 <sup>[3]</sup>',
+    openai: 'February 2025 <sup>[4]</sup>',
+    perplexity: 'February 2025 <sup>[5]</sup>',
+    claude: 'Not specifically dated <sup>[6]</sup>',
+    xai: 'March 2025 <sup>[2]</sup>' // Estimated
   },
   { 
     category: 'Research Methodology',
-    gemini: 'Reasoning-enhanced search with continuous loop',
-    openai: 'Multi-step autonomous browsing',
-    perplexity: 'Parallelized data ingestion',
-    claude: 'Sequential search approach',
-    xai: 'Real-time X platform data integration'
+    gemini: 'Reasoning-enhanced search with continuous loop <sup>[3]</sup>',
+    openai: 'Multi-step autonomous browsing <sup>[4]</sup>',
+    perplexity: 'Parallelized data ingestion <sup>[5]</sup>',
+    claude: 'Sequential search approach <sup>[6]</sup>',
+    xai: 'Real-time X platform data integration <sup>[2]</sup>'
   },
   { 
-    category: 'Processing Time',
+    category: 'Processing Time', // Add refs like <sup>[7]</sup>
     gemini: '~5-10 minutes',
     openai: '7-20 minutes',
     perplexity: '2-4 minutes',
     claude: 'Variable (unspecified)',
-    xai: '1-5 minutes'
+    xai: '1-5 minutes <sup>[2]</sup>'
   },
   { 
-    category: 'Subscription Cost',
+    category: 'Subscription Cost', // Add refs like <sup>[8]</sup>
     gemini: 'Gemini Advanced ($19.99/mo)',
     openai: 'ChatGPT Plus ($20/mo) or higher',
     perplexity: 'Free tier + Pro ($20/mo)',
@@ -343,7 +343,7 @@ const ToolComparisonCard = ({ name, color, strengths, limitations }) => {
 
 // Main dashboard component
 const AIResearchToolsUnifiedDashboard = () => {
-  // State for active tab
+  // State for active tab - Added 'references'
   const [activeTab, setActiveTab] = useState('overview');
   
   // State for active use case
@@ -455,6 +455,8 @@ const AIResearchToolsUnifiedDashboard = () => {
         return renderBenchmarksTab();
       case 'usecases':
         return renderUseCasesTab();
+      case 'references': // New case
+        return renderReferencesTab();
       default:
         return renderOverviewTab();
     }
@@ -1014,6 +1016,41 @@ const AIResearchToolsUnifiedDashboard = () => {
     );
   };
 
+  // Render References tab content (New Function)
+  const renderReferencesTab = () => {
+    return (
+      <div>
+        <h2 className="text-xl font-bold mb-4">Data Sources & References</h2>
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <ul className="space-y-4">
+            {referencesData.map(ref => (
+              <li key={ref.id} className="border-b pb-3 last:border-b-0">
+                <span className="font-semibold mr-2">[{ref.id}]</span>
+                <span className="text-gray-700 mr-2">{ref.description}</span>
+                {ref.url && ref.url !== "#" ? (
+                  <a 
+                    href={ref.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-blue-600 hover:underline text-sm inline-flex items-center"
+                  >
+                    <LinkIcon size={12} className="mr-1" />
+                    Visit Source
+                  </a>
+                ) : (
+                  <span className="text-gray-500 text-sm italic">(No URL provided)</span>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-gray-500 mt-6">
+            Note: Some data points, particularly for newer features or estimated values (like X AI Grok), may be based on preliminary reports, internal testing, or comparative analysis. Always consult the official documentation for the most up-to-date information. Last data review: April 27, 2025.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen pb-8">
       <div className="bg-gradient-to-r from-blue-700 to-blue-500 text-white py-8 mb-6">
@@ -1048,6 +1085,13 @@ const AIResearchToolsUnifiedDashboard = () => {
             onClick={() => handleTabChange('usecases')}
           >
             Use Cases
+          </button>
+          {/* New References Tab Button */}
+          <button
+            className={`px-6 py-4 font-medium transition-colors ${activeTab === 'references' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-600 hover:text-gray-800'}`}
+            onClick={() => handleTabChange('references')}
+          >
+            References
           </button>
         </div>
         
