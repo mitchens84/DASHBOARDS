@@ -31,7 +31,7 @@ The visualization presents a force-directed graph of the PKM workflow, with node
 
 ## Data Structure
 
-The visualization uses data from the `workflow_data.json` file, which is extracted from Airtable using the `workflow_extractor.py` script.
+The visualization uses data from the `pkm_workflow_visualization-DATA.json` file. This file is expected to contain the graph data (nodes and links) in a JSON format.
 
 ## Workflow Stages
 
@@ -54,12 +54,11 @@ The visualization uses data from the `workflow_data.json` file, which is extract
 
 To update the visualization with new data:
 
-1. Run the workflow extractor script:
-   ```
-   python workflow_extractor.py --base-id YOUR_BASE_ID --table-id YOUR_TABLE_ID --view-id YOUR_VIEW_ID
-   ```
-2. Ensure the output JSON file is named `workflow_data.json` and placed in the same directory as the HTML file
-3. Refresh the visualization in your browser
+1.  Ensure your workflow data is available in a JSON file named `pkm_workflow_visualization-DATA.json`.
+2.  This file should be located in the same directory as `pkm_workflow_visualization.html` (i.e., `public/content/0A-PM/`).
+3.  The data format should be an object containing `nodes` and `links` arrays, or directly an array of nodes if links are derived/implicit, as processed by the visualization's JavaScript.
+4.  If you are using a script (like the original `workflow_extractor.py` or a similar method) to generate this data from Airtable or another source, ensure its output is saved as `pkm_workflow_visualization-DATA.json` in the correct location.
+5.  After updating the JSON file, the visualization (when viewed in the dashboard or by opening `pkm_workflow_visualization.html` directly if testing standalone) should reflect the new data upon refresh.
 
 ## Requirements
 
