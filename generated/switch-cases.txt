@@ -20,3 +20,5 @@ case "ai-research-tools-dashboard":
   return <AiResearchToolsDashboard />;
 case "airesearchtools3dvisualization":
   return <AIResearchTools3DVisualization />;
+case "pkmworkflowdashboard":
+  return <PKMWorkflowDashboard />;

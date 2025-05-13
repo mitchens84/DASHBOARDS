@@ -84,6 +84,9 @@ export const contentManifest = {
     "ai-research-tools-dashboard",
     "AIResearchTools3DVisualization",
   ],
+  "0A-PM": [
+    "PKMWorkflowDashboard",
+  ],
 };
 
 export const getContentPath = (file: string) => {

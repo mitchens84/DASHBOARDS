@@ -1,0 +1,664 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKM Workflow Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --source-color: #B8CEFF;
+            --capture-color: #B8FFED;
+            --organise-color: #C2F5B4;
+            --distil-color: #FFF4B8;
+            --express-color: #FFD2B8;
+            
+            --tool-border: #5D8AA8;
+            --content-border: #3CB371;
+            --method-border: #9966CC;
+            --platform-border: #FFD700;
+            --storage-border: #DC143C;
+            --output-border: #FF7F50;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        svg {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .node {
+            cursor: pointer;
+            stroke-width: 2px;
+        }
+        
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+            stroke-width: 1px;
+            fill: none;
+        }
+        
+        .paid-service {
+            stroke-dasharray: 5, 2;
+        }
+        
+        .node text {
+            font-size: 12px;
+            text-anchor: middle;
+            pointer-events: none;
+            fill: #333;
+            font-weight: 500;
+        }
+        
+        .node-tooltip {
+            position: absolute;
+            padding: 8px 12px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 10;
+            max-width: 300px;
+            pointer-events: none;
+            visibility: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+        }
+        
+        .legend-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-right: 10px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        button {
+            padding: 5px 10px;
+            margin-right: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        
+        button:hover {
+            background-color: #3e8e41;
+        }
+        
+        select {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        
+        #title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="title">PKM Workflow Visualization</div>
+    
+    <div id="container">
+        <svg id="pkm-workflow"></svg>
+        
+        <div class="controls">
+            <button id="zoom-in">Zoom In</button>
+            <button id="zoom-out">Zoom Out</button>
+            <button id="reset">Reset</button>
+            <div style="margin-top: 10px;">
+                <label for="filter-workflow">Filter by Workflow: </label>
+                <select id="filter-workflow">
+                    <option value="all">All Workflows</option>
+                    <option value="Web/Podcast">Web/Podcast</option>
+                    <option value="Text/Book">Text/Book</option>
+                    <option value="Video">Video</option>
+                    <option value="Research/Academic">Research/Academic</option>
+                    <option value="Music">Music</option>
+                    <option value="Database/Structured">Database/Structured</option>
+                    <option value="Multiple">Multiple</option>
+                </select>
+            </div>
+            <div style="margin-top: 10px;">
+                <label for="filter-group">Filter by Visual Group: </label>
+                <select id="filter-group">
+                    <option value="all">All Groups</option>
+                    <option value="Tool">Tool</option>
+                    <option value="Content">Content</option>
+                    <option value="Method">Method</option>
+                    <option value="Platform">Platform</option>
+                    <option value="Storage">Storage</option>
+                    <option value="Output">Output</option>
+                </select>
+            </div>
+            <div style="margin-top: 10px;">
+                <input type="checkbox" id="highlight-paid" checked>
+                <label for="highlight-paid">Highlight Paid Services</label>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <h3 style="margin-top: 0;">Legend</h3>
+            <div style="margin-bottom: 15px;">
+                <h4>Workflow Stages</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--source-color);"></div>
+                    <span>SOURCE</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--capture-color);"></div>
+                    <span>CAPTURE</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--organise-color);"></div>
+                    <span>ORGANISE</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--distil-color);"></div>
+                    <span>DISTIL</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--express-color);"></div>
+                    <span>EXPRESS</span>
+                </div>
+            </div>
+            
+            <div>
+                <h4>Visual Groups</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="border: 2px solid var(--tool-border);"></div>
+                    <span>Tool</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border: 2px solid var(--content-border);"></div>
+                    <span>Content</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border: 2px solid var(--method-border);"></div>
+                    <span>Method</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border: 2px solid var(--platform-border);"></div>
+                    <span>Platform</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border: 2px solid var(--storage-border);"></div>
+                    <span>Storage</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="border: 2px solid var(--output-border);"></div>
+                    <span>Output</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <h4>Other Indicators</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="border: 2px dashed #333;"></div>
+                    <span>Paid Service</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="node-tooltip" id="tooltip"></div>
+    </div>
+    
+    <script>
+      (function() { // IIFE Start
+        // Load PKM workflow data from JSON file
+        let pkmData = [];
+        let allPkmNodes = [];
+        let allPkmLinks = [];
+
+        fetch('pkm_workflow_visualization-DATA.json') // Changed from workflow_data.json
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                pkmData = data;
+                processDataAndInitialize();
+            })
+            .catch(error => {
+                console.error('Error loading workflow data:', error);
+                // Display error message in the SVG
+                const svg = d3.select("#workflow-visualization");
+                const width = +svg.attr("width");
+                const height = +svg.attr("height");
+                svg.append("text")
+                   .attr("x", width / 2)
+                   .attr("y", height / 2)
+                   .attr("text-anchor", "middle")
+                   .style("font-size", "16px")
+                   .style("fill", "red")
+                   .text("Error loading workflow data. Please check console.");
+            });
+        
+        // Initialize global variables
+        let nodes = [];
+        let links = [];
+        let svg, simulation, linkElements, nodeElements;
+        let currentWorkflowFilter = 'all';
+        let currentGroupFilter = 'all';
+        let highlightPaid = true;
+        
+        // Set up the SVG and visualization
+        function initializeVisualization() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            svg = d3.select('#pkm-workflow')
+                .attr('width', width)
+                .attr('height', height);
+                
+            // Clear existing content
+            svg.selectAll('*').remove();
+            
+            // Add zoom behavior
+            const zoom = d3.zoom()
+                .scaleExtent([0.1, 4])
+                .on('zoom', (event) => {
+                    svg.select('g').attr('transform', event.transform);
+                });
+                
+            svg.call(zoom);
+            
+            // Create a container for all elements
+            const container = svg.append('g');
+            
+            // Process data
+            processData();
+            
+            // Create links
+            linkElements = container.append('g')
+                .selectAll('path')
+                .data(links)
+                .enter().append('path')
+                .attr('class', 'link')
+                .attr('marker-end', 'url(#arrow)');
+                
+            // Create nodes
+            nodeElements = container.append('g')
+                .selectAll('g')
+                .data(nodes)
+                .enter().append('g')
+                .attr('class', 'node')
+                .on('mouseover', showTooltip)
+                .on('mouseout', hideTooltip)
+                .call(d3.drag()
+                    .on('start', dragStarted)
+                    .on('drag', dragging)
+                    .on('end', dragEnded));
+                    
+            // Add node circles
+            nodeElements.append('circle')
+                .attr('r', d => getNodeSize(d))
+                .attr('fill', d => getNodeColor(d))
+                .attr('stroke', d => getNodeBorder(d))
+                .attr('class', d => d.fields.PAID_SERVICE ? 'paid-service' : '');
+                
+            // Add node labels
+            nodeElements.append('text')
+                .text(d => d.fields.ELEMENT_NAME)
+                .attr('dy', 4);
+                
+            // Add arrowhead marker for links
+            svg.append('defs').append('marker')
+                .attr('id', 'arrow')
+                .attr('viewBox', '0 -5 10 10')
+                .attr('refX', 20)
+                .attr('refY', 0)
+                .attr('markerWidth', 6)
+                .attr('markerHeight', 6)
+                .attr('orient', 'auto')
+                .append('path')
+                .attr('d', 'M0,-5L10,0L0,5')
+                .attr('fill', '#999');
+                
+            // Create force simulation
+            simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(d => d.id).distance(150))
+                .force('charge', d3.forceManyBody().strength(-400))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('x', d3.forceX(width / 2).strength(0.1))
+                .force('y', d3.forceY().y(d => getYPosition(d)).strength(0.3))
+                .force('collision', d3.forceCollide().radius(50))
+                .on('tick', ticked);
+                
+            // Apply initial zoom transformation to center the view
+            svg.call(zoom.transform, d3.zoomIdentity.translate(width/4, height/8).scale(0.7));
+        }
+        
+        // Process the data to create nodes and links
+        function processData() {
+            nodes = [];
+            links = [];
+            
+            // Create unique nodes
+            const nodeMap = {};
+            
+            pkmData.forEach(item => {
+                const node = {
+                    id: item.id,
+                    fields: item.fields
+                };
+                nodes.push(node);
+                nodeMap[item.fields.ELEMENT_NAME] = node;
+            });
+            
+            // Create links from input/output connections
+            pkmData.forEach(item => {
+                const source = item.id;
+                
+                if (item.fields.OUTPUT_TO) {
+                    const outputs = item.fields.OUTPUT_TO.split('/');
+                    
+                    outputs.forEach(target => {
+                        // Find if the target exists as a node
+                        const targetNode = nodes.find(n => n.fields.ELEMENT_NAME === target);
+                        if (targetNode) {
+                            links.push({
+                                source: source,
+                                target: targetNode.id
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // Filter nodes and links based on current filters
+            filterNodesAndLinks();
+        }
+        
+        // Filter nodes and links based on current selections
+        function filterNodesAndLinks() {
+            // Apply workflow filter
+            if (currentWorkflowFilter !== 'all') {
+                nodes = nodes.filter(node => 
+                    node.fields.SUB_WORKFLOWS && 
+                    node.fields.SUB_WORKFLOWS.includes(currentWorkflowFilter)
+                );
+                
+                // Filter links to only include connections between visible nodes
+                const nodeIds = nodes.map(n => n.id);
+                links = links.filter(link => 
+                    nodeIds.includes(link.source) && 
+                    nodeIds.includes(link.target)
+                );
+            }
+            
+            // Apply visual group filter
+            if (currentGroupFilter !== 'all') {
+                nodes = nodes.filter(node => 
+                    node.fields.VISUAL_GROUP === currentGroupFilter
+                );
+                
+                // Filter links again
+                const nodeIds = nodes.map(n => n.id);
+                links = links.filter(link => 
+                    nodeIds.includes(link.source) && 
+                    nodeIds.includes(link.target)
+                );
+            }
+        }
+        
+        // Get node color based on workflow stage
+        function getNodeColor(d) {
+            const stage = d.fields.WORKFLOW_STAGE;
+            switch(stage) {
+                case 'SOURCE': return 'var(--source-color)';
+                case 'CAPTURE': return 'var(--capture-color)';
+                case 'ORGANISE': return 'var(--organise-color)';
+                case 'DISTIL': return 'var(--distil-color)';
+                case 'EXPRESS': return 'var(--express-color)';
+                default: return '#e0e0e0';
+            }
+        }
+        
+        // Get node border based on visual group
+        function getNodeBorder(d) {
+            const group = d.fields.VISUAL_GROUP;
+            switch(group) {
+                case 'Tool': return 'var(--tool-border)';
+                case 'Content': return 'var(--content-border)';
+                case 'Method': return 'var(--method-border)';
+                case 'Platform': return 'var(--platform-border)';
+                case 'Storage': return 'var(--storage-border)';
+                case 'Output': return 'var(--output-border)';
+                default: return '#808080';
+            }
+        }
+        
+        // Get node size based on importance and connections
+        function getNodeSize(d) {
+            // Base size determined by workflow stage
+            let size = 25;
+            
+            // Adjust size based on visual group
+            if (d.fields.VISUAL_GROUP === 'Tool') {
+                size += 5;
+            }
+            
+            // Adjust size based on paid service
+            if (d.fields.PAID_SERVICE) {
+                size += 3;
+            }
+            
+            return size;
+        }
+        
+        // Get Y position based on workflow stage for vertical layout
+        function getYPosition(d) {
+            const stage = d.fields.WORKFLOW_STAGE;
+            const height = window.innerHeight;
+            
+            switch(stage) {
+                case 'SOURCE': return height * 0.2;
+                case 'CAPTURE': return height * 0.35;
+                case 'ORGANISE': return height * 0.5;
+                case 'DISTIL': return height * 0.65;
+                case 'EXPRESS': return height * 0.8;
+                default: return height * 0.5;
+            }
+        }
+        
+        // Show tooltip with node details
+        function showTooltip(event, d) {
+            const tooltip = d3.select('#tooltip');
+            const fields = d.fields;
+            
+            let content = `
+                <strong>${fields.ELEMENT_NAME}</strong><br>
+                <em>${fields.VISUAL_GROUP} - ${fields.WORKFLOW_STAGE}</em><br>
+                ${fields.DESCRIPTION || ''}<br>
+            `;
+            
+            if (fields.NOTES) {
+                content += `<small>${fields.NOTES}</small><br>`;
+            }
+            
+            if (fields.PAID_SERVICE) {
+                content += '<br><strong>Paid Service</strong><br>';
+            }
+            
+            if (fields.SUB_WORKFLOWS) {
+                content += `<br>Workflows: ${fields.SUB_WORKFLOWS.join(', ')}<br>`;
+            }
+            
+            if (fields.INPUT_FROM) {
+                content += `<br>Input from: ${fields.INPUT_FROM}<br>`;
+            }
+            
+            if (fields.OUTPUT_TO) {
+                content += `Output to: ${fields.OUTPUT_TO}<br>`;
+            }
+            
+            tooltip.html(content)
+                .style('left', (event.pageX + 15) + 'px')
+                .style('top', (event.pageY - 28) + 'px')
+                .style('visibility', 'visible');
+        }
+        
+        // Hide tooltip
+        function hideTooltip() {
+            d3.select('#tooltip').style('visibility', 'hidden');
+        }
+        
+        // Handle drag events
+        function dragStarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+        
+        function dragging(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+        
+        function dragEnded(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+        
+        // Update positions on simulation ticks
+        function ticked() {
+            // Update link paths
+            linkElements
+                .attr('d', d => {
+                    const dx = d.target.x - d.source.x;
+                    const dy = d.target.y - d.source.y;
+                    const dr = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Determine the direction of the curve based on the relative positions
+                    const sweep = d.source.x < d.target.x ? 0 : 1;
+                    
+                    // Adjust the path to account for node size
+                    const sourceRadius = getNodeSize(d.source);
+                    const targetRadius = getNodeSize(d.target);
+                    
+                    // Calculate the unit vector
+                    const length = Math.sqrt(dx * dx + dy * dy);
+                    const unitDx = dx / length;
+                    const unitDy = dy / length;
+                    
+                    // Calculate start and end points
+                    const startX = d.source.x + unitDx * sourceRadius;
+                    const startY = d.source.y + unitDy * sourceRadius;
+                    const endX = d.target.x - unitDx * targetRadius;
+                    const endY = d.target.y - unitDy * targetRadius;
+                    
+                    return `M${startX},${startY} A${dr},${dr} 0 0,${sweep} ${endX},${endY}`;
+                });
+                
+            // Update node positions
+            nodeElements.attr('transform', d => `translate(${d.x}, ${d.y})`);
+        }
+        
+        // Set up event handlers for controls
+        document.getElementById('zoom-in').addEventListener('click', () => {
+            const currentTransform = d3.zoomTransform(svg.node());
+            svg.transition().duration(500).call(
+                d3.zoom().transform,
+                d3.zoomIdentity.translate(currentTransform.x, currentTransform.y).scale(currentTransform.k * 1.5)
+            );
+        });
+        
+        document.getElementById('zoom-out').addEventListener('click', () => {
+            const currentTransform = d3.zoomTransform(svg.node());
+            svg.transition().duration(500).call(
+                d3.zoom().transform,
+                d3.zoomIdentity.translate(currentTransform.x, currentTransform.y).scale(currentTransform.k * 0.75)
+            );
+        });
+        
+        document.getElementById('reset').addEventListener('click', () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            svg.transition().duration(750).call(
+                d3.zoom().transform,
+                d3.zoomIdentity.translate(width/4, height/8).scale(0.7)
+            );
+        });
+        
+        document.getElementById('filter-workflow').addEventListener('change', (event) => {
+            currentWorkflowFilter = event.target.value;
+            initializeVisualization();
+        });
+        
+        document.getElementById('filter-group').addEventListener('change', (event) => {
+            currentGroupFilter = event.target.value;
+            initializeVisualization();
+        });
+        
+        document.getElementById('highlight-paid').addEventListener('change', (event) => {
+            highlightPaid = event.target.checked;
+            
+            // Update node styling based on the checkbox
+            d3.selectAll('.node circle')
+                .classed('paid-service', d => highlightPaid && d.fields.PAID_SERVICE);
+        });
+        
+        // Resize handler
+        window.addEventListener('resize', () => {
+            initializeVisualization();
+        });
+      })(); // IIFE End
+    </script>
+</body>
+</html>

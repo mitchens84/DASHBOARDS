@@ -1,0 +1,728 @@
+{
+  "nodes": [
+    {
+      "id": "recuvfDp14Y3Rrh6k",
+      "recordId": "recuvfDp14Y3Rrh6k",
+      "ELEMENT_NAME": "Podcasts",
+      "WORKFLOW_STAGE": "SOURCE",
+      "SEQUENCE": 1,
+      "OUTPUT_TO": "SNIPP/Assembly AI",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast"
+      ],
+      "VISUAL_GROUP": "Content",
+      "DESCRIPTION": "Audio content from podcast platforms",
+      "NOTES": "Original audio source for information capture"
+    },
+    {
+      "id": "rece9Kr3ujagipzjb",
+      "recordId": "rece9Kr3ujagipzjb",
+      "ELEMENT_NAME": "Books",
+      "WORKFLOW_STAGE": "SOURCE",
+      "SEQUENCE": 1,
+      "OUTPUT_TO": "Kindle",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Text/Book"
+      ],
+      "VISUAL_GROUP": "Content",
+      "DESCRIPTION": "Print and digital reading material",
+      "NOTES": "Original text source for information capture"
+    },
+    {
+      "id": "rec5afIP5GF1Rx8Xp",
+      "recordId": "rec5afIP5GF1Rx8Xp",
+      "ELEMENT_NAME": "Videos",
+      "WORKFLOW_STAGE": "SOURCE",
+      "SEQUENCE": 1,
+      "OUTPUT_TO": "LLM-Gemini/YouTube API",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Video"
+      ],
+      "VISUAL_GROUP": "Content",
+      "DESCRIPTION": "Visual content from YouTube and TMDB",
+      "NOTES": "Original video source for information capture"
+    },
+    {
+      "id": "recqFrkrACD2RadtQ",
+      "recordId": "recqFrkrACD2RadtQ",
+      "ELEMENT_NAME": "Web URLs",
+      "WORKFLOW_STAGE": "SOURCE",
+      "SEQUENCE": 1,
+      "OUTPUT_TO": "Deep Research/Search Engines",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Content",
+      "DESCRIPTION": "Journalism sources and blogs",
+      "NOTES": "Web content sources requiring research"
+    },
+    {
+      "id": "reco6iSnZT15nYhQr",
+      "recordId": "reco6iSnZT15nYhQr",
+      "ELEMENT_NAME": "Research/Academic",
+      "WORKFLOW_STAGE": "SOURCE",
+      "SEQUENCE": 2,
+      "OUTPUT_TO": "Deep Research/Scraping Tools",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Content",
+      "DESCRIPTION": "Scholarly publications and journals",
+      "NOTES": "Academic content requiring detailed extraction"
+    },
+    {
+      "id": "recz6DJxZx0iOKiQK",
+      "recordId": "recz6DJxZx0iOKiQK",
+      "ELEMENT_NAME": "Social Media",
+      "WORKFLOW_STAGE": "SOURCE",
+      "SEQUENCE": 2,
+      "OUTPUT_TO": "Scraping Tools",
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Content",
+      "DESCRIPTION": "Content from Reddit/Facebook/X/Twitter",
+      "NOTES": "Social platform content requiring extraction"
+    },
+    {
+      "id": "recx6B9huX9dXGsWs",
+      "recordId": "recx6B9huX9dXGsWs",
+      "ELEMENT_NAME": "Music",
+      "WORKFLOW_STAGE": "SOURCE",
+      "SEQUENCE": 3,
+      "OUTPUT_TO": "Spotify/Soundcloud/Sync AI",
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Music"
+      ],
+      "VISUAL_GROUP": "Content",
+      "DESCRIPTION": "Audio entertainment content",
+      "NOTES": "Musical content for entertainment or analysis"
+    },
+    {
+      "id": "reclvkZss6ivuGZvG",
+      "recordId": "reclvkZss6ivuGZvG",
+      "ELEMENT_NAME": "Inbox",
+      "WORKFLOW_STAGE": "SOURCE",
+      "SEQUENCE": 4,
+      "OUTPUT_TO": "Airtable",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Database/Structured"
+      ],
+      "VISUAL_GROUP": "Content",
+      "DESCRIPTION": "Email/messaging input",
+      "NOTES": "Personal communications requiring organization"
+    },
+    {
+      "id": "recDYdhwIuLNiCkIr",
+      "recordId": "recDYdhwIuLNiCkIr",
+      "ELEMENT_NAME": "SNIPP",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 1,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Podcasts/Web URLs",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "Readwise",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Content clipping/saving tool",
+      "NOTES": "Primary capture tool for web and podcast content"
+    },
+    {
+      "id": "recpfM5wYbFNTD6IK",
+      "recordId": "recpfM5wYbFNTD6IK",
+      "ELEMENT_NAME": "Assembly AI",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 1,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Podcasts",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "Readwise",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Audio transcription service",
+      "NOTES": "Converts audio to searchable text"
+    },
+    {
+      "id": "recSFri9PeFzhZUJf",
+      "recordId": "recSFri9PeFzhZUJf",
+      "ELEMENT_NAME": "Kindle",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 1,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Books",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "GDrive/Readwise",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Text/Book"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "E-reader with highlighting/notes",
+      "NOTES": "Primary book content capture tool"
+    },
+    {
+      "id": "recuz0fkIDTRIwBvk",
+      "recordId": "recuz0fkIDTRIwBvk",
+      "ELEMENT_NAME": "LLM-Gemini",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 2,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Videos",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "NotebookLN",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Video"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "AI for video processing",
+      "NOTES": "Extracts information from video content"
+    },
+    {
+      "id": "recL0vHHfIVas9To3",
+      "recordId": "recL0vHHfIVas9To3",
+      "ELEMENT_NAME": "YouTube API",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 2,
+      "INPUT_FROM": "Videos",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "NotebookLN",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Video"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Data access for video content",
+      "NOTES": "Provides metadata and content access for videos"
+    },
+    {
+      "id": "recG4KcrVrB63jURu",
+      "recordId": "recG4KcrVrB63jURu",
+      "ELEMENT_NAME": "Deep Research",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 3,
+      "INPUT_FROM": "Web URLs/Research",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "Claude/NotebookLN",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Method",
+      "DESCRIPTION": "Advanced search methodology",
+      "NOTES": "Framework for comprehensive information gathering"
+    },
+    {
+      "id": "recohgG3Z3MUbBS3M",
+      "recordId": "recohgG3Z3MUbBS3M",
+      "ELEMENT_NAME": "Brave",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 3,
+      "INPUT_FROM": "Web URLs/Research",
+      "OUTPUT_TO": "Claude/NotebookLN",
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Privacy-focused search engine",
+      "NOTES": "Alternative search engine for specific content"
+    },
+    {
+      "id": "recuTZh9aPHmlhpUG",
+      "recordId": "recuTZh9aPHmlhpUG",
+      "ELEMENT_NAME": "DuckDuckGo",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 3,
+      "INPUT_FROM": "Web URLs/Research",
+      "OUTPUT_TO": "Claude/NotebookLN",
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Privacy-focused search engine",
+      "NOTES": "Alternative search engine for specific content"
+    },
+    {
+      "id": "recuqzBoeVK3RcJ7u",
+      "recordId": "recuqzBoeVK3RcJ7u",
+      "ELEMENT_NAME": "Google",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 3,
+      "INPUT_FROM": "Web URLs/Research",
+      "OUTPUT_TO": "Claude/NotebookLN",
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "General search engine",
+      "NOTES": "Primary search engine for most queries"
+    },
+    {
+      "id": "recarXM3iMS2wr2BH",
+      "recordId": "recarXM3iMS2wr2BH",
+      "ELEMENT_NAME": "Tavily",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 3,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Web URLs/Research",
+      "OUTPUT_TO": "Claude/NotebookLN",
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "AI-powered search engine",
+      "NOTES": "Research-focused AI search with deep analysis"
+    },
+    {
+      "id": "recv3YN4a4ZViheGu",
+      "recordId": "recv3YN4a4ZViheGu",
+      "ELEMENT_NAME": "Perplexity",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 3,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Web URLs/Research",
+      "OUTPUT_TO": "Claude/NotebookLN",
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "AI-powered search engine",
+      "NOTES": "Conversational AI search with citations"
+    },
+    {
+      "id": "recU4zTk4lrb5hC2G",
+      "recordId": "recU4zTk4lrb5hC2G",
+      "ELEMENT_NAME": "Scraping Tools",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 4,
+      "INPUT_FROM": "Web URLs/Social/Research",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "Claude/NotebookLN",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Web data extraction tools",
+      "NOTES": "Custom and commercial tools for content extraction"
+    },
+    {
+      "id": "recX7pW4r7w98dWR4",
+      "recordId": "recX7pW4r7w98dWR4",
+      "ELEMENT_NAME": "Spotify",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 5,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Music",
+      "INPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Music"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Music streaming service",
+      "NOTES": "Access to vast music catalog"
+    },
+    {
+      "id": "recfHlTJmGWiVEa7W",
+      "recordId": "recfHlTJmGWiVEa7W",
+      "ELEMENT_NAME": "Soundcloud",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 5,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Music",
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Music"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Music streaming service",
+      "NOTES": "Access to independent music and podcasts"
+    },
+    {
+      "id": "recJnZz2lbPBeI6dy",
+      "recordId": "recJnZz2lbPBeI6dy",
+      "ELEMENT_NAME": "Sync AI",
+      "WORKFLOW_STAGE": "CAPTURE",
+      "SEQUENCE": 5,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Music",
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Music"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "AI for music processing",
+      "NOTES": "Neural audio analysis and recommendation"
+    },
+    {
+      "id": "rec18FG2RQF70kXT6",
+      "recordId": "rec18FG2RQF70kXT6",
+      "ELEMENT_NAME": "Readwise",
+      "WORKFLOW_STAGE": "ORGANISE",
+      "SEQUENCE": 1,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "SNIPP/Assembly AI/Kindle",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "GDrive/Obsidian",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Text/Book"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Highlight/note management",
+      "NOTES": "Centralizes notes and highlights from multiple sources"
+    },
+    {
+      "id": "recboJHkCaJw6xyNP",
+      "recordId": "recboJHkCaJw6xyNP",
+      "ELEMENT_NAME": "GDrive",
+      "WORKFLOW_STAGE": "ORGANISE",
+      "SEQUENCE": 2,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Kindle",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "GDrive",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Text/Book"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Knowledge organization tool",
+      "NOTES": "Custom tool for organizing book content"
+    },
+    {
+      "id": "recISWeKQxj1vmXSL",
+      "recordId": "recISWeKQxj1vmXSL",
+      "ELEMENT_NAME": "NotebookLN",
+      "WORKFLOW_STAGE": "ORGANISE",
+      "SEQUENCE": 2,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "LLM-Gemini/YouTube API",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "Obsidian",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Video",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Note-taking system",
+      "NOTES": "Structured note-taking for multimedia content"
+    },
+    {
+      "id": "recRFfHNTZLooYchs",
+      "recordId": "recRFfHNTZLooYchs",
+      "ELEMENT_NAME": "Claude",
+      "WORKFLOW_STAGE": "ORGANISE",
+      "SEQUENCE": 3,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Deep Research/Search Engines",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "GDriveObsidian",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "API",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "AI assistant",
+      "NOTES": "Processes and organizes information from research"
+    },
+    {
+      "id": "rec40Bj65HX97rDCs",
+      "recordId": "rec40Bj65HX97rDCs",
+      "ELEMENT_NAME": "IDE",
+      "WORKFLOW_STAGE": "ORGANISE",
+      "SEQUENCE": 4,
+      "INPUT_FROM": "NotebookLN",
+      "OUTPUT_TO": "Obsidian",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Development environment",
+      "NOTES": "For code snippets and development tasks"
+    },
+    {
+      "id": "recWp7t9iOMEx4eHN",
+      "recordId": "recWp7t9iOMEx4eHN",
+      "ELEMENT_NAME": "Airtable",
+      "WORKFLOW_STAGE": "ORGANISE",
+      "SEQUENCE": 4,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Inbox",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "Airtable",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Database/Structured"
+      ],
+      "VISUAL_GROUP": "Platform",
+      "DESCRIPTION": "Database platform for organization",
+      "NOTES": "Structured data management across workflow"
+    },
+    {
+      "id": "recHhIkTo63jW97GO",
+      "recordId": "recHhIkTo63jW97GO",
+      "ELEMENT_NAME": "GDrive",
+      "WORKFLOW_STAGE": "DISTIL",
+      "SEQUENCE": 1,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "GDrive/Readwise/Claude",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "Websites/Podcasts/Texts",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast",
+        "Text/Book"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Enhanced knowledge processing"
+    },
+    {
+      "id": "recbSaYUNTB4JmgWD",
+      "recordId": "recbSaYUNTB4JmgWD",
+      "ELEMENT_NAME": "Obsidian",
+      "WORKFLOW_STAGE": "DISTIL",
+      "SEQUENCE": 1,
+      "INPUT_FROM": "Readwise/NotebookLN/Claude",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "Images/Apps/Dashboards",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Text/Book",
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Tool",
+      "DESCRIPTION": "Knowledge graph system",
+      "NOTES": "Links information in network structure"
+    },
+    {
+      "id": "recTYuxMeYQ96mHBo",
+      "recordId": "recTYuxMeYQ96mHBo",
+      "ELEMENT_NAME": "Proton Drive",
+      "WORKFLOW_STAGE": "DISTIL",
+      "SEQUENCE": 2,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Multiple",
+      "OUTPUT_TO": "Multiple",
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Multiple"
+      ],
+      "VISUAL_GROUP": "Storage",
+      "DESCRIPTION": "Secure storage solution",
+      "NOTES": "Encrypted storage for sensitive content"
+    },
+    {
+      "id": "reca6aQLuk9XGw90g",
+      "recordId": "reca6aQLuk9XGw90g",
+      "ELEMENT_NAME": "Airtable",
+      "WORKFLOW_STAGE": "DISTIL",
+      "SEQUENCE": 2,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Airtable",
+      "INPUT_REQUIRED": true,
+      "OUTPUT_TO": "Airtable",
+      "OUTPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Database/Structured"
+      ],
+      "VISUAL_GROUP": "Platform",
+      "DESCRIPTION": "Database platform for distillation",
+      "NOTES": "Data refinement and analysis"
+    },
+    {
+      "id": "recqiOMHf6ifuxndJ",
+      "recordId": "recqiOMHf6ifuxndJ",
+      "ELEMENT_NAME": "Websites",
+      "WORKFLOW_STAGE": "EXPRESS",
+      "SEQUENCE": 1,
+      "INPUT_FROM": "GDrive",
+      "INPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast"
+      ],
+      "VISUAL_GROUP": "Output",
+      "DESCRIPTION": "Web publishing output",
+      "NOTES": "Online content publication"
+    },
+    {
+      "id": "recHwujDOytcp5b8f",
+      "recordId": "recHwujDOytcp5b8f",
+      "ELEMENT_NAME": "Podcasts",
+      "WORKFLOW_STAGE": "EXPRESS",
+      "SEQUENCE": 1,
+      "INPUT_FROM": "GDrive",
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Web/Podcast"
+      ],
+      "VISUAL_GROUP": "Output",
+      "DESCRIPTION": "Audio content creation",
+      "NOTES": "Created podcast content"
+    },
+    {
+      "id": "recJ1Ju39YoABflDn",
+      "recordId": "recJ1Ju39YoABflDn",
+      "ELEMENT_NAME": "Texts",
+      "WORKFLOW_STAGE": "EXPRESS",
+      "SEQUENCE": 1,
+      "INPUT_FROM": "GDrive",
+      "INPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Text/Book"
+      ],
+      "VISUAL_GROUP": "Output",
+      "DESCRIPTION": "Written document output",
+      "NOTES": "Essays, articles, and other text content"
+    },
+    {
+      "id": "recJrYsiFOuLzngW8",
+      "recordId": "recJrYsiFOuLzngW8",
+      "ELEMENT_NAME": "Images",
+      "WORKFLOW_STAGE": "EXPRESS",
+      "SEQUENCE": 2,
+      "INPUT_FROM": "Obsidian",
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Output",
+      "DESCRIPTION": "Visual content output",
+      "NOTES": "Generated or processed images"
+    },
+    {
+      "id": "recd6XA54iIfe6Emx",
+      "recordId": "recd6XA54iIfe6Emx",
+      "ELEMENT_NAME": "Videos",
+      "WORKFLOW_STAGE": "EXPRESS",
+      "SEQUENCE": 2,
+      "INPUT_FROM": "Multiple",
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Video"
+      ],
+      "VISUAL_GROUP": "Output",
+      "DESCRIPTION": "Video content output",
+      "NOTES": "Created video content"
+    },
+    {
+      "id": "recvKFwhGp8MaKUgD",
+      "recordId": "recvKFwhGp8MaKUgD",
+      "ELEMENT_NAME": "Apps",
+      "WORKFLOW_STAGE": "EXPRESS",
+      "SEQUENCE": 3,
+      "INPUT_FROM": "Obsidian",
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Output",
+      "DESCRIPTION": "Application development",
+      "NOTES": "Software tools created from knowledge"
+    },
+    {
+      "id": "receT6rnkCDne4Zcv",
+      "recordId": "receT6rnkCDne4Zcv",
+      "ELEMENT_NAME": "Dashboards",
+      "WORKFLOW_STAGE": "EXPRESS",
+      "SEQUENCE": 3,
+      "INPUT_FROM": "Obsidian",
+      "INPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Research/Academic"
+      ],
+      "VISUAL_GROUP": "Output",
+      "DESCRIPTION": "Information display output",
+      "NOTES": "Data visualization and monitoring"
+    },
+    {
+      "id": "recaV4dOSLON2PRSC",
+      "recordId": "recaV4dOSLON2PRSC",
+      "ELEMENT_NAME": "Music",
+      "WORKFLOW_STAGE": "EXPRESS",
+      "SEQUENCE": 4,
+      "INPUT_FROM": "Spotify/Soundcloud/Sync AI",
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Music"
+      ],
+      "VISUAL_GROUP": "Output",
+      "DESCRIPTION": "Music output",
+      "NOTES": "Created or curated music content"
+    },
+    {
+      "id": "recDvKBvG6uQmbo98",
+      "recordId": "recDvKBvG6uQmbo98",
+      "ELEMENT_NAME": "Airtable",
+      "WORKFLOW_STAGE": "EXPRESS",
+      "SEQUENCE": 4,
+      "PAID_SERVICE": true,
+      "INPUT_FROM": "Airtable",
+      "INPUT_REQUIRED": true,
+      "CONNECTION_TYPE": "DIRECT",
+      "SUB_WORKFLOWS": [
+        "Database/Structured"
+      ],
+      "VISUAL_GROUP": "Platform",
+      "DESCRIPTION": "Database outputs/views",
+      "NOTES": "Structured data presentation"
+    }
+  ],
+  "links": []
+}

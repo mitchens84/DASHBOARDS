@@ -7,6 +7,9 @@ import HtmlContentIframe from './components/HtmlContentIframe';
 // 0A-PREP imports
 import BikeMaintenanceDashboard from "../content/0A-PREP/bike-maintenance-dashboard";
 
+// 0A-PM imports
+import PKMWorkflowDashboard from "../content/0A-PM/PKMWorkflowDashboard.tsx";
+
 // 3P-POSSESSIONS imports
 import BackpackDashboard from "../content/3P-POSSESSIONS/240205-comprehensive-backpack-dashboard";
 
@@ -53,6 +56,7 @@ import LifeSmoothie from "../content/4H-NUTRITION/life-smoothie-visual";
 import NutritionProcessing from "../content/4H-NUTRITION/nutrition-processing-dashboard";
 import TherapeuticSpiceBlend from "../content/4H-NUTRITION/therapeutic-spice-blend";
 import TvpDashboard from "../content/4H-NUTRITION/tvp-dashboard";
+import NutritionDashboard from "../content/4H-NUTRITION/NutritionDashboard.tsx";
 
 // 5R-BEAN imports
 import BeanRiskAssessment from "../content/5R-BEAN/bean-risk-assessment-v2_revised";
@@ -90,6 +94,10 @@ function App() {
     { id: "risk-assessment", title: "0A-PREPAREDNESS", level: 0 },
     { id: "bike-maintenance-dashboard", title: "Bike Maintenance Dashboard", level: 1 },
     
+    // 0A-PM Section
+    { id: "0a-pm-category", title: "0A-PROJECT MANAGEMENT", level: 0 },
+    { id: "pkm-workflow", title: "PKM Workflow", level: 1 },
+
     // 3P-POSSESSIONS Section
     { id: "possessions", title: "3P-POSSESSIONS", level: 0 },
     { id: "backpack-dashboard", title: "Backpack Analysis", level: 1 },
@@ -233,6 +241,11 @@ function App() {
       // 0A-PREP
       case "bike-maintenance-dashboard":
         return <BikeMaintenanceDashboard />;
+
+      // 0A-PM
+      case "pkmworkflowdashboard":
+      case "pkm-workflow":
+        return <PKMWorkflowDashboard />;
 
       // 3P-POSSESSIONS
       case "backpack-dashboard":
