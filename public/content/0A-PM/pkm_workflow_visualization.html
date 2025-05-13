@@ -493,18 +493,23 @@
                 for (const node of nodes) {
                     const source = node.id;
                     
-                    if (node.fields.OUTPUT_TO) {
-                        const outputs = node.fields.OUTPUT_TO.split('/');
-                        
-                        for (const targetName of outputs) {
-                            // Find if the target exists as a node
-                            const targetNode = nodes.find(n => n.fields.ELEMENT_NAME === targetName.trim());
-                            if (targetNode) {
-                                links.push({
-                                    source: source,
-                                    target: targetNode.id
-                                });
+                    // Check if node and node.fields exist before accessing OUTPUT_TO
+                    if (node && node.fields && node.fields.OUTPUT_TO) {
+                        try {
+                            const outputs = node.fields.OUTPUT_TO.split('/');
+                            
+                            for (const targetName of outputs) {
+                                // Find if the target exists as a node
+                                const targetNode = nodes.find(n => n.fields && n.fields.ELEMENT_NAME === targetName.trim());
+                                if (targetNode) {
+                                    links.push({
+                                        source: source,
+                                        target: targetNode.id
+                                    });
+                                }
                             }
+                        } catch (error) {
+                            console.warn(`Error processing links for node ${node.id}:`, error);
                         }
                     }
                 }
