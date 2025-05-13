@@ -312,8 +312,15 @@
                     
                     const newNode = {
                         id: rawNode.id, 
-                        fields: rawNode.fields || {} // Ensure fields is an object, default to {} if undefined/null
+                        fields: {} // Initialize fields as an empty object
                     };
+
+                    // Copy all other properties from rawNode to newNode.fields
+                    for (const key in rawNode) {
+                        if (rawNode.hasOwnProperty(key) && key !== 'id') {
+                            newNode.fields[key] = rawNode[key];
+                        }
+                    }
 
                     // Ensure id exists, or generate one if necessary for D3
                     if (typeof newNode.id === 'undefined' || newNode.id === null || newNode.id === "") {
@@ -346,6 +353,7 @@
                 });
                 
                 // Initialize the visualization
+                populateFilterDropdowns(); // Populate filters before initializing
                 initializeVisualization();
             } 
             catch (error) {
@@ -374,6 +382,34 @@
             // Clear container and add error
             container.innerHTML = '';
             container.appendChild(errorDiv);
+        }
+
+        // Function to populate filter dropdowns
+        function populateFilterDropdowns() {
+            console.log("Populating filter dropdowns...");
+            const visualGroupFilter = document.getElementById('filter-group');
+            
+            if (!visualGroupFilter) {
+                console.error("#filter-group element not found!");
+                return;
+            }
+
+            // Extract unique visual groups from allPkmNodes
+            const uniqueVisualGroups = [...new Set(allPkmNodes.map(node => node.fields.VISUAL_GROUP))].filter(Boolean); // filter(Boolean) removes undefined/null
+            console.log("Unique visual groups found:", uniqueVisualGroups);
+
+            // Clear existing options (except the "All Groups" default)
+            while (visualGroupFilter.options.length > 1) {
+                visualGroupFilter.remove(1);
+            }
+
+            uniqueVisualGroups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group;
+                option.textContent = group;
+                visualGroupFilter.appendChild(option);
+            });
+            console.log("Visual group filter populated.");
         }
 
         // Start the data loading process
