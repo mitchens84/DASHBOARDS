@@ -60,5 +60,8 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "tailwindcss-animate": "^1.0.7"
-  }
+  },
+  "private": true,
+  "type": "module",
+  "homepage": "https://mitchens84.github.io/DASHBOARDS"
 }

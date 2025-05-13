@@ -2,6 +2,8 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
+import tailwindcss from 'tailwindcss'; // Added import
+import autoprefixer from 'autoprefixer'; // Added import
 
 // Create a plugin to copy HTML files to the build directory and maintain their structure
 const copyContentFiles = () => {
@@ -127,17 +129,13 @@ const copyContentFiles = () => {
   };
 };
 
+// https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  // Load env file based on mode
+  // Load env file based on mode (development, production, etc.)
   const env = loadEnv(mode, process.cwd(), '');
-  
-  // Use environment variable or default to '/' for dev and '/DASHBOARDS/' for prod
-  const basePath = mode === 'production' ? '/DASHBOARDS/' : '/';
-  
-  console.log(`Mode: ${mode}, Base Path: ${basePath}`);
-  
+
   return {
-    base: basePath,
+    base: command === 'build' ? '/DASHBOARDS/' : '/', // Conditional base path
     plugins: [
       react(),
       copyContentFiles(),
@@ -169,8 +167,8 @@ export default defineConfig(({ command, mode }) => {
     css: {
       postcss: {
         plugins: [
-          require('tailwindcss'),
-          require('autoprefixer'),
+          tailwindcss, // Changed from require(\'tailwindcss\')
+          autoprefixer, // Changed from require(\'autoprefixer\')
         ],
       },
     },

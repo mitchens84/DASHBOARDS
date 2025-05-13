@@ -30,8 +30,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as childProcess from 'child_process';
+import { fileURLToPath } from 'url'; // Added import
 
 // Configuration
+const __filename = fileURLToPath(import.meta.url); // Added for ES module scope
+const __dirname = path.dirname(__filename); // Added for ES module scope
 const CONTENT_DIR = path.resolve(__dirname, '../content');
 const MANIFEST_PATH = path.resolve(__dirname, '../src/content-manifest.ts');
 const APP_TSX_PATH = path.resolve(__dirname, '../src/App.tsx');
