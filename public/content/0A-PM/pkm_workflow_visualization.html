@@ -238,10 +238,60 @@
                 }
                 return response.json();
             })
-            .then(data => {
-                console.log("PKM Data Loaded:", data); // Check 3
-                pkmData = data;
-                processDataAndInitialize();
+            .then(pkmData => {
+                console.log('Fetched pkmData:', pkmData); 
+                console.log('Type of pkmData:', typeof pkmData, 'Does pkmData have forEach?:', typeof pkmData?.forEach === 'function'); // Diagnostic log
+
+                let nodesToProcess = null;
+                let linksToProcess = null;
+
+                // Determine data structure
+                if (pkmData && typeof pkmData === 'object' && Array.isArray(pkmData.nodes)) {
+                    console.log('Data structure: pkmData is an object with a .nodes array.');
+                    nodesToProcess = pkmData.nodes;
+                    linksToProcess = pkmData.links || []; // Default to empty array if links not present
+                } else if (pkmData && Array.isArray(pkmData)) {
+                    console.log('Data structure: pkmData is a direct array (nodes only).');
+                    nodesToProcess = pkmData;
+                    linksToProcess = []; 
+                } else {
+                    console.error('Error: pkmData is not an array and not an object with a .nodes array. Actual pkmData:', pkmData); // More specific error
+                    const svgContainer = d3.select("#pkm-workflow-svg-container");
+                    svgContainer.html("<p style='color: red; text-align: center; padding: 20px;'>Error: Could not load or process workflow data. The data structure is unrecognized.</p>");
+                    return; 
+                }
+
+                if (!nodesToProcess || !Array.isArray(nodesToProcess) || nodesToProcess.length === 0) {
+                    console.warn('Warning: No nodes to process or nodesToProcess is not an array. Value:', nodesToProcess); 
+                    return; // No nodes to process, exit early
+                }
+
+                // Initialize nodes and links
+                nodesToProcess.forEach(node => {
+                    const newNode = {
+                        id: node.id,
+                        fields: node.fields
+                    };
+                    allPkmNodes.push(newNode);
+                    pkmDataMap.set(node.id, newNode);
+                });
+
+                linksToProcess.forEach(link => {
+                    const sourceNode = pkmDataMap.get(link.source);
+                    const targetNode = pkmDataMap.get(link.target);
+
+                    if (sourceNode && targetNode) {
+                        allPkmLinks.push({
+                            source: sourceNode,
+                            target: targetNode
+                        });
+                    }
+                });
+
+                console.log("Nodes and links processed. Total nodes:", allPkmNodes.length, "Total links:", allPkmLinks.length);
+
+                // Proceed to visualization setup
+                initializeVisualization();
             })
             .catch(error => {
                 console.error('Error loading workflow data:', error);
