@@ -6,144 +6,112 @@
     <title>PKM Workflow Visualization</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        :root {
-            --source-color: #B8CEFF;
-            --capture-color: #B8FFED;
-            --organise-color: #C2F5B4;
-            --distil-color: #FFF4B8;
-            --express-color: #FFD2B8;
-            
-            --tool-border: #5D8AA8;
-            --content-border: #3CB371;
-            --method-border: #9966CC;
-            --platform-border: #FFD700;
-            --storage-border: #DC143C;
-            --output-border: #FF7F50;
-        }
-        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
+            font-family: sans-serif;
+            margin: 0; /* Reset body margin */
+            padding: 0; /* Reset body padding */
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Make body take full iframe height */
+            overflow: hidden; /* Prevent internal scrollbars if possible */
         }
-        
+        #title {
+            padding: 10px;
+            background-color: #f0f0f0;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
         #container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
+            display: flex;
+            flex-grow: 1; /* Allow container to take remaining space */
+            position: relative; /* For positioning controls and legend */
+            overflow: hidden; /* Important for SVG behavior */
+            min-height: 0; /* Fix flexbox overflow issue in some browsers */
         }
-        
-        svg {
-            width: 100%;
-            height: 100%;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        #pkm-workflow {
+            flex-grow: 1;
+            /* SVG will get width/height from JS, but ensure it can grow */
         }
-        
-        .node {
-            cursor: pointer;
-            stroke-width: 2px;
-        }
-        
-        .link {
-            stroke: #999;
-            stroke-opacity: 0.6;
-            stroke-width: 1px;
-            fill: none;
-        }
-        
-        .paid-service {
-            stroke-dasharray: 5, 2;
-        }
-        
-        .node text {
-            font-size: 12px;
-            text-anchor: middle;
-            pointer-events: none;
-            fill: #333;
-            font-weight: 500;
-        }
-        
-        .node-tooltip {
+        .controls {
             position: absolute;
-            padding: 8px 12px;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            border-radius: 4px;
-            font-size: 12px;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
             z-index: 10;
-            max-width: 300px;
-            pointer-events: none;
-            visibility: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
-        
         .legend {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            font-size: 12px;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            z-index: 10;
+            max-height: calc(100% - 20px); /* Prevent legend from overflowing */
+            overflow-y: auto;
         }
-        
         .legend-item {
-            margin-bottom: 8px;
             display: flex;
             align-items: center;
+            margin-bottom: 5px;
         }
-        
         .legend-color {
             width: 20px;
             height: 20px;
-            display: inline-block;
-            margin-right: 10px;
-            border-radius: 3px;
-            border: 1px solid #ddd;
+            margin-right: 8px;
+            border: 1px solid #ccc;
         }
-        
-        .controls {
+        .node circle {
+            stroke-width: 2px;
+            transition: r 0.3s ease, fill 0.3s ease;
+        }
+        .node circle.paid-service {
+            stroke-dasharray: 4;
+            stroke-width: 2.5px;
+        }
+        .node text {
+            font-size: 10px;
+            fill: #333;
+            pointer-events: none; /* So text doesn't block mouseover on circle */
+            text-anchor: middle;
+        }
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+            stroke-width: 1.5px;
+            fill: none; /* Ensure links are not filled */
+        }
+        .node-tooltip {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        button {
-            padding: 5px 10px;
-            margin-right: 5px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            visibility: hidden;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 8px;
             border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none; /* Tooltip should not capture mouse events */
+            z-index: 20;
         }
-        
-        button:hover {
-            background-color: #3e8e41;
-        }
-        
-        select {
-            padding: 5px;
-            margin-right: 10px;
-        }
-        
-        #title {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
+        /* CSS variables for colors */
+        :root {
+            --source-color: #AEC7E8;
+            --capture-color: #98DF8A;
+            --organise-color: #FFBB78;
+            --distil-color: #FF9896;
+            --express-color: #C5B0D5;
+
+            --tool-border: #1f77b4;
+            --content-border: #2ca02c;
+            --method-border: #ff7f0e;
+            --platform-border: #d62728;
+            --storage-border: #9467bd;
+            --output-border: #8c564b;
         }
     </style>
 </head>
@@ -317,11 +285,28 @@
         // Set up the SVG and visualization
         function initializeVisualization() {
             console.log("Initializing visualization..."); // Check 4
-            const width = window.innerWidth;
-            const height = window.innerHeight;
             
-            svg = d3.select('#pkm-workflow');
-            console.log("SVG selected:", svg.node()); // Check 5: is the SVG element found?
+            const containerElement = document.getElementById('container');
+            if (!containerElement) {
+                console.error("#container element not found!");
+                return;
+            }
+            // Use the dimensions of the #container div for the SVG
+            const width = containerElement.clientWidth;
+            const height = containerElement.clientHeight;
+
+            console.log(`SVG dimensions: width=${width}, height=${height}`);
+
+            if (width <= 0 || height <= 0) {
+                console.warn("SVG container has zero or negative dimensions. Graph may not be visible.", {width, height});
+                // Optionally, set a minimum size or wait for layout.
+            }
+
+            svg = d3.select('#pkm-workflow')
+                .attr('width', width) // Set SVG width
+                .attr('height', height); // Set SVG height
+            
+            console.log("SVG selected and sized:", svg.node()); // Check 5: is the SVG element found and sized?
             
             // Clear existing content
             svg.selectAll('*').remove();
@@ -391,14 +376,15 @@
             simulation = d3.forceSimulation(nodes)
                 .force('link', d3.forceLink(links).id(d => d.id).distance(150))
                 .force('charge', d3.forceManyBody().strength(-400))
-                .force('center', d3.forceCenter(width / 2, height / 2))
-                .force('x', d3.forceX(width / 2).strength(0.1))
-                .force('y', d3.forceY().y(d => getYPosition(d)).strength(0.3))
-                .force('collision', d3.forceCollide().radius(50))
+                .force('center', d3.forceCenter(width / 2, height / 2)) // Use calculated width/height
+                .force('x', d3.forceX(width / 2).strength(0.05)) // Adjusted strength
+                .force('y', d3.forceY().y(d => getYPosition(d, height)).strength(0.15)) // Pass height to getYPosition, adjusted strength
+                .force('collision', d3.forceCollide().radius(d => getNodeSize(d) + 10)) // Dynamic collision radius
                 .on('tick', ticked);
                 
             // Apply initial zoom transformation to center the view
-            svg.call(zoom.transform, d3.zoomIdentity.translate(width/4, height/8).scale(0.7));
+            // Adjust translation and scale as needed based on new sizing
+            svg.call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(0.7)); // Reset translation, adjust scale if needed
         }
         
         // Process the data to create nodes and links
@@ -522,17 +508,17 @@
         }
         
         // Get Y position based on workflow stage for vertical layout
-        function getYPosition(d) {
+        function getYPosition(d, chartHeight) { // Added chartHeight parameter
             const stage = d.fields.WORKFLOW_STAGE;
-            const height = window.innerHeight;
+            // const height = window.innerHeight; // Using passed chartHeight now
             
             switch(stage) {
-                case 'SOURCE': return height * 0.2;
-                case 'CAPTURE': return height * 0.35;
-                case 'ORGANISE': return height * 0.5;
-                case 'DISTIL': return height * 0.65;
-                case 'EXPRESS': return height * 0.8;
-                default: return height * 0.5;
+                case 'SOURCE': return chartHeight * 0.15; // Adjusted percentages for better layout
+                case 'CAPTURE': return chartHeight * 0.30;
+                case 'ORGANISE': return chartHeight * 0.50;
+                case 'DISTIL': return chartHeight * 0.70;
+                case 'EXPRESS': return chartHeight * 0.85;
+                default: return chartHeight * 0.5;
             }
         }
         
@@ -676,7 +662,15 @@
         
         // Resize handler
         window.addEventListener('resize', () => {
-            initializeVisualization();
+            // Debounce resize events for performance
+            clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(() => {
+                console.log("Window resized, re-initializing visualization.");
+                // Re-process data and re-initialize fully to adapt to new sizes and filters
+                // This ensures that if filters are active, they are reapplied correctly.
+                // If only size changes, could optimize to only update simulation forces and SVG size.
+                processDataAndInitialize(); 
+            }, 250);
         });
       })(); // IIFE End
     </script>
