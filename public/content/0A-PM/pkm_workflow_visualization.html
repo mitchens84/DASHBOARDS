@@ -97,6 +97,8 @@
             font-size: 12px;
             pointer-events: none; /* Tooltip should not capture mouse events */
             z-index: 20;
+            max-width: 300px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         /* CSS variables for colors */
         :root {
@@ -112,6 +114,24 @@
             --platform-border: #d62728;
             --storage-border: #9467bd;
             --output-border: #8c564b;
+        }
+        /* Additional styling for search feature */
+        .search-container {
+            margin-top: 15px;
+        }
+        .search-input {
+            padding: 5px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .node circle.search-match {
+            stroke-width: 3px;
+            stroke: #ff0000 !important; /* Red highlight for matches */
+        }
+        .node circle.search-non-match {
+            opacity: 0.3; /* Fade non-matching nodes */
         }
     </style>
 </head>
@@ -153,6 +173,10 @@
             <div style="margin-top: 10px;">
                 <input type="checkbox" id="highlight-paid" checked>
                 <label for="highlight-paid">Highlight Paid Services</label>
+            </div>
+            <div class="search-container">
+                <label for="search-nodes">Search:</label>
+                <input type="text" id="search-nodes" class="search-input" placeholder="Type to search nodes...">
             </div>
         </div>
         
@@ -229,44 +253,57 @@
         let pkmData = [];
         let allPkmNodes = [];
         let allPkmLinks = [];
+        // Define pkmDataMap before use - this was missing
+        let pkmDataMap = new Map();
+        let nodes = [];
+        let links = [];
+        let svg, simulation, linkElements, nodeElements;
+        let currentWorkflowFilter = 'all';
+        let currentGroupFilter = 'all';
+        let highlightPaid = true;
 
-        fetch('pkm_workflow_visualization-DATA.json') // Changed from workflow_data.json
-            .then(response => {
-                console.log("Fetch response received:", response); // Check 2
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(pkmData => {
-                console.log('Fetched pkmData:', pkmData); 
-                console.log('Type of pkmData:', typeof pkmData, 'Does pkmData have forEach?:', typeof pkmData?.forEach === 'function'); // Diagnostic log
-
+        // Robust data loading and processing
+        async function loadAndProcessData() {
+            try {
+                console.log("Starting data load process");
+                const response = await fetch('pkm_workflow_visualization-DATA.json');
+                if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+                
+                const rawData = await response.json();
+                console.log("Raw data loaded:", rawData, "Type:", typeof rawData);
+                
+                // Process the data based on its structure
                 let nodesToProcess = null;
                 let linksToProcess = null;
 
-                // Determine data structure
-                if (pkmData && typeof pkmData === 'object' && Array.isArray(pkmData.nodes)) {
-                    console.log('Data structure: pkmData is an object with a .nodes array.');
-                    nodesToProcess = pkmData.nodes;
-                    linksToProcess = pkmData.links || []; // Default to empty array if links not present
-                } else if (pkmData && Array.isArray(pkmData)) {
-                    console.log('Data structure: pkmData is a direct array (nodes only).');
-                    nodesToProcess = pkmData;
-                    linksToProcess = []; 
-                } else {
-                    console.error('Error: pkmData is not an array and not an object with a .nodes array. Actual pkmData:', pkmData); // More specific error
-                    const svgContainer = d3.select("#pkm-workflow-svg-container");
-                    svgContainer.html("<p style='color: red; text-align: center; padding: 20px;'>Error: Could not load or process workflow data. The data structure is unrecognized.</p>");
-                    return; 
+                if (rawData && typeof rawData === 'object' && Array.isArray(rawData.nodes)) {
+                    // Handle {nodes, links} format
+                    console.log('Data structure: Object with nodes array', rawData.nodes.length);
+                    nodesToProcess = rawData.nodes;
+                    linksToProcess = rawData.links || []; 
+                    pkmData = rawData.nodes; // Update pkmData to use nodes array
+                } 
+                else if (rawData && Array.isArray(rawData)) {
+                    // Handle direct array format
+                    console.log('Data structure: Direct array', rawData.length);
+                    nodesToProcess = rawData;
+                    linksToProcess = [];
+                    pkmData = rawData; // Update pkmData directly
                 }
-
+                else {
+                    throw new Error("Unrecognized data format - expected array or {nodes, links} object");
+                }
+                
                 if (!nodesToProcess || !Array.isArray(nodesToProcess) || nodesToProcess.length === 0) {
-                    console.warn('Warning: No nodes to process or nodesToProcess is not an array. Value:', nodesToProcess); 
-                    return; // No nodes to process, exit early
+                    throw new Error("No valid nodes found in data");
                 }
-
-                // Initialize nodes and links
+                
+                // Clear existing data
+                allPkmNodes = [];
+                allPkmLinks = [];
+                pkmDataMap.clear();
+                
+                // Process nodes
                 nodesToProcess.forEach(node => {
                     const newNode = {
                         id: node.id,
@@ -275,7 +312,8 @@
                     allPkmNodes.push(newNode);
                     pkmDataMap.set(node.id, newNode);
                 });
-
+                
+                // Process links
                 linksToProcess.forEach(link => {
                     const sourceNode = pkmDataMap.get(link.source);
                     const targetNode = pkmDataMap.get(link.target);
@@ -287,50 +325,46 @@
                         });
                     }
                 });
-
-                console.log("Nodes and links processed. Total nodes:", allPkmNodes.length, "Total links:", allPkmLinks.length);
-
-                // Proceed to visualization setup
-                initializeVisualization();
-            })
-            .catch(error => {
-                console.error('Error loading workflow data:', error);
-                // Display error message in the SVG
-                const svgErrorDisplay = d3.select("#pkm-workflow"); // Corrected ID
-                let errorWidth = +svgErrorDisplay.attr("width") || window.innerWidth * 0.8; // Fallback width
-                let errorHeight = +svgErrorDisplay.attr("height") || 300; // Fallback height
-
-                if (svgErrorDisplay.empty()) {
-                    console.error("SVG element #pkm-workflow not found to display error.");
-                    d3.select("body").append("div") // Append to body as a last resort
-                        .style("color", "red")
-                        .style("padding", "20px")
-                        .style("border", "1px solid red")
-                        .style("background-color", "white")
-                        .style("position", "absolute")
-                        .style("top", "10px")
-                        .style("left", "10px")
-                        .style("z-index", "1000")
-                        .text("Critical Error: SVG container #pkm-workflow not found. Error: " + error.message);
-                    return;
-                }
                 
-                svgErrorDisplay.append("text")
-                   .attr("x", errorWidth / 2)
-                   .attr("y", errorHeight / 2)
-                   .attr("text-anchor", "middle")
-                   .style("font-size", "16px")
-                   .style("fill", "red")
-                   .text("Error loading workflow data: " + error.message);
-            });
+                console.log("Data processing complete:", {
+                    nodes: allPkmNodes.length,
+                    links: allPkmLinks.length,
+                    mapSize: pkmDataMap.size
+                });
+                
+                // Initialize the visualization
+                initializeVisualization();
+            } 
+            catch (error) {
+                console.error('Error processing data:', error);
+                displayError(`Error processing workflow data: ${error.message}`);
+            }
+        }
         
-        // Initialize global variables
-        let nodes = [];
-        let links = [];
-        let svg, simulation, linkElements, nodeElements;
-        let currentWorkflowFilter = 'all';
-        let currentGroupFilter = 'all';
-        let highlightPaid = true;
+        // Utility function to display errors in the UI
+        function displayError(message) {
+            const container = document.getElementById('container');
+            if (!container) {
+                console.error("Container element not found for error display");
+                return;
+            }
+            
+            // Create error message element
+            const errorDiv = document.createElement('div');
+            errorDiv.style.color = 'red';
+            errorDiv.style.padding = '20px';
+            errorDiv.style.textAlign = 'center';
+            errorDiv.style.width = '100%';
+            errorDiv.style.fontWeight = 'bold';
+            errorDiv.textContent = message;
+            
+            // Clear container and add error
+            container.innerHTML = '';
+            container.appendChild(errorDiv);
+        }
+
+        // Start the data loading process
+        loadAndProcessData();
         
         // Set up the SVG and visualization
         function initializeVisualization() {
@@ -349,7 +383,9 @@
 
             if (width <= 0 || height <= 0) {
                 console.warn("SVG container has zero or negative dimensions. Graph may not be visible.", {width, height});
-                // Optionally, set a minimum size or wait for layout.
+                // Set minimum fallback dimensions
+                width = width <= 0 ? 800 : width;
+                height = height <= 0 ? 600 : height;
             }
 
             svg = d3.select('#pkm-workflow')
@@ -373,7 +409,7 @@
             // Create a container for all elements
             const container = svg.append('g');
             
-            // Process data
+            // Process data for visualization
             processData();
             
             // Create links
@@ -437,61 +473,65 @@
             svg.call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(0.7)); // Reset translation, adjust scale if needed
         }
         
-        // Process the data to create nodes and links
-        function processDataAndInitialize() { // Renamed from just processData to reflect its role
-            console.log("Processing data and initializing..."); // Check for this function call
+        // Process the data to create nodes and links for visualization
+        function processData() {
+            console.log("Processing visualization data...");
+            // Reset visualization data
             nodes = [];
             links = [];
             
-            // Create unique nodes
-            const nodeMap = {};
+            // Use the previously processed allPkmNodes and allPkmLinks
+            nodes = allPkmNodes.slice();
             
-            pkmData.forEach(item => {
-                const node = {
-                    id: item.id,
-                    fields: item.fields
-                };
-                nodes.push(node);
-                nodeMap[item.fields.ELEMENT_NAME] = node;
-            });
-            
-            // Create links from input/output connections
-            pkmData.forEach(item => {
-                const source = item.id;
-                
-                if (item.fields.OUTPUT_TO) {
-                    const outputs = item.fields.OUTPUT_TO.split('/');
+            // Either use allPkmLinks if they exist, or build links from node data
+            if (allPkmLinks && allPkmLinks.length > 0) {
+                links = allPkmLinks.slice();
+                console.log("Using pre-processed links:", links.length);
+            } else {
+                console.log("Building links from node output_to fields");
+                // Create links from input/output connections in node data
+                for (const node of nodes) {
+                    const source = node.id;
                     
-                    outputs.forEach(target => {
-                        // Find if the target exists as a node
-                        const targetNode = nodes.find(n => n.fields.ELEMENT_NAME === target);
-                        if (targetNode) {
-                            links.push({
-                                source: source,
-                                target: targetNode.id
-                            });
+                    if (node.fields.OUTPUT_TO) {
+                        const outputs = node.fields.OUTPUT_TO.split('/');
+                        
+                        for (const targetName of outputs) {
+                            // Find if the target exists as a node
+                            const targetNode = nodes.find(n => n.fields.ELEMENT_NAME === targetName.trim());
+                            if (targetNode) {
+                                links.push({
+                                    source: source,
+                                    target: targetNode.id
+                                });
+                            }
                         }
-                    });
+                    }
                 }
-            });
+                console.log("Built links from node data:", links.length);
+            }
             
-            // Filter nodes and links based on current filters
+            // Apply filters to nodes and links
             filterNodesAndLinks();
-            initializeVisualization(); // Call initializeVisualization after processing and filtering
         }
         
         // Filter nodes and links based on current selections
         function filterNodesAndLinks() {
+            let filteredNodes = nodes.slice();
+            let filteredLinks = links.slice();
+            
             // Apply workflow filter
             if (currentWorkflowFilter !== 'all') {
-                nodes = nodes.filter(node => 
+                console.log("Filtering nodes by workflow:", currentWorkflowFilter);
+                filteredNodes = filteredNodes.filter(node => 
                     node.fields.SUB_WORKFLOWS && 
+                    Array.isArray(node.fields.SUB_WORKFLOWS) &&
                     node.fields.SUB_WORKFLOWS.includes(currentWorkflowFilter)
                 );
                 
                 // Filter links to only include connections between visible nodes
-                const nodeIds = nodes.map(n => n.id);
-                links = links.filter(link => 
+                const nodeIds = filteredNodes.map(n => n.id);
+                filteredLinks = filteredLinks.filter(link => 
                     nodeIds.includes(link.source) && 
                     nodeIds.includes(link.target)
                 );
@@ -499,17 +539,23 @@
             
             // Apply visual group filter
             if (currentGroupFilter !== 'all') {
-                nodes = nodes.filter(node => 
+                console.log("Filtering nodes by visual group:", currentGroupFilter);
+                filteredNodes = filteredNodes.filter(node => 
                     node.fields.VISUAL_GROUP === currentGroupFilter
                 );
                 
                 // Filter links again
-                const nodeIds = nodes.map(n => n.id);
-                links = links.filter(link => 
+                const nodeIds = filteredNodes.map(n => n.id);
+                filteredLinks = filteredLinks.filter(link => 
                     nodeIds.includes(link.source) && 
                     nodeIds.includes(link.target)
                 );
             }
+            
+            // Update nodes and links for visualization
+            nodes = filteredNodes;
+            links = filteredLinks;
+            console.log("After filtering:", { nodes: nodes.length, links: links.length });
         }
         
         // Get node color based on workflow stage
@@ -577,36 +623,76 @@
             const tooltip = d3.select('#tooltip');
             const fields = d.fields;
             
+            // Enhanced tooltip with more formatting
             let content = `
-                <strong>${fields.ELEMENT_NAME}</strong><br>
-                <em>${fields.VISUAL_GROUP} - ${fields.WORKFLOW_STAGE}</em><br>
-                ${fields.DESCRIPTION || ''}<br>
+                <div style="border-bottom: 1px solid #ccc; margin-bottom: 5px; padding-bottom: 5px;">
+                    <strong style="font-size: 14px;">${fields.ELEMENT_NAME}</strong>
+                </div>
+                <div style="margin-bottom: 5px;">
+                    <span style="background-color: ${getNodeColor(d)}; border: 1px solid ${getNodeBorder(d)}; 
+                          padding: 2px 6px; border-radius: 3px; font-size: 11px;">
+                        ${fields.WORKFLOW_STAGE}
+                    </span>
+                    <span style="background-color: #f0f0f0; padding: 2px 6px; border-radius: 3px; 
+                          margin-left: 5px; font-size: 11px;">
+                        ${fields.VISUAL_GROUP}
+                    </span>
+                </div>
             `;
             
+            if (fields.DESCRIPTION) {
+                content += `<div style="margin: 5px 0;">${fields.DESCRIPTION}</div>`;
+            }
+            
             if (fields.NOTES) {
-                content += `<small>${fields.NOTES}</small><br>`;
+                content += `<div style="font-size: 11px; font-style: italic; color: #666; margin: 5px 0;">${fields.NOTES}</div>`;
             }
             
             if (fields.PAID_SERVICE) {
-                content += '<br><strong>Paid Service</strong><br>';
+                content += `<div style="color: #d9534f; font-weight: bold; margin-top: 5px;">Paid Service</div>`;
             }
             
-            if (fields.SUB_WORKFLOWS) {
-                content += `<br>Workflows: ${fields.SUB_WORKFLOWS.join(', ')}<br>`;
+            // Additional information section
+            let additionalInfo = [];
+            
+            if (fields.SUB_WORKFLOWS && Array.isArray(fields.SUB_WORKFLOWS) && fields.SUB_WORKFLOWS.length > 0) {
+                additionalInfo.push(`<strong>Workflows:</strong> ${fields.SUB_WORKFLOWS.join(', ')}`);
             }
             
             if (fields.INPUT_FROM) {
-                content += `<br>Input from: ${fields.INPUT_FROM}<br>`;
+                additionalInfo.push(`<strong>Input from:</strong> ${fields.INPUT_FROM}`);
             }
             
             if (fields.OUTPUT_TO) {
-                content += `Output to: ${fields.OUTPUT_TO}<br>`;
+                additionalInfo.push(`<strong>Output to:</strong> ${fields.OUTPUT_TO}`);
             }
             
+            if (additionalInfo.length > 0) {
+                content += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 12px;">
+                    ${additionalInfo.join('<br>')}
+                </div>`;
+            }
+            
+            // Position tooltip at mouse position and make it visible
             tooltip.html(content)
                 .style('left', (event.pageX + 15) + 'px')
                 .style('top', (event.pageY - 28) + 'px')
                 .style('visibility', 'visible');
+            
+            // Ensure tooltip doesn't go off-screen
+            const tooltipNode = tooltip.node();
+            const tooltipRect = tooltipNode.getBoundingClientRect();
+            const containerRect = document.getElementById('container').getBoundingClientRect();
+            
+            // Check if tooltip goes beyond right edge
+            if (tooltipRect.right > containerRect.right) {
+                tooltip.style('left', (event.pageX - tooltipRect.width - 15) + 'px');
+            }
+            
+            // Check if tooltip goes beyond bottom edge
+            if (tooltipRect.bottom > containerRect.bottom) {
+                tooltip.style('top', (event.pageY - tooltipRect.height - 15) + 'px');
+            }
         }
         
         // Hide tooltip
@@ -684,8 +770,10 @@
         });
         
         document.getElementById('reset').addEventListener('click', () => {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
+            const containerElement = document.getElementById('container');
+            // Use container dimensions instead of window dimensions for more accurate centering
+            const width = containerElement.clientWidth;
+            const height = containerElement.clientHeight;
             svg.transition().duration(750).call(
                 d3.zoom().transform,
                 d3.zoomIdentity.translate(width/4, height/8).scale(0.7)
@@ -710,17 +798,36 @@
                 .classed('paid-service', d => highlightPaid && d.fields.PAID_SERVICE);
         });
         
-        // Resize handler
-        window.addEventListener('resize', () => {
-            // Debounce resize events for performance
-            clearTimeout(window.resizeTimeout);
-            window.resizeTimeout = setTimeout(() => {
-                console.log("Window resized, re-initializing visualization.");
-                // Re-process data and re-initialize fully to adapt to new sizes and filters
-                // This ensures that if filters are active, they are reapplied correctly.
-                // If only size changes, could optimize to only update simulation forces and SVG size.
-                processDataAndInitialize(); 
-            }, 250);
+        // Search functionality
+        document.getElementById('search-nodes').addEventListener('input', (event) => {
+            const searchTerm = event.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                // If search is cleared, reset all nodes to normal
+                d3.selectAll('.node circle')
+                    .classed('search-match', false)
+                    .classed('search-non-match', false);
+                return;
+            }
+            
+            // Check each node against the search term
+            d3.selectAll('.node').each(function(d) {
+                const node = d3.select(this);
+                const circle = node.select('circle');
+                const nodeData = d;
+                
+                // Search in multiple fields
+                const matchesName = nodeData.fields.ELEMENT_NAME.toLowerCase().includes(searchTerm);
+                const matchesGroup = nodeData.fields.VISUAL_GROUP?.toLowerCase().includes(searchTerm);
+                const matchesStage = nodeData.fields.WORKFLOW_STAGE?.toLowerCase().includes(searchTerm);
+                const matchesDescription = nodeData.fields.DESCRIPTION?.toLowerCase().includes(searchTerm);
+                
+                const isMatch = matchesName || matchesGroup || matchesStage || matchesDescription;
+                
+                // Apply appropriate classes
+                circle.classed('search-match', isMatch);
+                circle.classed('search-non-match', !isMatch);
+            });
         });
       })(); // IIFE End
     </script>
