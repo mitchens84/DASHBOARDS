@@ -304,13 +304,26 @@
                 pkmDataMap.clear();
                 
                 // Process nodes
-                nodesToProcess.forEach(node => {
+                nodesToProcess.forEach(rawNode => {
+                    if (!rawNode || typeof rawNode !== 'object') {
+                        console.warn("Skipping invalid raw node (not an object or null):", rawNode);
+                        return; // Skip this iteration
+                    }
+                    
                     const newNode = {
-                        id: node.id,
-                        fields: node.fields
+                        id: rawNode.id, 
+                        fields: rawNode.fields || {} // Ensure fields is an object, default to {} if undefined/null
                     };
+
+                    // Ensure id exists, or generate one if necessary for D3
+                    if (typeof newNode.id === 'undefined' || newNode.id === null || newNode.id === "") {
+                        const tempId = `temp_id_${allPkmNodes.length}_${Date.now()}`;
+                        console.warn("Node missing ID or ID is invalid. Original raw node:", rawNode, `Assigned temporary ID: ${tempId}`);
+                        newNode.id = tempId;
+                    }
+
                     allPkmNodes.push(newNode);
-                    pkmDataMap.set(node.id, newNode);
+                    pkmDataMap.set(newNode.id, newNode);
                 });
                 
                 // Process links
@@ -488,30 +501,42 @@
                 links = allPkmLinks.slice();
                 console.log("Using pre-processed links:", links.length);
             } else {
-                console.log("Building links from node output_to fields");
-                // Create links from input/output connections in node data
-                for (const node of nodes) {
+                console.log("Building links from node output_to fields. Iterating through 'nodes' array with length:", nodes.length);
+                for (let i = 0; i < nodes.length; i++) {
+                    const node = nodes[i];
+                    
+                    if (!node) {
+                        console.warn(`Link building: Encountered null/undefined node at index ${i}. Skipping.`);
+                        continue; 
+                    }
+
                     const source = node.id;
                     
-                    // Check if node and node.fields exist before accessing OUTPUT_TO
-                    if (node && node.fields && node.fields.OUTPUT_TO) {
+                    // Diagnostic log for each node before checking OUTPUT_TO
+                    console.log(`Link building for node [${i}] ID: ${node.id}. Fields defined: ${node.hasOwnProperty('fields')}. Fields type: ${typeof node.fields}.`);
+                    if (node.fields) {
+                        console.log(`   Fields content for node [${i}] ID ${node.id}: ${JSON.stringify(node.fields)}`);
+                    }
+                    // It's an error if node.fields is not defined here, as it should have been initialized.
+                    else if (typeof node.fields === 'undefined' || node.fields === null) { 
+                        console.error(`CRITICAL: Node [${i}] ID ${node.id} has undefined or null 'fields' property at link building stage. This should not happen.`);
+                        // This is the state that would cause the error if the IF condition below fails or is incorrect
+                    }
+
+                    // The actual check and link building logic
+                    if (node.fields && node.fields.OUTPUT_TO) {
                         try {
                             const outputs = node.fields.OUTPUT_TO.split('/');
-                            
                             for (const targetName of outputs) {
-                                // Find if the target exists as a node
                                 const targetNode = nodes.find(n => n.fields && n.fields.ELEMENT_NAME === targetName.trim());
                                 if (targetNode) {
-                                    links.push({
-                                        source: source,
-                                        target: targetNode.id
-                                    });
+                                    links.push({ source: source, target: targetNode.id });
                                 }
                             }
                         } catch (error) {
-                            console.warn(`Error processing links for node ${node.id}:`, error);
+                            console.warn(`Error splitting/processing OUTPUT_TO for node ${node.id} (OUTPUT_TO: '${node.fields.OUTPUT_TO}'):`, error);
                         }
-                    }
+                    } 
                 }
                 console.log("Built links from node data:", links.length);
             }
