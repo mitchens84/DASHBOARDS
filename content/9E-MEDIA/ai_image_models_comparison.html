@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generation Models Comparison 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .filter-controls {
+            padding: 20px 30px;
+            background: rgba(79, 172, 254, 0.1);
+            border-bottom: 1px solid rgba(79, 172, 254, 0.2);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            padding: 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-table th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 11;
+            min-width: 180px;
+        }
+
+        .comparison-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #e1e5e9;
+            vertical-align: top;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-table tbody tr:hover {
+            background-color: rgba(79, 172, 254, 0.05);
+        }
+
+        .comparison-table td:first-child {
+            position: sticky;
+            left: 0;
+            background: white;
+            font-weight: 600;
+            color: #333;
+            border-right: 2px solid #e1e5e9;
+            min-width: 180px;
+            z-index: 5;
+        }
+
+        .comparison-table tbody tr:hover td:first-child {
+            background-color: rgba(79, 172, 254, 0.05);
+        }
+
+        .model-name {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .model-type {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rating.excellent-plus {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .rating.excellent {
+            background: linear-gradient(135deg, #00d2d3, #54a0ff);
+            color: white;
+        }
+
+        .rating.good {
+            background: linear-gradient(135deg, #5f27cd, #341f97);
+            color: white;
+        }
+
+        .rating.average {
+            background: linear-gradient(135deg, #ff9f43, #feca57);
+            color: white;
+        }
+
+        .rating.medium {
+            background: linear-gradient(135deg, #a55eea, #8c7ae6);
+            color: white;
+        }
+
+        .rating.low {
+            background: linear-gradient(135deg, #fd79a8, #fdcb6e);
+            color: white;
+        }
+
+        .speed-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .speed-fast {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+        }
+
+        .speed-medium {
+            background: linear-gradient(135deg, #fdcb6e, #f39c12);
+        }
+
+        .speed-slow {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+        }
+
+        .access-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+        }
+
+        .access-full::before {
+            content: "✅";
+        }
+
+        .access-limited::before {
+            content: "⚠️";
+            color: #f39c12;
+        }
+
+        .access-none::before {
+            content: "❌";
+        }
+
+        .price-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            color: white;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .highlight-strength {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .highlight-limitation {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .key-features {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .feature-item {
+            font-size: 12px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .feature-item::before {
+            content: "•";
+            color: #4facfe;
+            font-weight: bold;
+        }
+
+        .legend {
+            padding: 20px 30px;
+            background: rgba(79, 172, 254, 0.05);
+            border-top: 1px solid rgba(79, 172, 254, 0.2);
+        }
+
+        .legend h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .update-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #00b894, #55a3ff);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .comparison-table {
+                font-size: 12px;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 10px 8px;
+            }
+        }
+
+        .scroll-hint {
+            text-align: center;
+            padding: 15px;
+            background: rgba(79, 172, 254, 0.1);
+            color: #666;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(79, 172, 254, 0.2);
+        }
+
+        .scroll-hint::before {
+            content: "📱";
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Image Generation Models Comparison 2025</h1>
+            <p>Latest specifications and performance metrics for leading AI image generation platforms</p>
+        </div>
+
+        <div class="filter-controls">
+            <div class="filter-group">
+                <label for="modelFilter">Filter by Model Type:</label>
+                <select id="modelFilter" class="filter-select">
+                    <option value="all">All Models</option>
+                    <option value="api">API Access</option>
+                    <option value="interface">Interface Only</option>
+                    <option value="hybrid">API + Interface</option>
+                </select>
+                
+                <label for="qualityFilter">Filter by Text Quality:</label>
+                <select id="qualityFilter" class="filter-select">
+                    <option value="all">All Quality Levels</option>
+                    <option value="excellent">Excellent</option>
+                    <option value="good">Good</option>
+                    <option value="average">Average</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="scroll-hint">
+            Scroll horizontally to view all model specifications and features
+        </div>
+
+        <div class="table-container">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Text Rendering</th>
+                        <th>Generation Speed</th>
+                        <th>Prompt Accuracy</th>
+                        <th>Object Handling</th>
+                        <th>Max Resolution</th>
+                        <th>Quality Settings</th>
+                        <th>Pricing Model</th>
+                        <th>API Access</th>
+                        <th>Multimodal Context</th>
+                        <th>Key Strengths</th>
+                        <th>Primary Limitations</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr data-model-type="api" data-text-quality="excellent">
+                        <td>
+                            <div class="model-name">GPT Image 1</div>
+                            <div class="model-type">OpenAI API</div>
+                        </td>
+                        <td><span class="rating excellent">Excellent</span></td>
+                        <td><span class="speed-badge speed-slow">30-120 sec</span></td>
+                        <td><span class="rating excellent">Very High</span></td>
+                        <td><span class="rating excellent">15-20 objects</span></td>
+                        <td>1536×1024</td>
+                        <td>Low/Medium/High/Auto</td>
+                        <td><span class="price-tag">$40/M tokens</span></td>
+                        <td><span class="access-indicator access-full">Full API</span></td>
+                        <td><span class="access-indicator access-full">Native GPT-4o</span></td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-strength">Superior text accuracy</span>
+                                <span class="highlight-strength">Complex object handling</span>
+                                <span class="highlight-strength">World knowledge integration</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-limitation">High latency</span>
+                                <span class="highlight-limitation">Composition control limits</span>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr data-model-type="interface" data-text-quality="excellent">
+                        <td>
+                            <div class="model-name">GPT-4o Image Creator</div>
+                            <div class="model-type">ChatGPT Interface</div>
+                        </td>
+                        <td><span class="rating excellent-plus">Excellent+</span><span class="update-badge">Enhanced</span></td>
+                        <td><span class="speed-badge speed-slow">30-90 sec</span></td>
+                        <td><span class="rating excellent">Very High</span></td>
+                        <td><span class="rating excellent">15-20 objects</span></td>
+                        <td>1536×1024</td>
+                        <td>Automatic Optimization</td>
+                        <td><span class="price-tag">Subscription</span></td>
+                        <td><span class="access-indicator access-none">Interface Only</span></td>
+                        <td><span class="access-indicator access-full">Native conversation</span></td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-strength">Enhanced text clarity</span>
+                                <span class="highlight-strength">Auto context management</span>
+                                <span class="highlight-strength">Superior to API version</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-limitation">No API access</span>
+                                <span class="highlight-limitation">Limited format control</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-model-type="api" data-text-quality="average">
+                        <td>
+                            <div class="model-name">Flux 1.1 Pro</div>
+                            <div class="model-type">Black Forest Labs</div>
+                        </td>
+                        <td><span class="rating good">Good</span><span class="update-badge">6x Faster</span></td>
+                        <td><span class="speed-badge speed-fast">10-15 sec</span></td>
+                        <td><span class="rating excellent">High</span></td>
+                        <td><span class="rating good">12-15 objects</span></td>
+                        <td>2048×2048</td>
+                        <td>Multiple quality tiers</td>
+                        <td><span class="price-tag">$0.04/image</span></td>
+                        <td><span class="access-indicator access-full">Full API</span></td>
+                        <td><span class="access-indicator access-none">None</span></td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-strength">Fastest generation</span>
+                                <span class="highlight-strength">High resolution</span>
+                                <span class="highlight-strength">Artistic flexibility</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-limitation">Inferior text rendering</span>
+                                <span class="highlight-limitation">Limited object complexity</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-model-type="hybrid" data-text-quality="excellent">
+                        <td>
+                            <div class="model-name">Google Imagen 4</div>
+                            <div class="model-type">Google DeepMind</div>
+                        </td>
+                        <td><span class="rating excellent">Excellent</span><span class="update-badge">Enhanced Typography</span></td>
+                        <td><span class="speed-badge speed-fast">5-15 sec</span></td>
+                        <td><span class="rating good">High</span></td>
+                        <td><span class="rating good">12-15 objects</span></td>
+                        <td>2048×2048</td>
+                        <td>Quality levels + Fast variant</td>
+                        <td><span class="price-tag">Usage-based</span></td>
+                        <td><span class="access-indicator access-full">Full API</span></td>
+                        <td><span class="access-indicator access-limited">Basic</span></td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-strength">10x faster than Imagen 3</span>
+                                <span class="highlight-strength">Photorealistic quality</span>
+                                <span class="highlight-strength">Enhanced typography</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-limitation">Limited availability</span>
+                                <span class="highlight-limitation">Moderate prompt accuracy</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-model-type="api" data-text-quality="good">
+                        <td>
+                            <div class="model-name">Stable Diffusion 3.5 Large</div>
+                            <div class="model-type">Stability AI</div>
+                        </td>
+                        <td><span class="rating good">Good</span></td>
+                        <td><span class="speed-badge speed-medium">15-30 sec</span></td>
+                        <td><span class="rating excellent">High</span></td>
+                        <td><span class="rating good">10-15 objects</span></td>
+                        <td>1024×1024</td>
+                        <td>Multiple settings</td>
+                        <td><span class="price-tag">Free<$1M revenue</span></td>
+                        <td><span class="access-indicator access-full">Full API</span></td>
+                        <td><span class="access-indicator access-none">None</span></td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-strength">8B parameters</span>
+                                <span class="highlight-strength">High customizability</span>
+                                <span class="highlight-strength">Consumer hardware</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-limitation">Text rendering limitations</span>
+                                <span class="highlight-limitation">Variable output consistency</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-model-type="api" data-text-quality="good">
+                        <td>
+                            <div class="model-name">Stable Diffusion 3.5 Turbo</div>
+                            <div class="model-type">Stability AI</div>
+                        </td>
+                        <td><span class="rating good">Good</span></td>
+                        <td><span class="speed-badge speed-fast">5-15 sec</span></td>
+                        <td><span class="rating excellent">High</span></td>
+                        <td><span class="rating good">10-15 objects</span></td>
+                        <td>1024×1024</td>
+                        <td>4-step generation</td>
+                        <td><span class="price-tag">Free<$1M revenue</span></td>
+                        <td><span class="access-indicator access-full">Full API</span></td>
+                        <td><span class="access-indicator access-none">None</span></td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-strength">Ultra-fast 4-step generation</span>
+                                <span class="highlight-strength">Distilled efficiency</span>
+                                <span class="highlight-strength">Quality retention</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-limitation">Simplified features</span>
+                                <span class="highlight-limitation">Limited resolution</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr data-model-type="api" data-text-quality="good">
+                        <td>
+                            <div class="model-name">Stable Diffusion 3.5 Medium</div>
+                            <div class="model-type">Stability AI</div>
+                        </td>
+                        <td><span class="rating good">Good</span></td>
+                        <td><span class="speed-badge speed-medium">10-20 sec</span></td>
+                        <td><span class="rating excellent">High</span></td>
+                        <td><span class="rating good">8-12 objects</span></td>
+                        <td>0.25-2MP variable</td>
+                        <td>Multiple settings</td>
+                        <td><span class="price-tag">Free<$1M revenue</span></td>
+                        <td><span class="access-indicator access-full">Full API</span></td>
+                        <td><span class="access-indicator access-none">None</span></td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-strength">2.5B parameters</span>
+                                <span class="highlight-strength">Consumer hardware optimized</span>
+                                <span class="highlight-strength">Variable resolution</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="key-features">
+                                <span class="highlight-limitation">Lower parameter count</span>
+                                <span class="highlight-limitation">Reduced capability vs Large</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="legend">
+            <h3>Rating System & Legend</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <span class="rating excellent-plus">Excellent+</span>
+                    <span>Best-in-class performance with documented superiority</span>
+                </div>
+                <div class="legend-item">
+                    <span class="rating excellent">Excellent</span>
+                    <span>Top-tier performance across most scenarios</span>
+                </div>
+                <div class="legend-item">
+                    <span class="rating good">Good</span>
+                    <span>Reliable performance with occasional limitations</span>
+                </div>
+                <div class="legend-item">
+                    <span class="rating average">Average</span>
+                    <span>Adequate performance with notable constraints</span>
+                </div>
+                <div class="legend-item">
+                    <span class="access-indicator access-full">✅ Full</span>
+                    <span>Complete API access with all features</span>
+                </div>
+                <div class="legend-item">
+                    <span class="access-indicator access-limited">⚠️ Limited</span>
+                    <span>Restricted API access or beta availability</span>
+                </div>
+                <div class="legend-item">
+                    <span class="access-indicator access-none">❌ None</span>
+                    <span>No API access available</span>
+                </div>
+                <div class="legend-item">
+                    <span class="speed-badge speed-fast">Fast</span>
+                    <span>5-15 seconds generation time</span>
+                </div>
+                <div class="legend-item">
+                    <span class="speed-badge speed-medium">Medium</span>
+                    <span>15-30 seconds generation time</span>
+                </div>
+                <div class="legend-item">
+                    <span class="speed-badge speed-slow">Slow</span>
+                    <span>30+ seconds generation time</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter functionality
+        const modelFilter = document.getElementById('modelFilter');
+        const qualityFilter = document.getElementById('qualityFilter');
+        const tableBody = document.getElementById('tableBody');
+        const rows = tableBody.querySelectorAll('tr');
+
+        function filterTable() {
+            const modelType = modelFilter.value;
+            const textQuality = qualityFilter.value;
+
+            rows.forEach(row => {
+                const rowModelType = row.getAttribute('data-model-type');
+                const rowTextQuality = row.getAttribute('data-text-quality');
+                
+                let showRow = true;
+
+                if (modelType !== 'all' && rowModelType !== modelType) {
+                    showRow = false;
+                }
+
+                if (textQuality !== 'all' && rowTextQuality !== textQuality) {
+                    showRow = false;
+                }
+
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        modelFilter.addEventListener('change', filterTable);
+        qualityFilter.addEventListener('change', filterTable);
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add table row highlight on click
+        rows.forEach(row => {
+            row.addEventListener('click', function() {
+                rows.forEach(r => r.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add loading animation effect
+        window.addEventListener('load', function() {
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateY(20px)';
+                    row.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        row.style.opacity = '1';
+                        row.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 100);
+            });
+        });
+    </script>
+
+    <style>
+        .comparison-table tbody tr.active {
+            background-color: rgba(79, 172, 254, 0.15) !important;
+            box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.3);
+        }
+
+        .comparison-table tbody tr.active td:first-child {
+            background-color: rgba(79, 172, 254, 0.15) !important;
+        }
+    </style>
+</body>
+</html>

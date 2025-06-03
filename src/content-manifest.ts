@@ -52,6 +52,7 @@ export const contentManifest = {
     "sound-therapy-guide",
     "highlight_detective_game",
     "media-preference-dashboard",
+    "ai-image-models-comparison",
   ],
   "5R-BEAN": [
     "bean-complete-nutrition-dashboard",

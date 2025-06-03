@@ -38,19 +38,20 @@
     "d3-force": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
+    "got": "^11.8.6",
     "lodash": "^4.17.21",
     "lucide-react": "^0.460.0",
     "papaparse": "^5.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-force-graph": "^1.46.0",
+    "react-force-graph": "^1.29.3",
     "react-router-dom": "^6.29.0",
     "recharts": "^2.15.1",
     "tailwind-merge": "^2.6.0",
     "three": "^0.170.0",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3",
-    "vite": "^5.4.11"
+    "vite": "^6.3.5"
   },
   "description": "",
   "devDependencies": {
@@ -60,6 +61,11 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "tailwindcss-animate": "^1.0.7"
+  },
+  "overrides": {
+    "nice-color-palettes": {
+      "got": ">=11.8.5"
+    }
   },
   "private": true,
   "type": "module",

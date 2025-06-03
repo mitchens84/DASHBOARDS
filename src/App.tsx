@@ -79,6 +79,7 @@ import KorijeniNaKorculi from "../content/9E-MEDIA/korijeni_na_korculi";
 import HikingPlaylist from "../content/9E-MEDIA/hiking-playlist";
 import HighlightDetectiveGame from "../content/9E-MEDIA/highlight_detective_game";
 import MusicDashboardR1 from "../content/9E-MEDIA/music-dashboard-r1";
+import AIImageModelsComparison from "../content/9E-MEDIA/ai-image-models-comparison";
 
 // 5R-RELATIONSHIPS imports
 import MusicDashboard from "../content/9E-MEDIA/music-dashboard";
@@ -205,13 +206,14 @@ function App() {
     
     // Media Section
     { id: "media", title: "9E-MEDIA", level: 0 },
+    { id: "ai-image-models-comparison", title: "AI Image Models Comparison", level: 1 },
     { id: "hiking-playlist", title: "Hiking Playlist", level: 1 },
     { id: "highlightdetectivegame", title: "Highlight Detective Game", level: 1 },
     { id: "music-dashboard", title: "Music Dashboard", level: 1 },
     { id: "music-dashboard-r1", title: "Music Dashboard R1", level: 1 },
     { id: "sound-therapy", title: "Sound Therapy Guide", level: 1 },
     { id: "korijeni-na-korculi", title: "Korijeni Na Korculi", level: 1 },
-    { id: "sound-therapy-guide", title: "Sound Therapy Guide", level: 1 },
+    { id: "media-preference-dashboard", title: "Media Preference Dashboard", level: 1 },
     
     // Career Section
     { id: "career", title: "7A-CAREER", level: 0 },
@@ -378,6 +380,8 @@ function App() {
         return <AIResearchTools3DVisualization />;
 
       // 9E-MEDIA
+      case "ai-image-models-comparison":
+        return <AIImageModelsComparison />;
       case "hiking-playlist":
         return <HikingPlaylist />;
       case "highlightdetectivegame":
