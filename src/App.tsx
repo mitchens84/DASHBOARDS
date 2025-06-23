@@ -435,7 +435,7 @@ function App() {
   // Pass null for tableOfContents to hide it
   return (
     <Layout
-      tableOfContents={null}
+      tableOfContents={<TableOfContents items={tocItems} activeItem={currentPath} />}
     >
       <Routes>
         <Route path="/" element={
